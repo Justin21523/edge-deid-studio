@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+
+# Jupyter & Colab
+.ipynb_checkpoints/
+*.ipynb
+*.nbconvert.*
+.env
+.DS_Store
+
+# Model & ONNX
+*.onnx
+*.dlc
+*.bin
+*.pth
+*.pt
+
+# Log files
+*.log
+*.tmp
+*.swp
+
+# Dataset & Exported Data
+data/raw/
+data/processed/
+*.csv
+*.pdf
+*.xlsx
+
+# IDE settings
+.vscode/
+.idea/
+
+# PyQt UI builds
+*.ui
