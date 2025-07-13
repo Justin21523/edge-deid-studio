@@ -36,10 +36,11 @@ class FileParser:
         return result
 
     def _process_docx(self) -> dict:
-        # 使用python-docx提取文字
-        # 同時提取內嵌圖片（需特殊處理）
-        # TODO: 實作 DOCX 處理
-        return {'text': '', 'images': []}
+        # 用 python-docx 直接讀文字
+        self.file_bytes.seek(0)
+        doc = Document(self.file_bytes)
+        text = "\n".join([para.text for para in doc.paragraphs])
+        return {'text': text, 'images': []}
 
     def _optimize_for_edge(self, content: str) -> str:
         # 1. 移除重複頁眉/頁腳
