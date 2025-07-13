@@ -14,9 +14,13 @@ class ImagePIIPipeline:
         self.redactor = Redactor()
 
     def detect(self, image: np.ndarray) -> dict:
-        # TODO: run multi-stage PII detection
-        return {'text_boxes': [], 'faces': [], 'plates': []}
-
+        results = {
+            'text_boxes': self.text_detector.detect(image),
+            'faces': self.face_detector.detect(image),
+            'plates': self.plate_detector.detect(image)
+        }
+        return results
+    
     def redact_image(self, image: np.ndarray, results: dict) -> np.ndarray:
         # TODO: apply redaction masks
         return image
