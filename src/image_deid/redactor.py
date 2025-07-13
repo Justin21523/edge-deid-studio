@@ -16,5 +16,8 @@ class Redactor:
         return image
 
     def blur(self, image: np.ndarray, box: tuple) -> np.ndarray:
-        # TODO
+        x1, y1, x2, y2 = box
+        roi = image[y1:y2, x1:x2]
+        blurred = cv2.GaussianBlur(roi, (23, 23), 30)
+        image[y1:y2, x1:x2] = blurred
         return image
