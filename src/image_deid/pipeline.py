@@ -35,9 +35,10 @@ class ImagePIIPipeline:
         return image
 
     def _recognize_text(self, roi: np.ndarray) -> str:
-        # TODO: run ONNX text recognition
-        return ""
+        # 預處理 ROI 並呼叫 onnx_session
+        # TODO: implement model input prep and inference
+        return "detected_text"
 
     def _is_sensitive(self, text: str) -> bool:
-        # TODO: run ONNX NER inference
+        # TODO: run quantized NER model to decide sensitivity
         return False
