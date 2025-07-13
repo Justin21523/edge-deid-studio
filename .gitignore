@@ -4,13 +4,6 @@ __pycache__/
 *.so
 *.egg-info/
 
-# Data
-data/processed/
-
-# Models 與編譯後檔
-models/
-edge_models/
-
 # Jupyter & Colab
 .ipynb_checkpoints/
 *.ipynb
@@ -31,8 +24,6 @@ edge_models/
 *.swp
 
 # Dataset & Exported Data
-data/raw/
-data/processed/
 *.csv
 *.pdf
 *.xlsx
