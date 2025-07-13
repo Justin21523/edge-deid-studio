@@ -20,3 +20,15 @@ EdgeDeID Studio is a real-time, on-device personal data anonymization toolkit th
 
 ## 🗂️ Project Structure
 
+
+
+#### Memory Management
+```python
+from src.file_proc.memory_manager import EdgeMemoryGuard
+from src.file_proc.stream_processor import FileParser
+
+with EdgeMemoryGuard():
+    parser = FileParser(file_bytes, 'pdf')
+    result = parser.process()
+
+
