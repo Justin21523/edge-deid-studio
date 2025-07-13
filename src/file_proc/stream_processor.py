@@ -4,6 +4,8 @@ from pdf2image import convert_from_bytes
 #from .image_ocr import OCRProcessor  # OCR 部分後面才整合
 from docx import Document          # DOCX 部分後面才整合
 import re
+# 後面再整合 run_ocr
+# from .ocr import run_ocr
 
 class FileParser:
     def __init__(self, file_bytes: bytes, file_type: str):
