@@ -2,7 +2,8 @@ import io
 import fitz  # PyMuPDF
 from pdf2image import convert_from_bytes
 #from .image_ocr import OCRProcessor  # OCR 部分後面才整合
-#from docx import Document          # DOCX 部分後面才整合
+from docx import Document          # DOCX 部分後面才整合
+import re
 
 class FileParser:
     def __init__(self, file_bytes: bytes, file_type: str):
@@ -43,8 +44,16 @@ class FileParser:
         return {'text': text, 'images': []}
 
     def _optimize_for_edge(self, content: str) -> str:
-        # 1. 移除重複頁眉/頁腳
+        # 1. 移除重複出現的頁眉／頁腳
+        lines = content.split('\n')
+        seen = {}
+        filtered = []
+        for line in lines:
+            seen[line] = seen.get(line, 0) + 1
+            if seen[line] <= 2:  # 最多保留前兩次
+                filtered.append(line)
+        content = "\n".join(filtered)
         # 2. 壓縮連續空白字元
-        # 3. 分段處理避免記憶體溢出
-        # TODO: 加入邊緣優化邏輯
+        content = re.sub(r'\s{2,}', ' ', content)
+        # 3. （可擴充）分段 yield 或避免記憶體爆
         return content
