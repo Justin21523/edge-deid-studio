@@ -11,5 +11,11 @@ class OCRProcessor:
         return image
 
     def extract_text(self, image: np.ndarray) -> str:
-        # TODO: 呼叫 ocr_engine
-        return ""
+        processed = self.preprocess_image(image)
+        result = self.ocr_engine.ocr(processed, cls=True)
+        # result: List[List[ (box, (text, conf)) ]]
+        lines = []
+        for line in result:
+            text, _ = line[1]
+            lines.append(text)
+        return "\n".join(lines)
