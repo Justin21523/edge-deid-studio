@@ -20,19 +20,19 @@ class FileParser:
             raise ValueError(f"Unsupported file type: {self.file_type}")
 
     def _process_pdf(self) -> dict:
-        # TODO: 實作 PDF 處理
         result = {'text': '', 'images': []}
-        # 優先嘗試提取文字層
+        data = self.file_bytes.getvalue()
         try:
-            with fitz.open(stream=self.file_bytes.read(), filetype='pdf') as doc:
+            with fitz.open(stream=data, filetype='pdf') as doc:
                 for page in doc:
                     result['text'] += page.get_text()
-            # 文字量過少時啟用OCR備援
+            # 文字層少於 50 字，啟用影像轉文字
             if len(result['text']) < 50:
-                result['images'] = convert_from_bytes(self.file_bytes.read())
+                images = convert_from_bytes(data)
+                result['images'] = images  # 留給 OCR 模組處理
         except Exception:
-            result['images'] = convert_from_bytes(self.file_bytes.read())
-
+            # 讀取失敗時直接把每頁轉成圖片
+            result['images'] = convert_from_bytes(data)
         return result
 
     def _process_docx(self) -> dict:
