@@ -34,3 +34,6 @@ __pycache__/
 
 # PyQt UI builds
 *.ui
+
+# Visual Studio temporary files
+.vs/

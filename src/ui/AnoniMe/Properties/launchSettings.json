@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AnoniMe (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "AnoniMe (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
