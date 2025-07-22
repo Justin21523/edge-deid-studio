@@ -2,16 +2,46 @@ name: edgedeid
 channels:
   - conda-forge
 dependencies:
+  # Python 基本
   - python=3.10
   - pip
   - git
+
+  # 科學運算 / 資料處理
+  - numpy=2.2.6
+  - pandas=2.3.1
+  - scipy=1.15.3
+  - matplotlib
+  - tqdm=4.67.1
+  - typing-extensions
+  - python-dateutil=2.9.0
+  - tzdata
+
+  # NLP 與文本處理
+  - spacy=3.8.7
+  - python-docx=1.2.0   # pip 與 conda 皆可，選用 conda 安裝
+  - beautifulsoup4=4.13.4
+  - lxml=6.0.0
+  - jieba=0.42.1
+
+  # 模型推論與 ONNX
   - pytorch=2.3
-  - torchvision
-  - onnx=1.16
-  - onnxruntime-gpu=1.18
-  - pyyaml
+  - torchvision=0.18
+  - onnx=1.16.2
+  - onnxruntime=1.22.1
+  - onnxruntime-gpu=1.22.0
+
+  # YAML 處理
+  - pyyaml=6.0.2
+
+  # pip-only packages
   - pip:
-      - "transformers>=4.42.0"
-      - "optimum[onnxruntime]>=1.17.0"
-      - "datasets>=2.19.0"
-      - jieba
+      - transformers==4.52.4         # 保留最新需求版本
+      - optimum[onnxruntime]==1.17.0
+      - datasets==4.0.0
+      - sentencepiece==0.2.0
+      - torchtext
+      - Faker==37.4.2
+      - typer==0.16.0
+      - pytest
+      - rich==14.0.0

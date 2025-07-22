@@ -5,12 +5,6 @@ from deid_pipeline.pii import get_detector          # PII 偵測
 from deid_pipeline.parser.text_extractor import extract_text
 from deid_pipeline.utils.replacer import Replacer   # 假資料替換
 
-text = "Jennifer Lawrence 的電話是 +912345578，email 是 lucas@mail.com。"
-#entities = detect_pii(text)
-
-#for ent in entities:
-#    print(f"{ent['label']}: {ent['text']}")
-
 
 def cli():
     ap = argparse.ArgumentParser()
