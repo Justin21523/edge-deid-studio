@@ -1,10 +1,11 @@
+from typing import List
 from .base import PIIDetector, Entity
 
 class CompositeDetector(PIIDetector):
     def __init__(self, *detectors: PIIDetector):
         self.detectors = detectors
 
-    def detect(self, text: str) -> list[Entity]:
+    def detect(self, text: str) -> List[Entity]:
         all_ents = []
         for d in self.detectors:
             all_ents += d.detect(text)

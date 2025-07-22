@@ -1,3 +1,4 @@
+from typing import List
 from optimum.onnxruntime import ORTModelForTokenClassification
 from transformers import AutoTokenizer
 from .base import PIIDetector, Entity
