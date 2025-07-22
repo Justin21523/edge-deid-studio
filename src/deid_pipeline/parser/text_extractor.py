@@ -22,7 +22,11 @@ def extract_text(file_path: str) -> str:
     # 這一行是「身分證字號」，下一行不會是「數字」，可能是別的欄位或別的文字內容
     elif ext == ".pdf":
         pdf = fitz.open(file_path)
-        return "\n".join([page.get_text() for page in pdf])
+        texts = []
+        for page in pdf:
+            txt = page.get_text()
+            texts.append(txt)
+        return "\n".join(texts)
 
     elif ext == ".csv":
         df = pd.read_csv(file_path)
