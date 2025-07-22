@@ -1,0 +1,17 @@
+name: edgedeid
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - git
+  - pytorch=2.3
+  - torchvision
+  - onnx=1.16
+  - onnxruntime-gpu=1.18
+  - pyyaml
+  - pip:
+      - "transformers>=4.42.0"
+      - "optimum[onnxruntime]>=1.17.0"
+      - "datasets>=2.19.0"
+      - jieba
