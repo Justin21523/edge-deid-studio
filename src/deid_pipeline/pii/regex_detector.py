@@ -1,5 +1,7 @@
+from typing import List
 import yaml, re
 from .base import PIIDetector, Entity
+
 
 class RegexDetector(PIIDetector):
     def __init__(self, config_path="configs/regex_zh.yaml"):
