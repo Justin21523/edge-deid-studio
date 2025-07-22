@@ -23,6 +23,7 @@ dependencies:
   - beautifulsoup4=4.13.4
   - lxml=6.0.0
   - jieba=0.42.1
+  - PyMuPDF
 
   # 模型推論與 ONNX
   - pytorch=2.3

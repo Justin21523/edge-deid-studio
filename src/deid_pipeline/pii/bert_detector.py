@@ -1,10 +1,17 @@
 from typing import List
+from pathlib import Path, PurePath
 from optimum.onnxruntime import ORTModelForTokenClassification
 from transformers import AutoTokenizer
 from .base import PIIDetector, Entity
 
 class BertNERDetector(PIIDetector):
-    def __init__(self, model_dir: str, provider: str="CPUExecutionProvider"):
+    def __init__(self, model_dir: str | PurePath, provider: str="CPUExecutionProvider"):
+        model_dir = Path(model_dir)
+        if not model_dir.exists():
+            raise FileNotFoundError(
+                f"BERT NER ONNX 路徑不存在：{model_dir}\n"
+                "請先執行 scripts/export_bert_onnx.py 產生模型"
+            )
         self.model = ORTModelForTokenClassification.from_pretrained(model_dir, provider=provider)
         self.tok = AutoTokenizer.from_pretrained(model_dir, use_fast=True)
 
