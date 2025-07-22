@@ -21,7 +21,6 @@ PII_PATTERNS = {
     ]
 }
 
-
 def detect_pii(text):
     doc = nlp(text)
     results = []
