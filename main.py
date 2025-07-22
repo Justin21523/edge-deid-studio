@@ -13,6 +13,7 @@ def cli():
     ap.add_argument("--mode", choices=["detect", "replace", "black"],
                     default="detect",
                     help="detect=只列實體  replace=偽資料覆寫  black=遮罩範圍")
+    ap.add_argument("--json", action="store_true", help="輸出 JSON 事件")
     return ap.parse_args()
 
 def run():
@@ -29,6 +30,8 @@ def run():
         for ent in entities:
             frag = text[ent["span"][0]:ent["span"][1]]
             print(f"{ent['type']:8s} | {frag} | {ent['score']:.2f}")
+    elif args.mode != "detect" and args.json:
+        print(Replacer.dumps(events))
     else:
         new_text, events = Replacer().replace(
             text, entities,
