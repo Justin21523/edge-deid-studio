@@ -1,6 +1,6 @@
 from optimum.onnxruntime import ORTModelForTokenClassification
 from transformers import AutoTokenizer
-from ..base import PIIDetector, Entity
+from .base import PIIDetector, Entity
 
 class BertNERDetector(PIIDetector):
     def __init__(self, model_dir: str, provider: str="CPUExecutionProvider"):
