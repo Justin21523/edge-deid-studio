@@ -1,5 +1,6 @@
 from typing import List, Dict
 from .fake_provider import FakerProvider
+import json
 
 class Replacer:
     def __init__(self, provider=None):
@@ -18,3 +19,7 @@ class Replacer:
             else:   # black
                 events.append({'span':(s+offset, e+offset)})
         return text, events
+
+    @staticmethod
+    def dumps(events):
+        return json.dumps(events, ensure_ascii=False, indent=2)
