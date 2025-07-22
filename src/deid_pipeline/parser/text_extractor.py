@@ -48,3 +48,20 @@ def extract_text(file_path: str) -> str:
     else:
         raise ValueError(f"Unsupported file type: {ext}")
 
+
+def save_as_txt(text: str, output_path: str):
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(text)
+
+
+# 🚀 測試執行：只要提供 input_path
+if __name__ == "__main__":
+    input_path = input("輸入檔案路徑：").strip()
+    output_path = os.path.splitext(input_path)[0] + "_extracted.txt"
+
+    try:
+        content = extract_text(input_path)
+        save_as_txt(content, output_path)
+        print(f"✅ 成功儲存純文字到：{output_path}")
+    except Exception as e:
+        print(f"❌ 錯誤：{e}")
