@@ -1,8 +1,16 @@
 # src/deid_pipeline/pii/legacy/spacy_detector.py
 import spacy, re
 from ..base import PIIDetector, Entity   # ← 你的抽象類別
+from ... import USE_STUB
 
-_nlp = spacy.load("en_core_web_sm")
+if USE_STUB:
+    class _StubSpacy:
+        def __call__(self, text): return []
+    _nlp = _StubSpacy()
+else:
+    import spacy
+    _nlp = spacy.load("en_core_web_sm")
+
 
 # 可加入正則規則（電話、email、身分證、信用卡等）
 _PII_PATTERNS = {
