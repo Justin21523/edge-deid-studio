@@ -42,11 +42,13 @@
 		<!-- 自動產生 winmd metadata，支援 Windows API -->
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="Views\ResultPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
 
 	<!-- 可加上你 View 資料夾 -->
-	<ItemGroup>
-		<Folder Include="Views\" />
-	</ItemGroup>
 
 
 	<!-- ReadyToRun 與 Trim：發佈時效能最佳化 -->

@@ -37,6 +37,7 @@ namespace AnoniMe
                     // 註冊 MainViewModel，每次呼叫都會建立新的實例 (Transient)
                     services.AddTransient<HomeViewModel>();
                     services.AddTransient<UploadViewModel>();
+                    services.AddTransient<ResultViewModel>();
                     // 其他服務註冊...
                 }). Build();
         }
