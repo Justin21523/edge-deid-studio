@@ -37,12 +37,15 @@ dependencies:
 
   # pip-only packages
   - pip:
-      - transformers==4.52.4         # 保留最新需求版本
+      - transformers>=4.40.0
       - optimum[onnxruntime]==1.17.0
       - datasets==4.0.0
       - sentencepiece==0.2.0
+      - torch
       - torchtext
       - Faker==37.4.2
       - typer==0.16.0
       - pytest
       - rich==14.0.0
+      - easyocr
+
