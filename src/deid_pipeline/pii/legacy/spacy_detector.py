@@ -1,46 +1,67 @@
 # src/deid_pipeline/pii/legacy/spacy_detector.py
+from typing import List
 import spacy, re
 from ..base import PIIDetector, Entity   # ← 你的抽象類別
-from ... import USE_STUB
+from ...configs.regex_zh import PII_PATTERNS
 
-if USE_STUB:
-    class _StubSpacy:
-        def __call__(self, text): return []
-    _nlp = _StubSpacy()
-else:
-    import spacy
-    _nlp = spacy.load("en_core_web_sm")
-
-
-# 可加入正則規則（電話、email、身分證、信用卡等）
-_PII_PATTERNS = {
-    "PHONE": [
-        r"\b09\d{8}\b",
-        r"\b\d{3}-\d{3}-\d{4}\b",
-        r"\+9\d{8}\b"
-    ],
-    "EMAIL": [
-        r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b"
-    ],
-    "ID": [
-        r"\b[A-Z][1-2]\d{8}\b"
-    ]
+# 新增統一類型映射
+# type mapping: spaCy label → our PII_TYPES
+SPACY_TO_PII_TYPE = {
+    "PERSON": "NAME",
+    "GPE": "ADDRESS",
+    "ORG": "ORGANIZATION",
+    "LOC": "ADDRESS"
 }
 
+_nlp = spacy.load("en_core_web_sm")
 
 class SpacyDetector(PIIDetector):
-    def detect(self, text: str) -> list[Entity]:
-        doc = _nlp(text)
-        ents = [
-            {"span": [e.start_char, e.end_char], "type": e.label_, "score": 0.99}
-            for e in doc.ents if e.label_ in ["PERSON", "GPE", "ORG", "LOC"]
-        ]
-        for typ, patterns in _PII_PATTERNS.items():         # regex 部分
-            for pat in patterns:
-                for m in re.finditer(pat, text):
-                    ents.append({"span": [m.start(), m.end()], "type": typ, "score": 1.0})
-        return sorted(ents, key=lambda x: x["span"][0])
+    def __init__(self):
+        self._nlp = _nlp
+        # 預編譯規則
+        self.regex_patterns = {
+            typ: [re.compile(p) for p in pats]
+            for typ, pats in PII_PATTERNS.items()
+        }
 
+    def detect(self, text: str) -> List[Entity]:
+        ents: List[Entity] = []
+        doc = self._nlp(text)
+        # spaCy 偵測
+        for e in doc.ents:
+            if e.label_ in SPACY_TO_PII_TYPE:
+                ents.append(Entity(
+                    span=(e.start_char, e.end_char),
+                    type=SPACY_TO_PII_TYPE[e.label_],
+                    score=0.99,
+                    source="spacy"
+                ))
+        # regex 偵測
+        for typ, patterns in self.regex_patterns.items():
+            for pat in patterns:
+                for m in pat.finditer(text):
+                    ents.append(Entity(
+                        span=(m.start(), m.end()),
+                        type=typ,
+                        score=1.0,
+                        source="regex"
+                    ))
+        # 去掉重疊，保留最高 score
+        return self._resolve_conflicts(sorted(ents, key=lambda x: x["span"][0]))
+
+    def _resolve_conflicts(self, entities: List[Entity]) -> List[Entity]:
+        resolved: List[Entity] = []
+        for ent in entities:
+            if not resolved:
+                resolved.append(ent); continue
+            last = resolved[-1]
+            # 若 overlap
+            if ent["span"][0] < last["span"][1]:
+                if ent["score"] > last["score"]:
+                    resolved[-1] = ent
+            else:
+                resolved.append(ent)
+        return resolved
 
 def detect_pii(text: str) -> list[Entity]:
     return SpacyDetector().detect(text)
