@@ -1,5 +1,5 @@
 from typing import List, Dict
-from .fake_provider import FakerProvider, GPT2Provider
+from .fake_provider import GPT2Provider
 import json
 
 class Replacer:
