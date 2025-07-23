@@ -6,6 +6,13 @@ from .composite import CompositeDetector
 from .legacy.spacy_detector import SpacyDetector
 import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+logger = logging.getLogger(__name__)
+
 """
 中央設定：只要把 USE_STUB 改成 False，就會切到真 ONNX / SpaCy 模型。
 """
