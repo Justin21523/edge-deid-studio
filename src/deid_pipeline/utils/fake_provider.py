@@ -2,8 +2,8 @@ from faker import Faker
 import os, logging
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from ..base import Entity
-from ..config import Config
+from ..pii.base import Entity
+from ..config import GPT2_MODEL_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ class GPT2Provider:
         self.tokenizer = None
 
         if model_path is None:
-            model_path = Config.GPT2_MODEL_PATH
+            model_path = GPT2_MODEL_PATH
 
         if os.path.exists(model_path):
             self.load_model(model_path)
