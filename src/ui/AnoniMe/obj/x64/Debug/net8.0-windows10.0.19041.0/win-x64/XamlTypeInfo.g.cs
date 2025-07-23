@@ -226,49 +226,57 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
         
         private void InitTypeTables()
         {
-            _typeNameTable = new string[20];
+            _typeNameTable = new string[24];
             _typeNameTable[0] = "Microsoft.UI.Xaml.Controls.XamlControlsResources";
             _typeNameTable[1] = "Microsoft.UI.Xaml.ResourceDictionary";
             _typeNameTable[2] = "Object";
             _typeNameTable[3] = "Boolean";
-            _typeNameTable[4] = "Microsoft.UI.Xaml.Controls.ProgressBar";
-            _typeNameTable[5] = "Microsoft.UI.Xaml.Controls.Primitives.RangeBase";
-            _typeNameTable[6] = "Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings";
-            _typeNameTable[7] = "Microsoft.UI.Xaml.DependencyObject";
-            _typeNameTable[8] = "AnoniMe.MainWindow";
-            _typeNameTable[9] = "Microsoft.UI.Xaml.Window";
-            _typeNameTable[10] = "System.Collections.ObjectModel.ObservableCollection`1<AnoniMe.UploadFileInfo>";
-            _typeNameTable[11] = "System.Collections.ObjectModel.Collection`1<AnoniMe.UploadFileInfo>";
-            _typeNameTable[12] = "AnoniMe.UploadFileInfo";
-            _typeNameTable[13] = "String";
-            _typeNameTable[14] = "Double";
-            _typeNameTable[15] = "System.Collections.ObjectModel.ObservableCollection`1<String>";
-            _typeNameTable[16] = "System.Collections.ObjectModel.Collection`1<String>";
-            _typeNameTable[17] = "Microsoft.UI.Xaml.Controls.TreeViewNode";
-            _typeNameTable[18] = "System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>";
-            _typeNameTable[19] = "Int32";
+            _typeNameTable[4] = "AnoniMe.HomePage";
+            _typeNameTable[5] = "Microsoft.UI.Xaml.Controls.Page";
+            _typeNameTable[6] = "Microsoft.UI.Xaml.Controls.UserControl";
+            _typeNameTable[7] = "AnoniMe.MainWindow";
+            _typeNameTable[8] = "Microsoft.UI.Xaml.Window";
+            _typeNameTable[9] = "Microsoft.UI.Xaml.Controls.ProgressBar";
+            _typeNameTable[10] = "Microsoft.UI.Xaml.Controls.Primitives.RangeBase";
+            _typeNameTable[11] = "Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings";
+            _typeNameTable[12] = "Microsoft.UI.Xaml.DependencyObject";
+            _typeNameTable[13] = "AnoniMe.UploadPage";
+            _typeNameTable[14] = "System.Collections.ObjectModel.ObservableCollection`1<AnoniMe.UploadFileInfo>";
+            _typeNameTable[15] = "System.Collections.ObjectModel.Collection`1<AnoniMe.UploadFileInfo>";
+            _typeNameTable[16] = "AnoniMe.UploadFileInfo";
+            _typeNameTable[17] = "String";
+            _typeNameTable[18] = "Double";
+            _typeNameTable[19] = "System.Collections.ObjectModel.ObservableCollection`1<String>";
+            _typeNameTable[20] = "System.Collections.ObjectModel.Collection`1<String>";
+            _typeNameTable[21] = "Microsoft.UI.Xaml.Controls.TreeViewNode";
+            _typeNameTable[22] = "System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>";
+            _typeNameTable[23] = "Int32";
 
-            _typeTable = new global::System.Type[20];
+            _typeTable = new global::System.Type[24];
             _typeTable[0] = typeof(global::Microsoft.UI.Xaml.Controls.XamlControlsResources);
             _typeTable[1] = typeof(global::Microsoft.UI.Xaml.ResourceDictionary);
             _typeTable[2] = typeof(global::System.Object);
             _typeTable[3] = typeof(global::System.Boolean);
-            _typeTable[4] = typeof(global::Microsoft.UI.Xaml.Controls.ProgressBar);
-            _typeTable[5] = typeof(global::Microsoft.UI.Xaml.Controls.Primitives.RangeBase);
-            _typeTable[6] = typeof(global::Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings);
-            _typeTable[7] = typeof(global::Microsoft.UI.Xaml.DependencyObject);
-            _typeTable[8] = typeof(global::AnoniMe.MainWindow);
-            _typeTable[9] = typeof(global::Microsoft.UI.Xaml.Window);
-            _typeTable[10] = typeof(global::System.Collections.ObjectModel.ObservableCollection<global::AnoniMe.UploadFileInfo>);
-            _typeTable[11] = typeof(global::System.Collections.ObjectModel.Collection<global::AnoniMe.UploadFileInfo>);
-            _typeTable[12] = typeof(global::AnoniMe.UploadFileInfo);
-            _typeTable[13] = typeof(global::System.String);
-            _typeTable[14] = typeof(global::System.Double);
-            _typeTable[15] = typeof(global::System.Collections.ObjectModel.ObservableCollection<global::System.String>);
-            _typeTable[16] = typeof(global::System.Collections.ObjectModel.Collection<global::System.String>);
-            _typeTable[17] = typeof(global::Microsoft.UI.Xaml.Controls.TreeViewNode);
-            _typeTable[18] = typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.TreeViewNode>);
-            _typeTable[19] = typeof(global::System.Int32);
+            _typeTable[4] = typeof(global::AnoniMe.HomePage);
+            _typeTable[5] = typeof(global::Microsoft.UI.Xaml.Controls.Page);
+            _typeTable[6] = typeof(global::Microsoft.UI.Xaml.Controls.UserControl);
+            _typeTable[7] = typeof(global::AnoniMe.MainWindow);
+            _typeTable[8] = typeof(global::Microsoft.UI.Xaml.Window);
+            _typeTable[9] = typeof(global::Microsoft.UI.Xaml.Controls.ProgressBar);
+            _typeTable[10] = typeof(global::Microsoft.UI.Xaml.Controls.Primitives.RangeBase);
+            _typeTable[11] = typeof(global::Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings);
+            _typeTable[12] = typeof(global::Microsoft.UI.Xaml.DependencyObject);
+            _typeTable[13] = typeof(global::AnoniMe.UploadPage);
+            _typeTable[14] = typeof(global::System.Collections.ObjectModel.ObservableCollection<global::AnoniMe.UploadFileInfo>);
+            _typeTable[15] = typeof(global::System.Collections.ObjectModel.Collection<global::AnoniMe.UploadFileInfo>);
+            _typeTable[16] = typeof(global::AnoniMe.UploadFileInfo);
+            _typeTable[17] = typeof(global::System.String);
+            _typeTable[18] = typeof(global::System.Double);
+            _typeTable[19] = typeof(global::System.Collections.ObjectModel.ObservableCollection<global::System.String>);
+            _typeTable[20] = typeof(global::System.Collections.ObjectModel.Collection<global::System.String>);
+            _typeTable[21] = typeof(global::Microsoft.UI.Xaml.Controls.TreeViewNode);
+            _typeTable[22] = typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.TreeViewNode>);
+            _typeTable[23] = typeof(global::System.Int32);
         }
 
         private int LookupTypeIndexByName(string typeName)
@@ -304,25 +312,29 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
         }
 
         private object Activate_0_XamlControlsResources() { return new global::Microsoft.UI.Xaml.Controls.XamlControlsResources(); }
-        private object Activate_4_ProgressBar() { return new global::Microsoft.UI.Xaml.Controls.ProgressBar(); }
-        private object Activate_8_MainWindow() { return new global::AnoniMe.MainWindow(); }
-        private object Activate_10_ObservableCollection() { return new global::System.Collections.ObjectModel.ObservableCollection<global::AnoniMe.UploadFileInfo>(); }
-        private object Activate_11_Collection() { return new global::System.Collections.ObjectModel.Collection<global::AnoniMe.UploadFileInfo>(); }
-        private object Activate_12_UploadFileInfo() { return new global::AnoniMe.UploadFileInfo(); }
-        private object Activate_15_ObservableCollection() { return new global::System.Collections.ObjectModel.ObservableCollection<global::System.String>(); }
-        private object Activate_16_Collection() { return new global::System.Collections.ObjectModel.Collection<global::System.String>(); }
-        private object Activate_17_TreeViewNode() { return new global::Microsoft.UI.Xaml.Controls.TreeViewNode(); }
+        private object Activate_4_HomePage() { return new global::AnoniMe.HomePage(); }
+        private object Activate_7_MainWindow() { return new global::AnoniMe.MainWindow(); }
+        private object Activate_9_ProgressBar() { return new global::Microsoft.UI.Xaml.Controls.ProgressBar(); }
+        private object Activate_13_UploadPage() { return new global::AnoniMe.UploadPage(); }
+        private object Activate_14_ObservableCollection() { return new global::System.Collections.ObjectModel.ObservableCollection<global::AnoniMe.UploadFileInfo>(); }
+        private object Activate_15_Collection() { return new global::System.Collections.ObjectModel.Collection<global::AnoniMe.UploadFileInfo>(); }
+        private object Activate_16_UploadFileInfo() { return new global::AnoniMe.UploadFileInfo(); }
+        private object Activate_19_ObservableCollection() { return new global::System.Collections.ObjectModel.ObservableCollection<global::System.String>(); }
+        private object Activate_20_Collection() { return new global::System.Collections.ObjectModel.Collection<global::System.String>(); }
+        private object Activate_21_TreeViewNode() { return new global::Microsoft.UI.Xaml.Controls.TreeViewNode(); }
         private void StaticInitializer_0_XamlControlsResources() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.XamlControlsResources).TypeHandle);
-        private void StaticInitializer_4_ProgressBar() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.ProgressBar).TypeHandle);
-        private void StaticInitializer_6_ProgressBarTemplateSettings() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings).TypeHandle);
-        private void StaticInitializer_8_MainWindow() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::AnoniMe.MainWindow).TypeHandle);
-        private void StaticInitializer_10_ObservableCollection() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.ObjectModel.ObservableCollection<global::AnoniMe.UploadFileInfo>).TypeHandle);
-        private void StaticInitializer_11_Collection() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.ObjectModel.Collection<global::AnoniMe.UploadFileInfo>).TypeHandle);
-        private void StaticInitializer_12_UploadFileInfo() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::AnoniMe.UploadFileInfo).TypeHandle);
-        private void StaticInitializer_15_ObservableCollection() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.ObjectModel.ObservableCollection<global::System.String>).TypeHandle);
-        private void StaticInitializer_16_Collection() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.ObjectModel.Collection<global::System.String>).TypeHandle);
-        private void StaticInitializer_17_TreeViewNode() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.TreeViewNode).TypeHandle);
-        private void StaticInitializer_18_IList() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.TreeViewNode>).TypeHandle);
+        private void StaticInitializer_4_HomePage() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::AnoniMe.HomePage).TypeHandle);
+        private void StaticInitializer_7_MainWindow() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::AnoniMe.MainWindow).TypeHandle);
+        private void StaticInitializer_9_ProgressBar() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.ProgressBar).TypeHandle);
+        private void StaticInitializer_11_ProgressBarTemplateSettings() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings).TypeHandle);
+        private void StaticInitializer_13_UploadPage() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::AnoniMe.UploadPage).TypeHandle);
+        private void StaticInitializer_14_ObservableCollection() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.ObjectModel.ObservableCollection<global::AnoniMe.UploadFileInfo>).TypeHandle);
+        private void StaticInitializer_15_Collection() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.ObjectModel.Collection<global::AnoniMe.UploadFileInfo>).TypeHandle);
+        private void StaticInitializer_16_UploadFileInfo() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::AnoniMe.UploadFileInfo).TypeHandle);
+        private void StaticInitializer_19_ObservableCollection() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.ObjectModel.ObservableCollection<global::System.String>).TypeHandle);
+        private void StaticInitializer_20_Collection() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.ObjectModel.Collection<global::System.String>).TypeHandle);
+        private void StaticInitializer_21_TreeViewNode() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.TreeViewNode).TypeHandle);
+        private void StaticInitializer_22_IList() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.TreeViewNode>).TypeHandle);
         private void MapAdd_0_XamlControlsResources(object instance, object key, object item)
         {
             var collection = (global::System.Collections.Generic.IDictionary<global::System.Object, global::System.Object>)instance;
@@ -330,31 +342,31 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
             var newItem = (global::System.Object)item;
             collection.Add(newKey, newItem);
         }
-        private void VectorAdd_10_ObservableCollection(object instance, object item)
+        private void VectorAdd_14_ObservableCollection(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::AnoniMe.UploadFileInfo>)instance;
             var newItem = (global::AnoniMe.UploadFileInfo)item;
             collection.Add(newItem);
         }
-        private void VectorAdd_11_Collection(object instance, object item)
+        private void VectorAdd_15_Collection(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::AnoniMe.UploadFileInfo>)instance;
             var newItem = (global::AnoniMe.UploadFileInfo)item;
             collection.Add(newItem);
         }
-        private void VectorAdd_15_ObservableCollection(object instance, object item)
+        private void VectorAdd_19_ObservableCollection(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::System.String>)instance;
             var newItem = (global::System.String)item;
             collection.Add(newItem);
         }
-        private void VectorAdd_16_Collection(object instance, object item)
+        private void VectorAdd_20_Collection(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::System.String>)instance;
             var newItem = (global::System.String)item;
             collection.Add(newItem);
         }
-        private void VectorAdd_18_IList(object instance, object item)
+        private void VectorAdd_22_IList(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Controls.TreeViewNode>)instance;
             var newItem = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)item;
@@ -392,10 +404,38 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
                 xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 4:   //  Microsoft.UI.Xaml.Controls.ProgressBar
+            case 4:   //  AnoniMe.HomePage
+                userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Controls.Page"));
+                userType.Activator = Activate_4_HomePage;
+                userType.StaticInitializer = StaticInitializer_4_HomePage;
+                userType.SetIsLocalType();
+                xamlType = userType;
+                break;
+
+            case 5:   //  Microsoft.UI.Xaml.Controls.Page
+                xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
+                break;
+
+            case 6:   //  Microsoft.UI.Xaml.Controls.UserControl
+                xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
+                break;
+
+            case 7:   //  AnoniMe.MainWindow
+                userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Window"));
+                userType.Activator = Activate_7_MainWindow;
+                userType.StaticInitializer = StaticInitializer_7_MainWindow;
+                userType.SetIsLocalType();
+                xamlType = userType;
+                break;
+
+            case 8:   //  Microsoft.UI.Xaml.Window
+                xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
+                break;
+
+            case 9:   //  Microsoft.UI.Xaml.Controls.ProgressBar
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Controls.Primitives.RangeBase"));
-                userType.Activator = Activate_4_ProgressBar;
-                userType.StaticInitializer = StaticInitializer_4_ProgressBar;
+                userType.Activator = Activate_9_ProgressBar;
+                userType.StaticInitializer = StaticInitializer_9_ProgressBar;
                 userType.AddMemberName("IsIndeterminate");
                 userType.AddMemberName("ShowError");
                 userType.AddMemberName("ShowPaused");
@@ -403,55 +443,51 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 5:   //  Microsoft.UI.Xaml.Controls.Primitives.RangeBase
+            case 10:   //  Microsoft.UI.Xaml.Controls.Primitives.RangeBase
                 xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 6:   //  Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings
+            case 11:   //  Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.DependencyObject"));
-                userType.StaticInitializer = StaticInitializer_6_ProgressBarTemplateSettings;
+                userType.StaticInitializer = StaticInitializer_11_ProgressBarTemplateSettings;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
                 break;
 
-            case 7:   //  Microsoft.UI.Xaml.DependencyObject
+            case 12:   //  Microsoft.UI.Xaml.DependencyObject
                 xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 8:   //  AnoniMe.MainWindow
-                userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Window"));
-                userType.Activator = Activate_8_MainWindow;
-                userType.StaticInitializer = StaticInitializer_8_MainWindow;
+            case 13:   //  AnoniMe.UploadPage
+                userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Controls.Page"));
+                userType.Activator = Activate_13_UploadPage;
+                userType.StaticInitializer = StaticInitializer_13_UploadPage;
                 userType.AddMemberName("UploadItems");
                 userType.AddMemberName("TagItems");
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
 
-            case 9:   //  Microsoft.UI.Xaml.Window
-                xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
-                break;
-
-            case 10:   //  System.Collections.ObjectModel.ObservableCollection`1<AnoniMe.UploadFileInfo>
+            case 14:   //  System.Collections.ObjectModel.ObservableCollection`1<AnoniMe.UploadFileInfo>
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("System.Collections.ObjectModel.Collection`1<AnoniMe.UploadFileInfo>"));
-                userType.StaticInitializer = StaticInitializer_10_ObservableCollection;
-                userType.CollectionAdd = VectorAdd_10_ObservableCollection;
+                userType.StaticInitializer = StaticInitializer_14_ObservableCollection;
+                userType.CollectionAdd = VectorAdd_14_ObservableCollection;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
                 break;
 
-            case 11:   //  System.Collections.ObjectModel.Collection`1<AnoniMe.UploadFileInfo>
+            case 15:   //  System.Collections.ObjectModel.Collection`1<AnoniMe.UploadFileInfo>
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Object"));
-                userType.Activator = Activate_11_Collection;
-                userType.StaticInitializer = StaticInitializer_11_Collection;
-                userType.CollectionAdd = VectorAdd_11_Collection;
+                userType.Activator = Activate_15_Collection;
+                userType.StaticInitializer = StaticInitializer_15_Collection;
+                userType.CollectionAdd = VectorAdd_15_Collection;
                 xamlType = userType;
                 break;
 
-            case 12:   //  AnoniMe.UploadFileInfo
+            case 16:   //  AnoniMe.UploadFileInfo
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Object"));
-                userType.Activator = Activate_12_UploadFileInfo;
-                userType.StaticInitializer = StaticInitializer_12_UploadFileInfo;
+                userType.Activator = Activate_16_UploadFileInfo;
+                userType.StaticInitializer = StaticInitializer_16_UploadFileInfo;
                 userType.AddMemberName("FileName");
                 userType.AddMemberName("UploadProgress");
                 userType.AddMemberName("UploadStatus");
@@ -459,34 +495,34 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 13:   //  String
+            case 17:   //  String
                 xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 14:   //  Double
+            case 18:   //  Double
                 xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 15:   //  System.Collections.ObjectModel.ObservableCollection`1<String>
+            case 19:   //  System.Collections.ObjectModel.ObservableCollection`1<String>
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("System.Collections.ObjectModel.Collection`1<String>"));
-                userType.StaticInitializer = StaticInitializer_15_ObservableCollection;
-                userType.CollectionAdd = VectorAdd_15_ObservableCollection;
+                userType.StaticInitializer = StaticInitializer_19_ObservableCollection;
+                userType.CollectionAdd = VectorAdd_19_ObservableCollection;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
                 break;
 
-            case 16:   //  System.Collections.ObjectModel.Collection`1<String>
+            case 20:   //  System.Collections.ObjectModel.Collection`1<String>
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Object"));
-                userType.Activator = Activate_16_Collection;
-                userType.StaticInitializer = StaticInitializer_16_Collection;
-                userType.CollectionAdd = VectorAdd_16_Collection;
+                userType.Activator = Activate_20_Collection;
+                userType.StaticInitializer = StaticInitializer_20_Collection;
+                userType.CollectionAdd = VectorAdd_20_Collection;
                 xamlType = userType;
                 break;
 
-            case 17:   //  Microsoft.UI.Xaml.Controls.TreeViewNode
+            case 21:   //  Microsoft.UI.Xaml.Controls.TreeViewNode
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.DependencyObject"));
-                userType.Activator = Activate_17_TreeViewNode;
-                userType.StaticInitializer = StaticInitializer_17_TreeViewNode;
+                userType.Activator = Activate_21_TreeViewNode;
+                userType.StaticInitializer = StaticInitializer_21_TreeViewNode;
                 userType.AddMemberName("Children");
                 userType.AddMemberName("Content");
                 userType.AddMemberName("Depth");
@@ -498,15 +534,15 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 18:   //  System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>
+            case 22:   //  System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>
                 userType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType(this, typeName, type, null);
-                userType.StaticInitializer = StaticInitializer_18_IList;
-                userType.CollectionAdd = VectorAdd_18_IList;
+                userType.StaticInitializer = StaticInitializer_22_IList;
+                userType.CollectionAdd = VectorAdd_22_IList;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
                 break;
 
-            case 19:   //  Int32
+            case 23:   //  Int32
                 xamlType = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
             }
@@ -613,9 +649,9 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
             var that = (global::Microsoft.UI.Xaml.Controls.ProgressBar)instance;
             return that.TemplateSettings;
         }
-        private object get_5_MainWindow_UploadItems(object instance)
+        private object get_5_UploadPage_UploadItems(object instance)
         {
-            var that = (global::AnoniMe.MainWindow)instance;
+            var that = (global::AnoniMe.UploadPage)instance;
             return that.UploadItems;
         }
         private object get_6_UploadFileInfo_FileName(object instance)
@@ -648,9 +684,9 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
             var that = (global::AnoniMe.UploadFileInfo)instance;
             that.UploadStatus = (global::System.String)Value;
         }
-        private object get_9_MainWindow_TagItems(object instance)
+        private object get_9_UploadPage_TagItems(object instance)
         {
-            var that = (global::AnoniMe.MainWindow)instance;
+            var that = (global::AnoniMe.UploadPage)instance;
             return that.TagItems;
         }
         private object get_10_TreeViewNode_Children(object instance)
@@ -745,10 +781,10 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
                 xamlMember.Getter = get_4_ProgressBar_TemplateSettings;
                 xamlMember.SetIsReadOnly();
                 break;
-            case "AnoniMe.MainWindow.UploadItems":
-                userType = (global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType)GetXamlTypeByName("AnoniMe.MainWindow");
+            case "AnoniMe.UploadPage.UploadItems":
+                userType = (global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType)GetXamlTypeByName("AnoniMe.UploadPage");
                 xamlMember = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlMember(this, "UploadItems", "System.Collections.ObjectModel.ObservableCollection`1<AnoniMe.UploadFileInfo>");
-                xamlMember.Getter = get_5_MainWindow_UploadItems;
+                xamlMember.Getter = get_5_UploadPage_UploadItems;
                 xamlMember.SetIsReadOnly();
                 break;
             case "AnoniMe.UploadFileInfo.FileName":
@@ -769,10 +805,10 @@ namespace AnoniMe.AnoniMe_XamlTypeInfo
                 xamlMember.Getter = get_8_UploadFileInfo_UploadStatus;
                 xamlMember.Setter = set_8_UploadFileInfo_UploadStatus;
                 break;
-            case "AnoniMe.MainWindow.TagItems":
-                userType = (global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType)GetXamlTypeByName("AnoniMe.MainWindow");
+            case "AnoniMe.UploadPage.TagItems":
+                userType = (global::AnoniMe.AnoniMe_XamlTypeInfo.XamlUserType)GetXamlTypeByName("AnoniMe.UploadPage");
                 xamlMember = new global::AnoniMe.AnoniMe_XamlTypeInfo.XamlMember(this, "TagItems", "System.Collections.ObjectModel.ObservableCollection`1<String>");
-                xamlMember.Getter = get_9_MainWindow_TagItems;
+                xamlMember.Getter = get_9_UploadPage_TagItems;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeViewNode.Children":
