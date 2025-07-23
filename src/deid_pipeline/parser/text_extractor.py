@@ -2,92 +2,143 @@ import os
 import json
 import pandas as pd
 import numpy as np
+import time
 from bs4 import BeautifulSoup
 from docx import Document
 import fitz  # PyMuPDF
+import easyocr
 from .ocr import get_ocr_reader
 from ..config import OCR_THRESHOLD, USE_STUB
+from deid_pipeline import logger
+
+# 全域OCR處理器
+class OCRProcessor:
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+
+    def __init__(self):
+        self.reader = None
+
+    def init_reader(self):
+        if self.reader is None:
+            self.reader = easyocr.Reader(["ch_tra", "en"], gpu=True)
+            logger.info("EasyOCR閱讀器已初始化")
+
+    def process_page(self, pix):
+        self.init_reader()
+        try:
+            # 將PyMuPDF的pixmap轉換為numpy陣列
+            samples = pix.samples
+            h, w = pix.height, pix.width
+            img = np.frombuffer(samples, dtype=np.uint8).reshape((h, w, pix.n))
+
+            # 處理圖像格式
+            if pix.n == 4:  # RGBA轉換為RGB
+                img = img[..., :3]
+
+            results = self.reader.readtext(img)
+            return "\n".join(res[1] for res in results)
+        except Exception as e:
+            logger.error(f"OCR處理失敗: {str(e)}")
+            return ""
 
 # only text will be extracted!
-# 圖片裡面的文字無法提取
-def extract_text(file_path: str, ocr: bool=False) -> str:
-    ext = os.path.splitext(file_path)[-1].lower()
-
-    if ext == ".txt":
-        with open(file_path, "r", encoding="utf-8") as f:
-            return f.read()
-
-    elif ext == ".docx":
-        doc = Document(file_path)
-        return "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
-
-    # pdf 如果太過於複雜(格子過多、編排多樣)，可能讀取到的資料就會沒有按照邏輯
-    # 這一行是「身分證字號」，下一行不會是「數字」，可能是別的欄位或別的文字內容
-    elif ext == ".pdf":
-        try:
-            pdf = fitz.open(file_path)
-        except fitz.FileNotFoundError:
-            raise RuntimeError(f"File not found: {file_path}")
-        except fitz.FileDataError:
-            raise RuntimeError(f"Corrupted PDF: {file_path}")
-
-        full_text = []
-        for page in pdf:
-            # 1) 先做「區塊排序」提取
-            blocks = page.get_text("blocks", sort=True)
-            page_text = "\n".join(b[4] for b in blocks if b[4].strip())
-
-            # 2) 少量文字才觸發 OCR
-            if ocr and not USE_STUB and len(page_text) < OCR_THRESHOLD:
-                reader = get_ocr_reader()
-                img = page.get_pixmap().samples
-                h, w = int(page.rect.height), int(page.rect.width)
-                arr = np.frombuffer(img, dtype=np.uint8).reshape((h, w, 3))
-                ocr_lines = [t[1] for t in reader.readtext(arr)]
-                full_text.append("\n".join(ocr_lines))
-            else:
-                full_text.append(page_text)
-
-        return "\n".join(full_text)
-
-    elif ext == ".csv":
-        df = pd.read_csv(file_path)
-        return df.to_string(index=False)
-
-    # 只有 cover 到 excel 裡面的第一個工作表
-    # 其餘的工作表內容不會被讀取到
-    elif ext == ".xlsx":
-        df = pd.read_excel(file_path)
-        return df.to_string(index=False)
-
-    # 如果是 HTML 裡面有圖片的話， <img src> 裡面的 alt 也就是圖片的文字無法顯示的時候會跳出的替代文字，會讀取不到。
-    elif ext in [".html", ".xml"]:
-        with open(file_path, "r", encoding="utf-8") as f:
-            soup = BeautifulSoup(f, "html.parser")
-        return soup.get_text()
-
-    elif ext == ".json":
-        with open(file_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        return json.dumps(data, indent=2, ensure_ascii=False)
-
-    else:
-        raise ValueError(f"Unsupported file type: {ext}")
-
-
-def save_as_txt(text: str, output_path: str):
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(text)
-
-
-# 🚀 測試執行：只要提供 input_path
-if __name__ == "__main__":
-    input_path = input("輸入檔案路徑：").strip()
-    output_path = os.path.splitext(input_path)[0] + "_extracted.txt"
+def extract_text(file_path: str, ocr_fallback: bool = True) -> tuple[str, list]:
+    """從文件中提取文字並返回文字和偏移映射"""
+    start_time = time.perf_counter()
+    ext = os.path.splitext(file_path)[1].lower()
+    offset_map = []
+    current_index = 0
 
     try:
-        content = extract_text(input_path)
-        save_as_txt(content, output_path)
-        print(f"✅ 成功儲存純文字到：{output_path}")
+        if ext == ".txt":
+            with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+                text = f.read()
+
+            # 創建簡單的偏移映射
+            for i in range(len(text)):
+                offset_map.append(((0, 0, 0, 0, 0), i))  # (page, block_x0, block_y0, block_x1, block_y1)
+
+            return text, offset_map
+
+        elif ext == ".docx":
+            doc = Document(file_path)
+            text = ""
+            for para in doc.paragraphs:
+                text += para.text + "\n"
+                # 文檔偏移映射較複雜，此處簡化處理
+                for i in range(len(para.text) + 1):
+                    offset_map.append(((-1, -1, -1, -1, -1), current_index + i))
+                current_index += len(para.text) + 1
+            return text, offset_map
+
+        elif ext == ".html":
+            with open(file_path, "r", encoding="utf-8") as f:
+                html = f.read()
+            soup = BeautifulSoup(html, "html.parser")
+            text = soup.get_text(separator="\n")
+
+            # 簡化偏移映射
+            for i in range(len(text)):
+                offset_map.append(((-1, -1, -1, -1, -1), i))
+
+            return text, offset_map
+
+        elif ext == ".pdf":
+            doc = fitz.open(file_path)
+            full_text = []
+            ocr_processor = OCRProcessor.get_instance()
+
+            for page_num in range(len(doc)):
+                page = doc.load_page(page_num)
+                blocks = page.get_text("blocks", sort=True)
+                page_text = ""
+
+                for block in blocks:
+                    if block[6] == 0:  # 僅處理文字區塊
+                        text = block[4].strip()
+                        if text:
+                            # 創建偏移映射
+                            for i, char in enumerate(text):
+                                offset_map.append((
+                                    (page_num, block[0], block[1], block[2], block[3]),
+                                    current_index + i
+                                ))
+
+                            page_text += text + "\n"
+                            current_index += len(text) + 1
+
+                # OCR回退機制
+                if ocr_fallback and len(page_text.strip()) < 50:  # 字數閾值
+                    logger.info(f"頁面 {page_num} 觸發OCR回退機制")
+                    pix = page.get_pixmap()
+                    ocr_text = ocr_processor.process_page(pix)
+                    page_text = ocr_text + "\n"
+                    current_index += len(ocr_text) + 1
+
+                    # 更新偏移映射
+                    for i, char in enumerate(ocr_text):
+                        offset_map.append((
+                            (page_num, 0, 0, pix.width, pix.height),
+                            current_index - len(ocr_text) + i - 1
+                        ))
+
+                full_text.append(page_text)
+
+            return "\n".join(full_text), offset_map
+
+        else:
+            raise ValueError(f"不支援的檔案格式: {ext}")
+
     except Exception as e:
-        print(f"❌ 錯誤：{e}")
+        logger.error(f"文字提取失敗: {file_path}, 錯誤: {str(e)}")
+        return "", []
+    
+    finally:
+        elapsed = time.perf_counter() - start_time
+        logger.info(f"文字提取完成: {file_path}, 耗時: {elapsed:.2f}秒")
