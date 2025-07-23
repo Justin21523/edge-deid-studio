@@ -37,15 +37,15 @@ dependencies:
 
   # pip-only packages
   - pip:
-      - transformers>=4.40.0
-      - optimum[onnxruntime]==1.17.0
-      - datasets==4.0.0
-      - sentencepiece==0.2.0
-      - torch
-      - torchtext
-      - Faker==37.4.2
-      - typer==0.16.0
-      - pytest
-      - rich==14.0.0
-      - easyocr
-
+    - transformers>=4.40.0
+    - optimum[onnxruntime-gpu]==1.17.0
+    - datasets>=4.0.0
+    - sentencepiece>=0.2.0
+    - torch
+    - torchtext
+    - faker>=37.4.2
+    - typer>=0.16.0
+    - pytest
+    - rich>=14.0.0
+    - easyocr
+    - pyyaml>=6.0.2
