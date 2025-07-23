@@ -43,16 +43,11 @@
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4188" />
 	</ItemGroup>
 
-	<!-- 註冊 XAML 頁面 -->
-	<ItemGroup>
-		<Page Update="HomePage.xaml" Generator="MSBuild:Compile" />
-		<Page Update="UploadPage.xaml" Generator="MSBuild:Compile" />
-	</ItemGroup>
-
 	<!-- 可加上你 View 資料夾 -->
 	<ItemGroup>
 		<Folder Include="Views\" />
 	</ItemGroup>
+
 
 	<!-- ReadyToRun 與 Trim：發佈時效能最佳化 -->
 	<PropertyGroup>

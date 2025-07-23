@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+ï»¿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -22,19 +22,32 @@ namespace AnoniMe
             this.DataContext = ViewModel;
         }
 
-       
+
         private void DropZone_DragOver(object sender, DragEventArgs e)
         {
-            e.AcceptedOperation = DataPackageOperation.Copy;
-            e.DragUIOverride.Caption = "©ñ¶}¥H¤W¶Ç";
-            e.DragUIOverride.IsContentVisible = true;
-        }
-
-        private void DropZone_Drop(object sender, DragEventArgs e)
-        {
-            if (ViewModel.DropFilesCommand.CanExecute(e))
+            if (e.DataView.Contains(StandardDataFormats.StorageItems))
             {
-                ViewModel.DropFilesCommand.Execute(e);
+                e.AcceptedOperation = DataPackageOperation.Copy;
+                e.DragUIOverride.Caption = "æ”¾é–‹ä»¥ä¸Šå‚³";
+                e.DragUIOverride.IsContentVisible = true;
+            }
+            else
+            {
+                e.AcceptedOperation = DataPackageOperation.None;
+            }
+        }
+        private async void DropZone_Drop(object sender, DragEventArgs e)
+        {
+            if (e.DataView.Contains(StandardDataFormats.StorageItems))
+            {
+                var items = await e.DataView.GetStorageItemsAsync();
+                foreach (var item in items)
+                {
+                    if (item is StorageFile file)
+                    {
+                        ViewModel.HandleDroppedFile(file);
+                    }
+                }
             }
         }
     }
