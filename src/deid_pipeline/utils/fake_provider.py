@@ -3,7 +3,7 @@ import os, logging
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from ..base import Entity
-from ...config import Config
+from ..config import Config
 
 logger = logging.getLogger(__name__)
 
