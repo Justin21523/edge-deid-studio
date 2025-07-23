@@ -1,4 +1,5 @@
 ﻿using AnoniMe.Models;
+using AnoniMe.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
@@ -21,6 +22,13 @@ namespace AnoniMe.ViewModels
         [ObservableProperty] private bool isUploading;
         [ObservableProperty] private string? currentUploadText;
         [ObservableProperty] private double currentUploadProgress;
+
+        private bool isProcessing;
+        public bool IsProcessing
+        {
+            get => isProcessing;
+            set => SetProperty(ref isProcessing, value);
+        }
 
         // 遮蔽選項
         private bool maskIdentity;
@@ -72,14 +80,16 @@ namespace AnoniMe.ViewModels
                 return;
             }
 
-            ContentDialog processing = new()
+            // 顯示處理中遮罩
+            IsProcessing = true;
+            await Task.Delay(2000); // 模擬處理時間（可換成實際處理邏輯）
+            IsProcessing = false;
+
+            // 導向 ResultPage
+            if (App.MainAppWindow.Content is Frame frame)
             {
-                Title = "正在處理",
-                Content = "檔案正在進行去識別化，請稍候。",
-                CloseButtonText = "OK",
-                XamlRoot = App.MainAppWindow.Content.XamlRoot
-            };
-            await processing.ShowAsync();
+                frame.Navigate(typeof(ResultPage));
+            }
         }
 
         [RelayCommand]
