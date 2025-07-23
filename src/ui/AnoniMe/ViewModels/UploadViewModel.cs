@@ -18,23 +18,75 @@ namespace AnoniMe.ViewModels
         public ObservableCollection<UploadFileInfo> UploadItems { get; } = new();
         public ObservableCollection<string> TagItems { get; } = new();
 
-        [ObservableProperty] 
-        private bool isUploading;
+        [ObservableProperty] private bool isUploading;
+        [ObservableProperty] private string? currentUploadText;
+        [ObservableProperty] private double currentUploadProgress;
 
-        [ObservableProperty] 
-        private string? currentUploadText;
+        // 遮蔽選項
+        private bool maskIdentity;
+        public bool MaskIdentity
+        {
+            get => maskIdentity;
+            set
+            {
+                SetProperty(ref maskIdentity, value);
+                OnPropertyChanged(nameof(CanGenerate));
+            }
+        }
 
-        [ObservableProperty] 
-        private double currentUploadProgress;
+        private bool maskAddress;
+        public bool MaskAddress
+        {
+            get => maskAddress;
+            set
+            {
+                SetProperty(ref maskAddress, value);
+                OnPropertyChanged(nameof(CanGenerate));
+            }
+        }
+
+        // ✅ 是否可以按下生成按鈕
+        public bool CanGenerate => TagItems.Any() && (MaskIdentity || MaskAddress);
 
         public Visibility UploadVisibility => IsUploading ? Visibility.Visible : Visibility.Collapsed;
+
+        public UploadViewModel()
+        {
+            // TagItems 改變時同步通知 UI 更新 CanGenerate
+            TagItems.CollectionChanged += (_, __) => OnPropertyChanged(nameof(CanGenerate));
+        }
+
+        [RelayCommand]
+        public async Task GenerateResultAsync()
+        {
+            if (!CanGenerate)
+            {
+                ContentDialog warning = new()
+                {
+                    Title = "請檢查輸入條件",
+                    Content = "請選擇至少一個檔案，並勾選一項遮蔽選項後才能生成結果。",
+                    CloseButtonText = "我知道了",
+                    XamlRoot = App.MainAppWindow.Content.XamlRoot
+                };
+                await warning.ShowAsync();
+                return;
+            }
+
+            ContentDialog processing = new()
+            {
+                Title = "正在處理",
+                Content = "檔案正在進行去識別化，請稍候。",
+                CloseButtonText = "OK",
+                XamlRoot = App.MainAppWindow.Content.XamlRoot
+            };
+            await processing.ShowAsync();
+        }
 
         [RelayCommand]
         public async Task PickFilesAsync()
         {
             var picker = new FileOpenPicker();
             picker.FileTypeFilter.Add("*");
-
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainAppWindow);
             WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
 
@@ -57,6 +109,11 @@ namespace AnoniMe.ViewModels
             }
         }
 
+        public void HandleDroppedFile(StorageFile file)
+        {
+            AddFileTag(file.Name); // ✨ 加入檔名做為 tag
+        }
+
         [RelayCommand]
         public void RemoveTag(string fileName)
         {
@@ -67,19 +124,6 @@ namespace AnoniMe.ViewModels
             TagItems.Remove(fileName);
         }
 
-        [RelayCommand]
-        public async Task GenerateResultAsync()
-        {
-            ContentDialog dialog = new()
-            {
-                Title = "生成中",
-                Content = "將根據你選取的檔案與選項進行處理。",
-                CloseButtonText = "OK",
-                XamlRoot = App.MainAppWindow.Content.XamlRoot
-            };
-            await dialog.ShowAsync();
-        }
-
         private void AddUploadItem(StorageFile file)
         {
             var item = new UploadFileInfo
@@ -88,7 +132,6 @@ namespace AnoniMe.ViewModels
                 UploadProgress = 0,
                 UploadStatus = "Waiting"
             };
-
             UploadItems.Add(item);
             AddFileTag(item.FileName);
             _ = SimulateUpload(item);
@@ -116,7 +159,5 @@ namespace AnoniMe.ViewModels
             item.UploadStatus = "Upload complete";
             IsUploading = false;
         }
-
-
     }
 }

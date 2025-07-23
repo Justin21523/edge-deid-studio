@@ -29,25 +29,25 @@
     <AppXManifest Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2025-07-23T03:00:27.537</Modified>
+      <Modified>2025-07-23T15:28:06.588</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2025-07-23T03:00:27.387</Modified>
+      <Modified>2025-07-23T15:28:06.297</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.runtimeconfig.json">
       <PackagePath>AnoniMe.runtimeconfig.json</PackagePath>
-      <Modified>2025-07-23T03:00:27.037</Modified>
+      <Modified>2025-07-23T14:58:21.304</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.dll">
       <PackagePath>AnoniMe.dll</PackagePath>
-      <Modified>2025-07-23T03:00:26.087</Modified>
+      <Modified>2025-07-23T15:28:05.586</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\apphost.exe">
       <PackagePath>AnoniMe.exe</PackagePath>
-      <Modified>2025-07-23T03:00:26.130</Modified>
+      <Modified>2025-07-23T15:28:05.644</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\microsoft.windows.sdk.net.ref\10.0.19041.57\lib\net8.0\Microsoft.Windows.SDK.NET.dll">
       <PackagePath>Microsoft.Windows.SDK.NET.dll</PackagePath>
@@ -355,7 +355,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.deps.json">
       <PackagePath>AnoniMe.deps.json</PackagePath>
-      <Modified>2025-07-23T03:00:27.011</Modified>
+      <Modified>2025-07-23T14:58:21.227</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
