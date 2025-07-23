@@ -8,19 +8,19 @@ dependencies:
   - git
 
   # 科學運算 / 資料處理
-  - numpy=2.2.6
-  - pandas=2.3.1
-  - scipy=1.15.3
+  - numpy
+  - pandas
+  - scipy
   - matplotlib
   - tqdm=4.67.1
   - typing-extensions
-  - python-dateutil=2.9.0
+  - python-dateutil
   - tzdata
 
   # NLP 與文本處理
-  - spacy=3.8.7
-  - python-docx=1.2.0   # pip 與 conda 皆可，選用 conda 安裝
-  - beautifulsoup4=4.13.4
+  - spacy
+  - python-docx
+  - beautifulsoup4
   - lxml=6.0.0
   - jieba=0.42.1
   - PyMuPDF
@@ -37,6 +37,8 @@ dependencies:
 
   # pip-only packages
   - pip:
+    - easyocr
+    - opencv-python
     - transformers>=4.40.0
     - optimum[onnxruntime-gpu]==1.17.0
     - datasets>=4.0.0
@@ -47,5 +49,4 @@ dependencies:
     - typer>=0.16.0
     - pytest
     - rich>=14.0.0
-    - easyocr
     - pyyaml>=6.0.2
