@@ -1,13 +1,16 @@
 import os
 import json
 import pandas as pd
+import numpy as np
 from bs4 import BeautifulSoup
 from docx import Document
 import fitz  # PyMuPDF
+from .ocr import get_ocr_reader
+from ..config import OCR_THRESHOLD, USE_STUB
 
 # only text will be extracted!
 # 圖片裡面的文字無法提取
-def extract_text(file_path: str) -> str:
+def extract_text(file_path: str, ocr: bool=False) -> str:
     ext = os.path.splitext(file_path)[-1].lower()
 
     if ext == ".txt":
@@ -21,12 +24,31 @@ def extract_text(file_path: str) -> str:
     # pdf 如果太過於複雜(格子過多、編排多樣)，可能讀取到的資料就會沒有按照邏輯
     # 這一行是「身分證字號」，下一行不會是「數字」，可能是別的欄位或別的文字內容
     elif ext == ".pdf":
-        pdf = fitz.open(file_path)
-        texts = []
+        try:
+            pdf = fitz.open(file_path)
+        except fitz.FileNotFoundError:
+            raise RuntimeError(f"File not found: {file_path}")
+        except fitz.FileDataError:
+            raise RuntimeError(f"Corrupted PDF: {file_path}")
+
+        full_text = []
         for page in pdf:
-            txt = page.get_text()
-            texts.append(txt)
-        return "\n".join(texts)
+            # 1) 先做「區塊排序」提取
+            blocks = page.get_text("blocks", sort=True)
+            page_text = "\n".join(b[4] for b in blocks if b[4].strip())
+
+            # 2) 少量文字才觸發 OCR
+            if ocr and not USE_STUB and len(page_text) < OCR_THRESHOLD:
+                reader = get_ocr_reader()
+                img = page.get_pixmap().samples
+                h, w = int(page.rect.height), int(page.rect.width)
+                arr = np.frombuffer(img, dtype=np.uint8).reshape((h, w, 3))
+                ocr_lines = [t[1] for t in reader.readtext(arr)]
+                full_text.append("\n".join(ocr_lines))
+            else:
+                full_text.append(page_text)
+
+        return "\n".join(full_text)
 
     elif ext == ".csv":
         df = pd.read_csv(file_path)
