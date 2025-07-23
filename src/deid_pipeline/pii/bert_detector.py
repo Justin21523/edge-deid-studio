@@ -1,98 +1,189 @@
 from typing import List
 from pathlib import Path, PurePath
 from optimum.onnxruntime import ORTModelForTokenClassification
+import onnxruntime as ort
 from transformers import AutoTokenizer
+import re, time, logging
+import numpy as np
 from .base import PIIDetector, Entity
 from .. import USE_STUB
-import time, logging
 from .base import Entity
 from .base import PII_TYPES
+from deid_pipeline.config import Config
 
-# 新增類型映射
+logger = logging.getLogger(__name__)
+
+# 實體類型標準化映射
 ENTITY_TYPE_MAP = {
     "PER": "NAME",
+    "PERSON": "NAME",
     "LOC": "ADDRESS",
+    "GPE": "ADDRESS",
     "ORG": "ORGANIZATION",
     "ID": "ID",
-    "PHONE": "PHONE"
+    "PHONE": "PHONE",
+    "EMAIL": "EMAIL"
 }
-
 class BertNERDetector(PIIDetector):
     def __init__(self, model_dir: str | PurePath, provider: str="CPUExecutionProvider"):
-        if USE_STUB:
-            self.stub = True
-            return
-        model_dir = Path(model_dir)
-        if not model_dir.exists():
-            raise FileNotFoundError(
-                f"BERT NER ONNX 路徑不存在：{model_dir}\n"
-                "請先執行 scripts/export_bert_onnx.py 產生模型"
+        self.config = Config()
+        if not self.config.USE_STUB:
+            # 動態選擇最佳執行提供者
+            providers = ["CPUExecutionProvider"]
+            available_providers = ort.get_available_providers()
+
+            if "NPUExecutionProvider" in available_providers:
+                providers.insert(0, "NPUExecutionProvider")
+            elif "CUDAExecutionProvider" in available_providers:
+                providers.insert(0, "CUDAExecutionProvider")
+
+            logger.info(f"使用ONNX執行提供者: {providers}")
+
+            self.model = ORTModelForTokenClassification.from_pretrained(
+                model_dir, providers=providers
             )
-        self.model = ORTModelForTokenClassification.from_pretrained(model_dir, provider=provider)
-        self.tok = AutoTokenizer.from_pretrained(model_dir, use_fast=True)
+            self.tok = AutoTokenizer.from_pretrained(model_dir, use_fast=True)
+            self.model_max_length = self.tok.model_max_length
+        else:
+            self.model = None
+            logger.warning("使用存根模式，BERT檢測器未初始化")
 
     def detect(self, text: str) -> List[Entity]:
-        if getattr(self, "stub", False):
-            # stub logic...
-            return self._stub_detect(text)
+        start_time = time.perf_counter()
 
-        max_len = self.tok.model_max_length
-        stride = max_len // 2
-        all_entities: List[Entity] = []
+        if self.config.USE_STUB or self.model is None:
+            return self._stub_detection(text)
 
-        for start in range(0, len(text), stride):
-            chunk = text[start : start + max_len]
-            inputs = self.tok(chunk, return_tensors="pt", truncation=True)
-            logits = self.model(**inputs).logits[0]  # (seq_len, num_labels)
-            ents = self._process_logits(inputs, logits, offset=start)
-            all_entities.extend(ents)
-
-        # 合併跨 chunk 重疊與重複
-        return self._merge_entities(all_entities)
-
-    def _process_logits(self, inputs, logits, offset=0) -> List[Entity]:
+        # 處理長文本的滑動窗口
         entities = []
-        current = None
-        for idx, scores in enumerate(logits):
-            token = inputs.tokens()[idx]
+        stride = self.model_max_length // 2
+        chunks = [
+            (i, text[i:i+self.model_max_length])
+            for i in range(0, len(text), stride)
+        ]
 
-            if token in ("[CLS]","[SEP]"): # 跳過特殊token
+        for offset, chunk in chunks:
+            chunk_entities = self._process_chunk(chunk, offset)
+            entities.extend(chunk_entities)
+
+        # 合併重疊實體
+        merged_entities = self._merge_entities(entities)
+
+        # 記錄效能
+        elapsed = (time.perf_counter() - start_time) * 1000
+        logger.debug(f"BERT檢測完成，字數: {len(text)}, 實體數: {len(merged_entities)}, 耗時: {elapsed:.2f}ms")
+
+        return merged_entities
+
+    def _process_chunk(self, text: str, offset: int = 0) -> List[Entity]:
+        """處理文本塊並返回實體"""
+        inputs = self.tok(
+            text,
+            return_tensors="pt",
+            truncation=True,
+            return_offsets_mapping=True
+        )
+
+        # 獲取預測結果
+        outputs = self.model(**inputs)
+        logits = outputs.logits[0].numpy()
+        predictions = np.argmax(logits, axis=1)
+        scores = np.max(logits, axis=1)
+
+        # 處理實體
+        entities = []
+        current_entity = None
+
+        for idx, (token_id, pred_idx, score) in enumerate(zip(inputs.input_ids[0], predictions, scores)):
+            # 跳過特殊token
+            if token_id in [self.tok.cls_token_id, self.tok.sep_token_id, self.tok.pad_token_id]:
                 continue
-            label_id = int(scores.argmax())
-            label = self.model.config.id2label[label_id]
-            score = float(scores[label_id])
-            # 處理B-和I-標籤
+
+            # 獲取原始文本位置
+            token_start, token_end = inputs.offset_mapping[0][idx]
+            if token_start == token_end == 0:  # 特殊token
+                continue
+
+            label = self.model.config.id2label[pred_idx]
+            score = float(score)
+
+            # 標準化實體類型
+            base_label = label.replace("B-", "").replace("I-", "")
+            normalized_type = ENTITY_TYPE_MAP.get(base_label, base_label)
+
+            # 處理實體邊界
             if label.startswith("B-"):
-                if current:
-                    entities.append(current)
-                base = label.split("-")[1]
-                current = {
-                    "span": [ inputs.token_to_chars(idx).start + offset,
-                              inputs.token_to_chars(idx).end   + offset ],
-                    "type": ENTITY_TYPE_MAP.get(base, base),
+                if current_entity:
+                    entities.append(current_entity)
+                current_entity = {
+                    "span": [token_start + offset, token_end + offset],
+                    "type": normalized_type,
                     "score": score,
                     "source": "bert"
                 }
-            elif label.startswith("I-") and current:
-                end = inputs.token_to_chars(idx).end + offset
-                current["span"][1] = end
-                current["score"] = max(current["score"], score)
+            elif label.startswith("I-") and current_entity and current_entity["type"] == normalized_type:
+                current_entity["span"][1] = token_end + offset
+                current_entity["score"] = max(current_entity["score"], score)
             else:
-                if current:
-                    entities.append(current)
-                    current = None
-        if current:
-            entities.append(current)
+                if current_entity:
+                    entities.append(current_entity)
+                current_entity = None
+
+        if current_entity:
+            entities.append(current_entity)
+
         return entities
 
-    def _merge_entities(self, ents: List[Entity]) -> List[Entity]:
-        # 去重 & 衝突解決：保最高 score
-        ents = sorted(ents, key=lambda e: e["span"][0])
-        resolved = []
-        for e in ents:
-            if not resolved or e["span"][0] >= resolved[-1]["span"][1]:
-                resolved.append(e)
-            else:
-                if e["score"] > resolved[-1]["score"]:
-                    resolved[-1] = e
-        return resolved
+    def _merge_entities(self, entities: List[Entity]) -> List[Entity]:
+        """合併重疊的實體"""
+        if not entities:
+            return []
+
+        # 按起始位置排序
+        entities = sorted(entities, key=lambda x: x["span"][0])
+        merged = [entities[0]]
+
+        for current in entities[1:]:
+            last = merged[-1]
+
+            # 檢查重疊
+            if current["span"][0] <= last["span"][1]:
+                # 合併條件：相同類型且重疊部分超過50%
+                overlap = min(last["span"][1], current["span"][1]) - current["span"][0]
+                min_length = min(
+                    last["span"][1] - last["span"][0],
+                    current["span"][1] - current["span"][0]
+                )
+
+                if current["type"] == last["type"] and overlap > min_length * 0.5:
+                    merged[-1]["span"][1] = max(last["span"][1], current["span"][1])
+                    merged[-1]["score"] = max(last["score"], current["score"])
+                    continue
+
+            merged.append(current)
+
+        return merged
+
+    def _stub_detection(self, text: str) -> List[Entity]:
+        """存根模式下的簡單檢測"""
+        entities = []
+
+        # 台灣身分證
+        for m in re.finditer(r"[A-Z][12]\d{8}", text):
+            entities.append({
+                "span": [m.start(), m.end()],
+                "type": "TW_ID",
+                "score": 1.0,
+                "source": "regex_stub"
+            })
+
+        # 台灣手機號
+        for m in re.finditer(r"09\d{2}-?\d{3}-?\d{3}", text):
+            entities.append({
+                "span": [m.start(), m.end()],
+                "type": "PHONE",
+                "score": 1.0,
+                "source": "regex_stub"
+            })
+
+        return entities
