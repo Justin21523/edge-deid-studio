@@ -5,30 +5,25 @@ import torch
 from transformers import AutoTokenizer, AutoModelForTokenClassification
 from optimum.onnxruntime import ORTModelForTokenClassification
 
-from deid_pipeline.config import (
-    USE_ONNX, NER_MODEL_PATH,
-    ONNX_MODEL_PATH, ONNX_PROVIDERS,
-    BERT_CONFIDENCE_THRESHOLD,
-    MAX_SEQ_LENGTH, WINDOW_STRIDE
-)
+from deid_pipeline.config import Config
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
 
 class BertONNXNERDetector(PIIDetector):
     def __init__(self):
         # 載入模型（ONNX or PyTorch）
-        if USE_ONNX:
+        if Config.USE_ONNX:
             self.model = ORTModelForTokenClassification.from_pretrained(
-                ONNX_MODEL_PATH, providers=ONNX_PROVIDERS
+                Config.ONNX_MODEL_PATH, providers=Config.ONNX_PROVIDERS
             )
         else:
             self.model = AutoModelForTokenClassification.from_pretrained(
-                str(NER_MODEL_PATH)
+                str(Config.NER_MODEL_PATH)
             )
         # 共享 tokenizer
-        self.tokenizer = AutoTokenizer.from_pretrained(str(NER_MODEL_PATH))
+        self.tokenizer = AutoTokenizer.from_pretrained(str(Config.NER_MODEL_PATH))
         self.id2label  = self.model.config.id2label
-        self.max_len   = MAX_SEQ_LENGTH
-        self.stride    = int(self.max_len * WINDOW_STRIDE)
+        self.max_len   = Config.MAX_SEQ_LENGTH
+        self.stride    = int(self.max_len * Config.WINDOW_STRIDE)
 
     def detect(self, text: str) -> List[Entity]:
         entities = []
@@ -50,7 +45,7 @@ class BertONNXNERDetector(PIIDetector):
             chunk_ids = input_ids[i : i+1]
             chunk_off = offsets[i].tolist()
 
-            if USE_ONNX:
+            if Config.USE_ONNX:
                 ort_inputs = {k: v.cpu().numpy() for k, v in encoding.items() if k.startswith("input")}
                 logits = self.model.run(None, ort_inputs)[0]  # shape (1, seq_len, n_labels)
                 logits = torch.from_numpy(logits)
@@ -64,7 +59,7 @@ class BertONNXNERDetector(PIIDetector):
 
             for idx, label_id in enumerate(preds):
                 label = self.id2label[label_id]
-                if label != "O" and confid[idx] >= BERT_CONFIDENCE_THRESHOLD:
+                if label != "O" and confid[idx] >= Config.BERT_CONFIDENCE_THRESHOLD:
                     start, end = chunk_off[idx]
                     entities.append(Entity(
                         span=(start, end),
