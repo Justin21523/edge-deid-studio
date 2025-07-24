@@ -1,7 +1,8 @@
 import os
 import time
-from src.deid_pipeline import DeidPipeline
-from test_data_factory import TestDataFactory
+from deid_pipeline import DeidPipeline
+from tests.test_data_factory import TestDataFactory    # 注意路徑
+
 
 def run_full_pipeline_test(file_type='text'):
     """執行完整流程測試"""
@@ -11,7 +12,8 @@ def run_full_pipeline_test(file_type='text'):
     # 根據文件類型生成測試文件
     if file_type == 'text':
         content, pii_data = data_factory.generate_test_document(pii_count=15)
-        with open("test_input/sample.txt", "w") as f:
+        os.makedirs("tests/test_input", exist_ok=True)
+        with open("tests/test_input/sample.txt", "w", encoding="utf-8") as f:
             f.write(content)
         input_path = "test_input/sample.txt"
 
@@ -51,7 +53,7 @@ def run_full_pipeline_test(file_type='text'):
 
     # 檢查內容完整性（簡單版本）
     if file_type == 'text':
-        with open(input_path) as f:
+        with open(input_path, encoding="utf-8") as f:
             original_content = f.read()
         verification['content_integrity'] = len(result.text) > 0.8 * len(original_content)
 

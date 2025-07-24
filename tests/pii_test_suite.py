@@ -1,13 +1,13 @@
 import unittest
-from src.deid_pipeline.pii.utils import regex_detector, bert_detector, composite
-from src.deid_pipeline.pii.utils.replacer import Replacer
+from deid_pipeline.pii.detectors import regex_detector, bert_detector, composite
+from deid_pipeline.pii.utils.replacer import Replacer
 from test_data_factory import TestDataFactory
 
 class PIITestSuite(unittest.TestCase):
     def setUp(self):
         self.data_factory = TestDataFactory()
         self.regex_detector = regex_detector.RegexDetector(config_path="configs/regex_zh.yaml")
-        self.bert_detector = bert_detector.BertDetector(model_dir="models/ner/zh_tw")
+        self.bert_detector = bert_detector.BertNERDetector(model_dir="models/ner/zh_tw")
         self.composite_detector = composite.CompositeDetector()
         self.replacer = Replacer()
 

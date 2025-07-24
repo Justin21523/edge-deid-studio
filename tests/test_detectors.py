@@ -1,5 +1,5 @@
 import pytest
-from deid_pipeline.pii import get_detector
+from deid_pipeline.pii.detectors import get_detector
 
 @pytest.mark.parametrize("lang, text, expect", [
     ("en", "Alice 住在 Taipei, email a@b.com", ["PERSON","GPE","EMAIL"]),

@@ -3,9 +3,9 @@ import os, time
 import pytest
 
 from deid_pipeline.parser.text_extractor import extract_text
-from deid_pipeline.pii import get_detector
-from deid_pipeline.utils.replacer import Replacer
-from deid_pipeline.parser.ocr_processor import OCRPIIProcessor
+from deid_pipeline.pii.detectors import get_detector
+from deid_pipeline.pii.utils.replacer import Replacer
+from deid_pipeline.image_deid.processor import ImageDeidProcessor
 
 @pytest.mark.parametrize("file_path", [
     "samples/sample_contract.pdf",
@@ -41,7 +41,7 @@ def test_image_pipeline():
     img_path = "samples/tw_id_card.jpg"
     if not os.path.exists(img_path):
         pytest.skip("Image sample missing")
-    proc = OCRPIIProcessor(lang="zh")
+    proc = ImageDeidProcessor(lang="zh")
     result = proc.process_image(img_path)
     assert result["status"] == "success"
     assert "original_text" in result
