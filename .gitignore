@@ -37,3 +37,13 @@ __pycache__/
 
 # Visual Studio temporary files
 .vs/
+
+# 自動產生的 Visual Studio / .NET 檔案建議忽略
+*.props
+*.dgpspec.json
+*.cache
+*.assets.json
+*.nuget.*
+obj/
+bin/
+.vscode/

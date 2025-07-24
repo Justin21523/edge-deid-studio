@@ -1,5 +1,4 @@
 # src/deid_pipeline/ocr_processor.py
-
 import os
 import time
 import logging
@@ -8,8 +7,8 @@ import numpy as np
 from typing import Dict
 
 from .parser.text_extractor import OCRProcessor as BaseOCRProcessor
-from .pii import get_detector
-from .utils.replacer import Replacer
+from deid_pipeline.pii import get_detector
+from deid_pipeline.pii.utils.replacer import Replacer
 
 logger = logging.getLogger(__name__)
 

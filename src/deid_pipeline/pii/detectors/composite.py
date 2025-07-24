@@ -1,5 +1,5 @@
 from typing import List
-from .base import PIIDetector, Entity
+from deid_pipeline.pii.utils.base import PIIDetector, Entity
 from deid_pipeline.config import Config
 import logging
 
