@@ -7,9 +7,9 @@ from bs4 import BeautifulSoup
 from docx import Document
 import fitz  # PyMuPDF
 import easyocr
-from .ocr import get_ocr_reader
-from ..config import OCR_THRESHOLD, USE_STUB
-from deid_pipeline import logger
+from deid_pipeline.parser.ocr import get_ocr_reader
+from deid_pipeline.config import OCR_THRESHOLD, USE_STUB
+from deid_pipeline.pii.utils import logger
 
 # 全域OCR處理器
 class OCRProcessor:
@@ -138,7 +138,7 @@ def extract_text(file_path: str, ocr_fallback: bool = True) -> tuple[str, list]:
     except Exception as e:
         logger.error(f"文字提取失敗: {file_path}, 錯誤: {str(e)}")
         return "", []
-    
+
     finally:
         elapsed = time.perf_counter() - start_time
         logger.info(f"文字提取完成: {file_path}, 耗時: {elapsed:.2f}秒")
