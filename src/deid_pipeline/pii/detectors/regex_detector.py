@@ -7,8 +7,7 @@ from pathlib import Path
 from typing import List
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
 from deid_pipeline.config import Config
-
-logger = logging.getLogger(__name__)
+from deid_pipeline.pii.utils import logger
 
 class RegexDetector(PIIDetector):
     def __init__(self, config_path: str = None):
