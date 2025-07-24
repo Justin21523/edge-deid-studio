@@ -5,10 +5,7 @@ import onnxruntime as ort
 from transformers import AutoTokenizer
 import re, time, logging
 import numpy as np
-from .base import PIIDetector, Entity
-from .. import USE_STUB
-from .base import Entity
-from .base import PII_TYPES
+from deid_pipeline.pii.utils.base import PIIDetector, Entity
 from deid_pipeline.config import Config
 
 logger = logging.getLogger(__name__)

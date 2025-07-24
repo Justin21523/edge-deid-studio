@@ -5,7 +5,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from typing import List
-from .base import PIIDetector, Entity
+from deid_pipeline.pii.utils.base import PIIDetector, Entity
 from deid_pipeline.config import Config
 
 logger = logging.getLogger(__name__)
