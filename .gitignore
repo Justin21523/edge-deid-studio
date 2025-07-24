@@ -38,5 +38,13 @@ __pycache__/
 # Visual Studio temporary files
 .vs/
 
+# ignore UI build artifacts
 src/ui/AnoniMe/obj/
 src/ui/AnoniMe/bin/
+
+# 自动生成的 Visual Studio/.NET 文件建议忽略
+*.props
+*.dgpspec.json
+...
+obj/
+bin/
