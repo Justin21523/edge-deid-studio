@@ -7,7 +7,7 @@
 """
 from pathlib import Path
 from deid_pipeline.pii import get_detector
-from deid_pipeline.utils.replacer import Replacer
+from utils.replacer import Replacer
 from deid_pipeline.parser.text_extractor import extract_text
 
 def test_detector():

@@ -5,7 +5,7 @@ import pytest
 from deid_pipeline.parser.text_extractor import extract_text
 from deid_pipeline.pii import get_detector
 from deid_pipeline.utils.replacer import Replacer
-from deid_pipeline.ocr_processor import OCRPIIProcessor
+from deid_pipeline.parser.ocr_processor import OCRPIIProcessor
 
 @pytest.mark.parametrize("file_path", [
     "samples/sample_contract.pdf",
