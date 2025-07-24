@@ -1,6 +1,7 @@
 import random
 from datetime import datetime, timedelta
 from .generators import PIIGenerator
+from . import HOSPITALS, MEDICAL_SPECIALTIES
 
 class DataFormatter:
     """資料格式生成引擎"""
