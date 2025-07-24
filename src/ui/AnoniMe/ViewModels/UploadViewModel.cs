@@ -19,6 +19,8 @@ namespace AnoniMe.ViewModels
         public ObservableCollection<UploadFileInfo> UploadItems { get; } = new();
         public ObservableCollection<string> TagItems { get; } = new();
 
+        private static readonly string[] AllowedExtensions = { ".doc", ".docx", ".pdf" };
+
         [ObservableProperty] private bool isUploading;
         [ObservableProperty] private string? currentUploadText;
         [ObservableProperty] private double currentUploadProgress;
@@ -30,7 +32,6 @@ namespace AnoniMe.ViewModels
             set => SetProperty(ref isProcessing, value);
         }
 
-        // 遮蔽選項
         private bool maskIdentity;
         public bool MaskIdentity
         {
@@ -53,14 +54,11 @@ namespace AnoniMe.ViewModels
             }
         }
 
-        // ✅ 是否可以按下生成按鈕
         public bool CanGenerate => TagItems.Any() && (MaskIdentity || MaskAddress);
-
         public Visibility UploadVisibility => IsUploading ? Visibility.Visible : Visibility.Collapsed;
 
         public UploadViewModel()
         {
-            // TagItems 改變時同步通知 UI 更新 CanGenerate
             TagItems.CollectionChanged += (_, __) => OnPropertyChanged(nameof(CanGenerate));
         }
 
@@ -80,12 +78,10 @@ namespace AnoniMe.ViewModels
                 return;
             }
 
-            // 顯示處理中遮罩
             IsProcessing = true;
-            await Task.Delay(2000); // 模擬處理時間（可換成實際處理邏輯）
+            await Task.Delay(2000);
             IsProcessing = false;
 
-            // 導向 ResultPage
             if (App.MainAppWindow.Content is Frame frame)
             {
                 frame.Navigate(typeof(ResultPage));
@@ -96,16 +92,18 @@ namespace AnoniMe.ViewModels
         public async Task PickFilesAsync()
         {
             var picker = new FileOpenPicker();
-            picker.FileTypeFilter.Add("*");
+            picker.FileTypeFilter.Add(".doc");
+            picker.FileTypeFilter.Add(".docx");
+            picker.FileTypeFilter.Add(".pdf");
+
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainAppWindow);
             WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
 
             var files = await picker.PickMultipleFilesAsync();
-            if (files != null)
-            {
-                foreach (var file in files)
-                    AddUploadItem(file);
-            }
+            if (files is null) return;
+
+            foreach (var file in files)
+                await HandleFileAsync(file);
         }
 
         [RelayCommand]
@@ -115,27 +113,47 @@ namespace AnoniMe.ViewModels
             {
                 var items = await e.DataView.GetStorageItemsAsync();
                 foreach (var item in items.OfType<StorageFile>())
-                    AddUploadItem(item);
+                    await HandleFileAsync(item);
             }
         }
 
-        public void HandleDroppedFile(StorageFile file)
+        public async Task HandleFileAsync(StorageFile file)
         {
-            AddFileTag(file.Name); // ✨ 加入檔名做為 tag
+            var ext = file.FileType.ToLower();
+            if (!AllowedExtensions.Contains(ext))
+            {
+                await ShowUnsupportedFileDialogAsync(file.Name);
+                return;
+            }
+
+            AddUploadItem(file);
+        }
+
+        private async Task ShowUnsupportedFileDialogAsync(string filename)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "不支援的檔案格式",
+                Content = $"檔案「{filename}」並非 Word 或 PDF 格式，請重新選擇。",
+                CloseButtonText = "確定",
+                XamlRoot = App.MainAppWindow.Content.XamlRoot
+            };
+
+            await dialog.ShowAsync();
         }
 
         [RelayCommand]
         public void RemoveTag(string fileName)
         {
             var item = UploadItems.FirstOrDefault(f => f.FileName == fileName);
-            if (item != null)
-                UploadItems.Remove(item);
-
+            if (item != null) UploadItems.Remove(item);
             TagItems.Remove(fileName);
         }
 
         private void AddUploadItem(StorageFile file)
         {
+            if (UploadItems.Any(f => f.FileName == file.Name)) return;
+
             var item = new UploadFileInfo
             {
                 FileName = file.Name,

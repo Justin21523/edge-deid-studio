@@ -29,6 +29,8 @@ namespace AnoniMe
             this.DataContext = ViewModel;
         }
 
+      
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);

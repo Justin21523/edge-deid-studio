@@ -22,7 +22,6 @@ namespace AnoniMe
             this.DataContext = ViewModel;
         }
 
-
         private void DropZone_DragOver(object sender, DragEventArgs e)
         {
             if (e.DataView.Contains(StandardDataFormats.StorageItems))
@@ -45,7 +44,7 @@ namespace AnoniMe
                 {
                     if (item is StorageFile file)
                     {
-                        ViewModel.HandleDroppedFile(file);
+                        await ViewModel.HandleFileAsync(file);
                     }
                 }
             }
