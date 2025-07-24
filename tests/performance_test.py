@@ -1,6 +1,6 @@
 import timeit
 import statistics
-from src.deid_pipeline.pii.utils import regex_detector, bert_detector
+from deid_pipeline.pii.detectors import regex_detector, bert_detector, composite
 from test_data_factory import TestDataFactory
 
 def benchmark_detector(detector, text_length=10000):
@@ -29,7 +29,7 @@ def run_performance_suite():
     # 測試不同偵測器
     detectors = {
         "Regex": regex_detector.RegexDetector(config_path="configs/regex_zh.yaml"),
-        "BERT": bert_detector.BertDetector(model_dir="models/ner/zh_tw"),
+        "BERT": bert_detector.BertNERDetector(model_dir="models/ner/zh_tw"),
         "Composite": composite.CompositeDetector()
     }
 

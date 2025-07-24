@@ -1,7 +1,7 @@
-def test_replace_consistency():
-    from deid_pipeline.pii import get_detector
-    from deid_pipeline.utils.replacer import Replacer
+from deid_pipeline.pii.detectors import get_detector
+from deid_pipeline.pii.utils.replacer import Replacer
 
+def test_replace_consistency():
     txt = "王小明借給王小明的妹妹0912345678。ID A123456789。"
     ents = get_detector("zh").detect(txt)
     new_txt, _ = Replacer().replace(txt, ents)
