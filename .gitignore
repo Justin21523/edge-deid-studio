@@ -37,3 +37,6 @@ __pycache__/
 
 # Visual Studio temporary files
 .vs/
+
+src/ui/AnoniMe/obj/
+src/ui/AnoniMe/bin/
