@@ -1,9 +1,7 @@
 from typing import List
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
 from deid_pipeline.config import Config
-import logging
-
-logger = logging.getLogger(__name__)
+from deid_pipeline.pii.utils import logger
 
 class CompositeDetector(PIIDetector):
     def __init__(self, *detectors: PIIDetector):
