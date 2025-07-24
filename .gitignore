@@ -42,6 +42,9 @@ __pycache__/
 src/ui/AnoniMe/obj/
 src/ui/AnoniMe/bin/
 
+.reports/
+.pytest-html
+
 # 自动生成的 Visual Studio/.NET 文件建议忽略
 *.props
 *.dgpspec.json
