@@ -6,8 +6,8 @@ import cv2
 import numpy as np
 from typing import Dict
 
-from .parser.text_extractor import OCRProcessor as BaseOCRProcessor
-from deid_pipeline.pii import get_detector
+from deid_pipeline.parser.text_extractor import OCRProcessor as BaseOCRProcessor
+from deid_pipeline.pii.detectors import get_detector
 from deid_pipeline.pii.utils.replacer import Replacer
 
 logger = logging.getLogger(__name__)

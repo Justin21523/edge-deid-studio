@@ -1,8 +1,8 @@
 # src/deid_pipeline/pii/legacy/spacy_detector.py
 from typing import List
 import spacy, re
-from ..base import PIIDetector, Entity   # ← 你的抽象類別
-from ...configs.regex_zh import PII_PATTERNS
+from deid_pipeline.pii.utils.base import PIIDetector, Entity
+from ......configs.regex_zh import PII_PATTERNS
 
 # 新增統一類型映射
 # type mapping: spaCy label → our PII_TYPES
