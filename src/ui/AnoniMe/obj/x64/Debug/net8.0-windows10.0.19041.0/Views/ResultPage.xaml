@@ -7,38 +7,61 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:AnoniMe.ViewModels"
+    xmlns:models="using:AnoniMe.Models"
                                    
     mc:Ignorable="d">
 
     <StackPanel Padding="40" Spacing="20">
 
         <!-- 成功訊息 -->
-        <StackPanel HorizontalAlignment="Center">
-            <TextBlock Text="去識別化完成囉！" FontSize="24" FontWeight="Bold" Foreground="#66CC33"/>
-        </StackPanel>
+        <TextBlock Text="去識別化完成囉！" FontSize="24" FontWeight="Bold" Foreground="#66CC33" HorizontalAlignment="Center"/>
 
-        <!-- 檔案標籤列表 -->
-        <ItemsControl x:ConnectionId='2'                                                    >
+        <!-- 預覽清單 -->
+        <ItemsControl x:ConnectionId='2'                                              >
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" FontSize="16"/>
+                <DataTemplate                                    >
+
+                    <Border x:ConnectionId='8' Background="#F8F8F8" Padding="20" Margin="10" CornerRadius="10">
+                        <StackPanel Spacing="12">
+
+                            <!-- 檔案資訊 -->
+                            <TextBlock x:ConnectionId='9'                          FontSize="16" FontWeight="Bold"/>
+                            <TextBlock x:ConnectionId='10'                          FontSize="14"/>
+                            <TextBlock x:ConnectionId='11'                                 FontSize="14"/>
+
+                            <!-- PDF 預覽 -->
+                            <Border x:ConnectionId='12'                                                                                   Background="White" Height="300">
+                                <WebView2 x:ConnectionId='15'                          />
+                            </Border>
+
+                            <!-- Word 預覽 -->
+                            <ScrollViewer x:ConnectionId='13'                                                                                  >
+                                <TextBlock x:ConnectionId='14'                             TextWrapping="Wrap" FontSize="14"/>
+                            </ScrollViewer>
+
+                        </StackPanel>
+                    </Border>
+
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- 預覽區塊 -->
-        <Border Background="#F8F8F8" Padding="20" CornerRadius="10" Height="400">
-            <ScrollViewer>
-                <TextBlock x:ConnectionId='5'                                           TextWrapping="Wrap" FontSize="14"/>
-            </ScrollViewer>
-        </Border>
+        <!-- 檔名清單（可選） -->
+        <ItemsControl x:ConnectionId='3'                                                    >
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" FontSize="14" Foreground="Gray"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
         <!-- 功能按鈕群 -->
-        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-            <Button x:ConnectionId='3' Content="下載結果"                                             />
-            <Button x:ConnectionId='4' Content="返回首頁"                                            />
+        <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
+            <Button x:ConnectionId='4' Content="下載結果"                                              />
+            <Button x:ConnectionId='5' Content="返回首頁"                                            />
         </StackPanel>
 
     </StackPanel>
+
 </Page>
 
