@@ -2,7 +2,7 @@
 from typing import List
 import spacy, re
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
-from ......configs.regex_zh import PII_PATTERNS
+from deid_pipeline.config import Config
 
 # 新增統一類型映射
 # type mapping: spaCy label → our PII_TYPES
@@ -13,16 +13,19 @@ SPACY_TO_PII_TYPE = {
     "LOC": "ADDRESS"
 }
 
+# 預編譯我們的 regex 規則
+PII_PATTERNS = {
+    ent_type: [re.compile(p) for p in patterns]
+    for ent_type, patterns in Config.REGEX_PATTERNS.items()
+}
+
 _nlp = spacy.load("en_core_web_sm")
 
 class SpacyDetector(PIIDetector):
     def __init__(self):
         self._nlp = _nlp
         # 預編譯規則
-        self.regex_patterns = {
-            typ: [re.compile(p) for p in pats]
-            for typ, pats in PII_PATTERNS.items()
-        }
+        self.regex_patterns = PII_PATTERNS
 
     def detect(self, text: str) -> List[Entity]:
         ents: List[Entity] = []

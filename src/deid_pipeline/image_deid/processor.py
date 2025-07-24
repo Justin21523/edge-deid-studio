@@ -1,3 +1,4 @@
+# src/deid_pipeline/image_deid/processor.py
 import os
 import time
 import logging
@@ -12,55 +13,38 @@ from deid_pipeline.pii.utils.replacer import Replacer
 from deid_pipeline.config import Config
 from deid_pipeline.pii.utils import logger
 
-class OCRPIIProcessor:
+class ImageDeidProcessor:
     def __init__(self, lang: str = "zh"):
-        self.ocr_processor = BaseOCRProcessor.get_instance()
-        self.reader    = get_ocr_reader(Config.OCR_LANGUAGES)
-        self.detector  = get_detector(lang)
-        self.replacer  = Replacer()
-        self.lang = lang
+        # EasyOCR 讀取器
+        self.reader   = get_ocr_reader(Config.OCR_LANGUAGES)
+        # PII 偵測：BERT + Regex composite
+        self.detector = get_detector(lang)
+        self.replacer = Replacer()
+        self.lang     = lang
 
     def process_image(self, image_path: str) -> Dict:
-        """處理圖像並返回 PII 掃描與替換結果"""
-        start_time = time.perf_counter()
-        result = {
+        start = time.perf_counter()
+        img   = cv2.imread(image_path)
+        # OCR 擷取文字
+        raw_results = self.reader.readtext(img)
+        text_lines  = [res[1] for res in raw_results]
+        original_text = "\n".join(text_lines)
+
+        # PII 偵測
+        entities = self.detector.detect(original_text)
+
+        # 取代或遮蔽
+        clean_text, events = self.replacer.replace(original_text, entities)
+
+        return {
             "status": "success",
-            "original_text": "",
-            "clean_text": "",
-            "entities": [],
-            "events": [],
-            "processing_time": 0
+            "original_text": original_text,
+            "clean_text":    clean_text,
+            "entities":      entities,
+            "events":        events,
+            "processing_time": time.perf_counter() - start
         }
-
-        try:
-            # OCR 處理
-            ocr_output = self.ocr_processor.process_image_file(image_path)
-            result["original_text"] = ocr_output.get("text", "")
-
-            # PII 檢測
-            entities = self.detector.detect(result["original_text"])
-            result["entities"] = entities
-
-            # 替換
-            clean_text, events = self.replacer.replace(
-                result["original_text"], entities
-            )
-            result["clean_text"] = clean_text
-            result["events"] = events
-
-        except Exception as e:
-            logger.error(f"OCRPII processing failed: {image_path}, error: {e}")
-            result["status"] = "error"
-            result["error"] = str(e)
-
-        finally:
-            result["processing_time"] = time.perf_counter() - start_time
-            logger.info(
-                f"OCRPII complete: {image_path}, time: {result['processing_time']:.2f}s"
-            )
-
-        return result
-
+    
 # Extend BaseOCRProcessor to add image file support
 class OCRProcessor(BaseOCRProcessor):
     def process_image_file(self, image_path: str) -> Dict:
