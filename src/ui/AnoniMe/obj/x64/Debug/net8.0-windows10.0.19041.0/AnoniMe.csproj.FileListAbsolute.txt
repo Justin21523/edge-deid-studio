@@ -13,13 +13,13 @@ C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\App.xaml
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\HomePage.xaml
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\MainWindow.xaml
-C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\ResultPage.xaml
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\UploadPage.xaml
+C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\ResultPage.xaml
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\App.xbf
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\HomePage.xbf
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\MainWindow.xbf
-C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\ResultPage.xbf
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\UploadPage.xbf
+C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\Views\ResultPage.xbf
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\XamlSaveStateFile.xml
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.exe
