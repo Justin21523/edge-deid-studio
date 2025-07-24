@@ -60,3 +60,12 @@ class Config:
     # System flags
     USE_STUB = False
     LOG_LEVEL = "INFO"
+
+    # ONNX 推論相關
+    USE_ONNX          = True
+    ONNX_MODEL_PATH   = Path(os.getenv("ONNX_MODEL_PATH", PROJECT_ROOT / "edge_models" / "bert-ner-zh.onnx"))
+    ONNX_PROVIDERS    = ["CPUExecutionProvider", "CUDAExecutionProvider", "NPUExecutionProvider"]
+
+    # 長文本分段
+    MAX_SEQ_LENGTH    = 512
+    WINDOW_STRIDE     = 0.5

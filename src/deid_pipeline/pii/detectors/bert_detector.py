@@ -7,6 +7,7 @@ import re, time, logging
 import numpy as np
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
 from deid_pipeline.config import Config
+from deid_pipeline.config import ONNX_MODEL_PATH, ONNX_PROVIDERS
 from deid_pipeline.pii.utils import logger
 
 
