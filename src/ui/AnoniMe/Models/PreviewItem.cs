@@ -3,10 +3,14 @@
 
 namespace AnoniMe.Models
 {
-    public class PreviewItem
+    public class PreviewFileInfo
     {
-        public string FileName { get; set; } = "";
-        public string PreviewContent { get; set; } = "";
-        public IRelayCommand DownloadCommand { get; set; } = new RelayCommand(() => { });
+        public string FileName { get; set; }
+        public string FileType { get; set; }
+        public string FileSizeDisplay { get; set; }
+        public string PreviewText { get; set; }
+        public string? PdfUri { get; set; }
+        public bool IsPdf { get; set; }
+        public bool IsDoc { get; set; }
     }
 }

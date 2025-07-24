@@ -7,37 +7,60 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:AnoniMe.ViewModels"
+    xmlns:models="using:AnoniMe.Models"
     x:DataType="vm:ResultViewModel"
     mc:Ignorable="d">
 
     <StackPanel Padding="40" Spacing="20">
 
         <!-- 成功訊息 -->
-        <StackPanel HorizontalAlignment="Center">
-            <TextBlock Text="去識別化完成囉！" FontSize="24" FontWeight="Bold" Foreground="#66CC33"/>
-        </StackPanel>
+        <TextBlock Text="去識別化完成囉！" FontSize="24" FontWeight="Bold" Foreground="#66CC33" HorizontalAlignment="Center"/>
 
-        <!-- 檔案標籤列表 -->
-        <ItemsControl ItemsSource="{x:Bind ViewModel.ProcessedFileNames}">
+        <!-- 預覽清單 -->
+        <ItemsControl ItemsSource="{x:Bind ViewModel.PreviewFiles}">
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" FontSize="16"/>
+                <DataTemplate x:DataType="models:PreviewFileInfo">
+
+                    <Border Background="#F8F8F8" Padding="20" Margin="10" CornerRadius="10">
+                        <StackPanel Spacing="12">
+
+                            <!-- 檔案資訊 -->
+                            <TextBlock Text="{x:Bind FileName}" FontSize="16" FontWeight="Bold"/>
+                            <TextBlock Text="{x:Bind FileType}" FontSize="14"/>
+                            <TextBlock Text="{x:Bind FileSizeDisplay}" FontSize="14"/>
+
+                            <!-- PDF 預覽 -->
+                            <Border Visibility="{x:Bind IsPdf, Converter={StaticResource BoolToVisibilityConverter}}" Background="White" Height="300">
+                                <WebView2 Source="{x:Bind PdfUri}" />
+                            </Border>
+
+                            <!-- Word 預覽 -->
+                            <ScrollViewer Visibility="{x:Bind IsDoc, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <TextBlock Text="{x:Bind PreviewText}" TextWrapping="Wrap" FontSize="14"/>
+                            </ScrollViewer>
+
+                        </StackPanel>
+                    </Border>
+
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- 預覽區塊 -->
-        <Border Background="#F8F8F8" Padding="20" CornerRadius="10" Height="400">
-            <ScrollViewer>
-                <TextBlock Text="{x:Bind ViewModel.FilePreviewText}" TextWrapping="Wrap" FontSize="14"/>
-            </ScrollViewer>
-        </Border>
+        <!-- 檔名清單（可選） -->
+        <ItemsControl ItemsSource="{x:Bind ViewModel.ProcessedFileNames}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" FontSize="14" Foreground="Gray"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
         <!-- 功能按鈕群 -->
-        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-            <Button Content="下載結果" Command="{x:Bind ViewModel.DownloadCommand}"/>
+        <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
+            <Button Content="下載結果" Command="{x:Bind ViewModel.DownloadCommand}" />
             <Button Content="返回首頁" Command="{x:Bind ViewModel.GoHomeCommand}" />
         </StackPanel>
 
     </StackPanel>
+
 </Page>
