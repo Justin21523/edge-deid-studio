@@ -1,12 +1,8 @@
 # src/deid_pipeline/image_deid/processor.py
-import os
 import time
-import logging
 import cv2
-import numpy as np
 from typing import Dict
 
-from deid_pipeline.parser.text_extractor import OCRProcessor as BaseOCRProcessor
 from deid_pipeline.parser.ocr import get_ocr_reader
 from deid_pipeline.pii.detectors import get_detector
 from deid_pipeline.pii.utils.replacer import Replacer
@@ -44,29 +40,3 @@ class ImageDeidProcessor:
             "events":        events,
             "processing_time": time.perf_counter() - start
         }
-    
-# Extend BaseOCRProcessor to add image file support
-class OCRProcessor(BaseOCRProcessor):
-    def process_image_file(self, image_path: str) -> Dict:
-        """讀取圖檔並回傳 OCR 細節"""
-        self.init_reader()
-        try:
-            img = cv2.imread(image_path)
-            if img is None:
-                raise ValueError(f"Cannot read image: {image_path}")
-
-            results = self.reader.readtext(img)
-            text = ""
-            details = []
-            for bbox, word, conf in results:
-                text += word + " "
-                details.append({
-                    "text": word,
-                    "confidence": float(conf),
-                    "bbox": bbox
-                })
-
-            return {"text": text.strip(), "details": details}
-        except Exception as e:
-            logger.error(f"OCR processing failed on image: {e}")
-            return {"text": "", "details": [], "error": str(e)}

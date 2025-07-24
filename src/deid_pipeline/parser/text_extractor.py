@@ -8,7 +8,7 @@ from docx import Document
 import fitz  # PyMuPDF
 import easyocr
 from deid_pipeline.parser.ocr import get_ocr_reader
-from deid_pipeline.config import OCR_THRESHOLD, USE_STUB
+from deid_pipeline.config import OCR_THRESHOLD, USE_STUB, Config
 from deid_pipeline.pii.utils import logger
 
 # 全域OCR處理器
@@ -114,7 +114,7 @@ def extract_text(file_path: str, ocr_fallback: bool = True) -> tuple[str, list]:
                             current_index += len(text) + 1
 
                 # OCR回退機制
-                if ocr_fallback and len(page_text.strip()) < 50:  # 字數閾值
+                if ocr_fallback and len(page_text.strip()) < Config.OCR_THRESHOLD:
                     logger.info(f"頁面 {page_num} 觸發OCR回退機制")
                     pix = page.get_pixmap()
                     ocr_text = ocr_processor.process_page(pix)
