@@ -1,9 +1,6 @@
 from .base import Entity
 from .fake_provider import FakeProvider
 from typing import List, Tuple, Dict
-import logging
-
-logger = logging.getLogger(__name__)
 
 class Replacer:
     def __init__(self, provider=None):
