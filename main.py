@@ -1,48 +1,52 @@
+# main.py
 import argparse
 from pathlib import Path
 
-from deid_pipeline.pii import get_detector          # PII 偵測
 from deid_pipeline.parser.text_extractor import extract_text
-from utils.replacer import Replacer   # 假資料替換
+from deid_pipeline.pii import get_detector
+from deid_pipeline.pii.utils.replacer import Replacer
 
+def parse_args():
+    p = argparse.ArgumentParser(description="De-ID CLI")
+    p.add_argument("-i", "--input", required=True, help="Input file path (txt|docx|pdf|png|jpg)")
+    p.add_argument("-l", "--lang", choices=["zh","en"], default="zh", help="Language for detection")
+    p.add_argument("-m", "--mode", choices=["detect","replace","black"], default="replace",
+                   help="detect: list PII, replace: substitute, black: output mask spans")
+    p.add_argument("--json", action="store_true", help="When replace/black, also print JSON events")
+    return p.parse_args()
 
-def cli():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--file", required=True, help="輸入檔案路徑")
-    ap.add_argument("--lang", choices=["zh", "en"], default="zh")
-    ap.add_argument("--mode", choices=["detect", "replace", "black"],
-                    default="detect",
-                    help="detect=只列實體  replace=偽資料覆寫  black=遮罩範圍")
-    ap.add_argument("--json", action="store_true", help="輸出 JSON 事件")
-    return ap.parse_args()
-
-def run():
-    args = cli()
-    fp = Path(args.file)
+def main():
+    args = parse_args()
+    fp = Path(args.input)
     if not fp.exists():
-        raise FileNotFoundError(fp)
+        raise FileNotFoundError(f"Input not found: {fp}")
 
-    text = extract_text(str(fp))
+    # 1. Extract text (for PDF/TXT/DOCX) or OCR (for images)
+    text, offsets = extract_text(str(fp))
+
+    # 2. Detect PII
     detector = get_detector(args.lang)
     entities = detector.detect(text)
 
+    # 3. Replace or mask
+    replacer = Replacer()
     if args.mode == "detect":
+        # just list out
         for ent in entities:
-            frag = text[ent["span"][0]:ent["span"][1]]
-            print(f"{ent['type']:8s} | {frag} | {ent['score']:.2f}")
-    elif args.mode != "detect" and args.json:
-        print(Replacer.dumps(events))
+            s,e = ent["span"]
+            snippet = text[s:e]
+            print(f"{ent['type']:10} | {snippet} | {ent['score']:.2f}")
     else:
-        new_text, events = Replacer().replace(
-            text, entities,
-            mode="replace" if args.mode == "replace" else "black"
+        new_text, events = replacer.replace(
+            text,
+            entities,
+            mode="replace" if args.mode=="replace" else "black"
         )
-        print("\n===== 置換後文字 =====\n")
+        print("\n===== Result Text =====\n")
         print(new_text)
-        print("\n===== 事件列表 =====")
-        for ev in events:
-            print(ev)
+        if args.json:
+            print("\n===== Events JSON =====\n")
+            print(Replacer.dumps(events))
 
 if __name__ == "__main__":
-    run()
-
+    main()
