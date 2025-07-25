@@ -68,6 +68,165 @@ print(pii_classes)
 - open in Colab 可以直接實測
 - 
 
+
+### PII 偵測器模組說明
+
+#### `processor.py`  
+路徑：`src/deid_pipeline/image_deid/processor.py`  
+**功能定位**  
+- 類別：`ImageDeidProcessor`  
+- 負責：將影像 OCR → PII 偵測 → 替換／遮蔽 → 回傳含原文、清理後文字、偵測結果、事件與耗時  
+
+**實作原理**  
+1. 用 OpenCV 讀檔  
+2. 透過 EasyOCR (singleton) 抽文字 `(bbox, text, conf)`  
+3. 合併文字 → `original_text`  
+4. 呼叫複合偵測器 `self.detector.detect(…)`  
+5. 用 `self.replacer.replace(…)` 套上假資料或黑框  
+6. 回傳所有中間結果與耗時  
+
+---
+
+#### `ocr.py`  
+路徑：`src/deid_pipeline/parser/ocr.py`  
+**功能定位**  
+- 函式：`get_ocr_reader(langs)`  
+- 負責：單例管理 EasyOCR Reader，預設讀取 `Config.OCR_LANGUAGES`，避免重複初始化  
+
+**實作原理**  
+```python
+if _OCR_READER is None:
+    _OCR_READER = easyocr.Reader(langs, gpu=False)
+return _OCR_READER
+````
+
+* 單例模式節省模型載入時間
+* 語言清單由 Config 控制
+
+---
+
+#### `text_extractor.py`
+
+路徑：`src/deid_pipeline/parser/text_extractor.py`
+**功能定位**
+
+* 函式：`extract_text(file_path, ocr_fallback=True)`
+* 負責：從多種格式（`.txt`、`.docx`、`.html`、`.pdf`）提取文字並回傳 offset map
+
+**實作原理**
+
+1. 文字／Word／HTML → 直讀全文 + 建立 char→(page, bbox) map
+2. PDF → 用 `fitz` 抽 blocks，若文字過少(`len<Config.OCR_THRESHOLD`) → OCR fallback
+3. 回傳 `(full_text, offset_map)`
+
+---
+
+### PII 偵測器系列
+
+#### `spacy_detector.py`
+
+路徑：`src/deid_pipeline/pii/detectors/legacy/spacy_detector.py`
+**功能定位**
+
+* SpaCy NER + Regex 雙刀流
+
+**實作原理**
+
+1. `nlp = spacy.load(...)` → `doc.ents`
+2. 篩選 `SPACY_TO_PII_TYPE`
+3. `Entity(..., score=0.99, source="spacy")`
+4. 加入 `Config.REGEX_PATTERNS` 正則匹配 results
+5. `_resolve_conflicts(...)` 保留最高分或優先級
+
+---
+
+#### `regex_detector.py`
+
+路徑：`src/deid_pipeline/pii/detectors/regex_detector.py`
+**功能定位**
+
+* 單純用正則 `re.finditer` 掃 PII
+
+**實作原理**
+
+```python
+for type, patterns in Config.REGEX_PATTERNS.items():
+    for pat in patterns:
+        for m in re.compile(pat).finditer(text):
+            yield Entity(span=(m.start(), m.end()), type=type, score=1.0, source="regex")
+```
+
+---
+
+#### `bert_detector.py`
+
+路徑：`src/deid_pipeline/pii/detectors/bert_detector.py`
+**功能定位**
+
+* PyTorch Transformers BERT Token Classification
+
+**實作原理**
+
+1. `__init__`載入 ONNX 或 PyTorch 模型 + tokenizer
+2. `detect(text)` → sliding window 切塊
+3. 每段做推論 → 回傳 token label
+4. `_merge_entities(...)` 去重合、依 `ENTITY_PRIORITY` 保留
+
+---
+
+#### `bert_onnx_detector.py`
+
+路徑：`src/deid_pipeline/pii/detectors/bert_onnx_detector.py`
+**功能定位**
+
+* ONNX Runtime 加速版 BERT 偵測
+
+**差異**
+
+* 模型載入改用 `ORTModelForTokenClassification.from_pretrained(...)`
+* 推論改成 `session.run(...)`
+
+---
+
+#### `composite.py`
+
+路徑：`src/deid_pipeline/pii/detectors/composite.py`
+**功能定位**
+
+* 將前述所有偵測器結果「parallel 執行 → 合併去重」
+
+**實作原理**
+
+```python
+all_ents = []
+for det in self.detectors:
+    all_ents.extend(det.detect(text))
+return self._resolve_conflicts(all_ents)
+```
+
+* 依 `ENTITY_PRIORITY` 與 score 決定最終保留
+
+---
+
+#### 檔案串接
+
+在 `src/deid_pipeline/pii/detectors/__init__.py` 中：
+
+```python
+from .spacy_detector import SpacyDetector
+from .regex_detector import RegexDetector
+from .bert_detector import BertNERDetector
+from .bert_onnx_detector import BertONNXNERDetector
+from .composite import CompositeDetector
+
+def get_detector(lang="zh"):
+    # 根據 Config.USE_ONNX / USE_STUB 組成 CompositeDetector(...)
+    return CompositeDetector(...)
+```
+
+---  
+
+
 ### 🔐 sensitive_data_generator
 
 這個子模組負責「合成」多格式、含敏感資料的假測試文件，供 De-ID pipeline 測試與 benchmark。
