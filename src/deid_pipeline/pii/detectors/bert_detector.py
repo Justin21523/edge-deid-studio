@@ -3,7 +3,8 @@ from pathlib import Path, PurePath
 from optimum.onnxruntime import ORTModelForTokenClassification
 import onnxruntime as ort
 from transformers import AutoTokenizer
-import re, time, logging
+import re
+import time
 import numpy as np
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
 from deid_pipeline.config import Config
