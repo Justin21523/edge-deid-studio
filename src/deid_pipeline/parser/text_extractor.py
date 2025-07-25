@@ -7,8 +7,7 @@ from bs4 import BeautifulSoup
 from docx import Document
 import fitz  # PyMuPDF
 import easyocr
-from deid_pipeline.parser.ocr import get_ocr_reader
-from deid_pipeline.config import OCR_THRESHOLD, USE_STUB, Config
+from deid_pipeline.config import Config
 from deid_pipeline.pii.utils import logger
 
 # 全域OCR處理器
