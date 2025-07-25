@@ -68,7 +68,125 @@ print(pii_classes)
 - open in Colab 可以直接實測
 - 
 
-## 🛠️ Scripts utilities
+### 🔐 sensitive_data_generator
+
+這個子模組負責「合成」多格式、含敏感資料的假測試文件，供 De-ID pipeline 測試與 benchmark。
+
+#### 2.1 `__init__.py`
+
+```python
+from .config import *
+from .generators import PIIGenerator
+from .formatters import DataFormatter
+from .advanced_formatters import AdvancedDataFormatter
+from .file_writers import FileWriter
+from .advanced_file_writers import AdvancedFileWriter
+from .dataset_generator import MultiFormatDatasetGenerator
+
+__all__ = [
+  "PIIGenerator", "DataFormatter", "FileWriter",
+  "AdvancedDataFormatter","AdvancedFileWriter","MultiFormatDatasetGenerator"
+]
+````
+
+* **功能**：把模組裡的核心類別一次導出 (`__all__`)，提供上層 `import sensitive_data_generator` 就能拿到產生器、格式器、檔案輸出等所有工具。
+
+#### 2.2 `advanced_file_writers.py`
+
+```python
+class AdvancedFileWriter:
+    """進階多格式檔案輸出工具"""
+
+    @staticmethod
+    def create_complex_pdf(content, output_dir, filename=None, include_charts=True):
+        # 1. 確保目錄存在
+        os.makedirs(output_dir, exist_ok=True)
+        # 2. 建立 ReportLab PDF 文件
+        doc = SimpleDocTemplate(filepath, pagesize=letter)
+        styles = getSampleStyleSheet()
+        elements = []
+
+        # 3. 加標題與正文
+        title = Paragraph("機密文件 – 個人資料報告", styles['Heading1'])
+        elements.append(title)
+        elements.append(Spacer(1, 12))
+        pii_para = Paragraph(content, styles['BodyText'])
+        elements.append(pii_para)
+        elements.append(Spacer(1, 12))
+
+        # 4. 加表格（示範插入 4 欄：姓名、ID、電話、地址）
+        table_data = [
+          ['項目','原始資料','備註'],
+          ['姓名', PIIGenerator.generate_tw_name(), '測試用虛擬姓名'],
+          ['身分證', PIIGenerator.generate_tw_id(), '測試用虛擬ID'],
+          ['電話', PIIGenerator.generate_tw_phone(), '測試用虛擬電話'],
+          ['地址', PIIGenerator.generate_tw_address(), '測試用虛擬地址']
+        ]
+        table = Table(table_data, colWidths=[1.5*inch,3*inch,2.5*inch])
+        table.setStyle(TableStyle([...]))
+        elements.append(table)
+        elements.append(Spacer(1, 24))
+
+        # 5. 可選：插入假圖表，圖用 PIL+matplotlib 生成
+        if include_charts:
+            chart_img = AdvancedFileWriter.generate_fake_chart()
+            elements.append(RLImage(chart_img, width=5*inch, height=3*inch))
+            elements.append(Paragraph("圖1：測試資料分佈圖", styles['Italic']))
+
+        # 6. 寫出 PDF
+        doc.build(elements)
+        return filepath
+```
+
+* **功能拆解**
+
+  1. **目錄檢查**：`os.makedirs(...)`
+  2. **PDF**：使用 ReportLab `SimpleDocTemplate` + `Paragraph`＋`Table`＋`Spacer`
+  3. **假資料表格**：`PIIGenerator` 隨機生成姓名、ID、電話、地址
+  4. **假圖表**：呼叫 `generate_fake_chart()` → 隨機產生 bar/line/pie 圖
+  5. **匯出**：回傳完整檔案路徑
+
+```python
+    @staticmethod
+    def generate_fake_chart():
+        """生成 Bar/Line/Pie 假圖表"""
+        plt.figure(figsize=(8,5))
+        kind = random.choice(['bar','line','pie'])
+        if kind=='bar':
+            labels = ['A部門','B部門','C部門','D部門']
+            values = np.random.randint(100,500,size=4)
+            plt.bar(labels, values)
+            plt.title('部門業績比較')
+        elif kind=='line':
+            x = np.arange(1,11)
+            y = np.random.rand(10)*100
+            plt.plot(x,y,marker='o')
+            plt.title('月度趨勢分析')
+        else:
+            labels = ['類別A','類別B','類別C','類別D']
+            sizes = np.random.randint(15,40,size=4)
+            plt.pie(sizes, labels=labels, autopct='%1.1f%%')
+            plt.title('類別分佈圖')
+        buf = io.BytesIO()
+        plt.tight_layout()
+        plt.savefig(buf, format='png', dpi=100)
+        plt.close()
+        buf.seek(0)
+        return buf
+```
+
+* **功能**：用 matplotlib 隨機選擇圖表類型、生成數據後輸出到 `BytesIO`，讓上層 PDF/Word/PPTX 都可以直接插圖。
+
+> **後續**：`create_word_document`、`create_powerpoint_presentation`、`create_excel_spreadsheet`、`create_scanned_document` 都採相同拆分：
+>
+> * **Word** → `python-docx`：`Document()`、`add_heading`、`add_table`、`add_picture`
+> * **PPTX** → `python-pptx`：`Presentation()`、`slides.add_slide()`、`shapes.add_table()`、`shapes.add_picture()`
+> * **Excel** → `pandas.DataFrame` + `ExcelWriter(engine='xlsxwriter')`；設定 header 格式、欄寬、數值格式
+> * **掃描檔** → `PIL.ImageDraw`：畫背景噪點、文字、簽章、簽名，模擬掃描品質
+
+---
+
+### 🛠️ Scripts utilities
 
 ### 1. `benchmark_formats.py` — 格式效能基準測試
 ```python
