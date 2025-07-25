@@ -184,6 +184,123 @@ class AdvancedFileWriter:
 > * **Excel** → `pandas.DataFrame` + `ExcelWriter(engine='xlsxwriter')`；設定 header 格式、欄寬、數值格式
 > * **掃描檔** → `PIL.ImageDraw`：畫背景噪點、文字、簽章、簽名，模擬掃描品質
 
+下面示範如何把 **`advanced_formatters.py`**、**`config.py`**、**`dataset_generator.py`** 也同樣補到文件裡，並說明每個區塊的功能與目的。
+
+
+#### 2.3 `advanced_formatters.py`
+
+```python
+class AdvancedDataFormatter:
+    """進階資料格式化生成器"""
+
+    @staticmethod
+    def generate_contract_document():
+        """
+        產生一份合約合約範本（含虛擬當事人資料）：
+        - parties: 隨機產生甲乙雙方姓名、身分證、地址、簽訂日期
+        - contract: 填入各條款樣板（目的、期限、報酬、保密、管轄法院等）
+        """
+        parties = {
+          "甲方": PIIGenerator.generate_tw_name(),
+          "乙方": PIIGenerator.generate_tw_name(),
+          "甲方身分證": PIIGenerator.generate_tw_id(),
+          "乙方身分證": PIIGenerator.generate_tw_id(),
+          "甲方地址": PIIGenerator.generate_tw_address(),
+          "乙方地址": PIIGenerator.generate_tw_address(),
+          "簽約日期": (datetime.now() - timedelta(days=random.randint(1,365)))\
+             .strftime("%Y年%m月%d日")
+        }
+        contract = f"""
+        合約書
+
+        立合約當事人：
+        甲方：{parties['甲方']}（身分證號：{parties['甲方身分證']}）
+        ...
+        第六條 管轄法院  
+        因本合約發生之爭議，雙方同意以台灣台北地方法院為第一審管轄法院。
+
+        中華民國 {parties['簽約日期']}
+        """
+        return contract
+````
+
+* **功能**：用 `PIIGenerator` 隨機填入「合約」所需關鍵欄位，並透過多行字串模板（f-string）組成完整合約範本。
+
+```python
+    @staticmethod
+    def generate_medical_report():
+        """
+        生成詳細醫療報告文本（含虛擬病人資料 + 虛擬檢查數據）：
+        - patient: 隨機姓名、ID、出生、電話、地址、病歷號
+        - test_results: 血壓、心率、血糖、膽固醇等
+        - report: f-string 填入醫院名稱、各節標題（病史、診斷、檢驗、影像、處方、醫囑）
+        """
+```
+
+* **功能**：同樣用 f-string + `HOSPITALS` 列表隨機挑選醫院，組出可直接貼檔的醫療報告模板。
+
+---
+
+#### 2.4 `config.py`
+
+```python
+# 台灣地區常用參考資料，供 Formatter/Generator 使用
+TAIWAN_LOCATIONS = {
+  "北部": ["台北市","新北市","基隆市",...],
+  "中部": ["台中市","彰化縣",...],
+  ...
+}
+
+STREET_NAMES = ["中山","中正","光復",...]
+SURNAMES     = ["陳","林","張",...]
+GIVEN_NAMES  = ["怡君","志明","雅婷",...]
+HOSPITALS    = ["台大醫院","長庚紀念醫院",...]
+MEDICAL_SPECIALTIES = ["內科","外科","兒科",...]
+```
+
+* **功能**：把所有可隨機選用的地名、街道、姓名、醫院、科別等列表集中管理，方便 Formatter 呼叫。
+
+---
+
+#### 2.5 `dataset_generator.py`
+
+```python
+class MultiFormatDatasetGenerator:
+    """多格式敏感資料集生成器"""
+
+    @staticmethod
+    def generate_full_dataset(output_dir, num_items=50):
+        """
+        一次生產多種格式（pdf、word、image、excel、ppt、contracts、medical、financial…）  
+        - 建立子資料夾：pdf/、word/、scanned/、excel/、ppt/、contracts/、medical/、financial/  
+        - 逐筆循環：隨機選 contract/medical/financial，呼叫 AdvancedDataFormatter 產文本  
+        - 呼叫 AdvancedFileWriter 輸出對應格式檔案並紀錄路徑  
+        - 最後匯出 metadata.json，包含每筆的格式清單與檔案位置
+        """
+        # 建目錄、初始化 dataset list…
+        sub_dirs = {…}
+        for i in range(num_items):
+          doc_type = random.choice(["contract","medical","financial"])
+          if doc_type=="contract":
+            content = AdvancedDataFormatter.generate_contract_document()
+          elif doc_type=="medical":
+            content = AdvancedDataFormatter.generate_medical_report()
+          else:
+            content = AdvancedDataFormatter.generate_financial_statement()
+
+          pdf_path = AdvancedFileWriter.create_complex_pdf(content, sub_dirs["pdf"], f"{doc_type}_{i+1}.pdf")
+          item["formats"].append({"format":"pdf","path":pdf_path})
+
+          # …同理呼叫 create_word_document、create_scanned_document
+          # 若 financial 額外呼叫 create_excel_spreadsheet、create_powerpoint_presentation
+
+          # 寫 content .txt、dataset.append(item)
+        # 寫出 dataset_metadata.json
+```
+
+* **功能**：整合以上 Formatter + FileWriter，批次生產多格式測試集並輸出 metadata，便於後續自動化測試與 benchmark。
+
+
 ---
 
 ### 🛠️ Scripts utilities
