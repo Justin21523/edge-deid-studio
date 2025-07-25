@@ -162,6 +162,74 @@ print(pii_classes)
 
 整合成 `DeidPipeline.process(input)` → 回傳 `DeidResult(entities, output, report)`。
 
+### Config.py 參數範例
+
+```python
+# src/deid_pipeline/config.py
+
+# 1. 規則檔路徑
+PROJECT_ROOT   = Path(__file__).resolve().parent.parent
+CONFIGS_DIR    = PROJECT_ROOT / "configs"
+REGEX_RULES_FILE = CONFIGS_DIR / "regex_zh.yaml"
+
+def load_regex_rules(path: Path = REGEX_RULES_FILE) -> dict:
+    with open(path, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+class Config:
+    """全域設定中心：文字抽取／PII 偵測／假資料生成"""
+
+    # 支援檔案類型
+    SUPPORTED_FILE_TYPES = [".pdf", ".docx", ".png", ".jpg"]
+
+    # --- 文字抽取設定 ---
+    OCR_ENABLED      = True
+    OCR_THRESHOLD    = 50
+    OCR_LANGUAGES    = ["ch_tra", "en"]
+
+    # --- BERT 偵測設定 ---
+    NER_MODEL_PATH          = os.getenv("NER_MODEL_PATH", PROJECT_ROOT / "models" / "ner")
+    BERT_CONFIDENCE_THRESHOLD = 0.85
+    MAX_SEQ_LENGTH          = 512
+    WINDOW_STRIDE           = 0.5
+    ENTITY_PRIORITY = {
+        "TW_ID": 100,
+        "PASSPORT": 95,
+        "PHONE": 85,
+        "EMAIL": 80,
+        "NAME": 75,
+        "ADDRESS": 70,
+    }
+
+    # --- Regex 規則 ---
+    REGEX_PATTERNS = load_regex_rules()
+
+    # --- 假資料生成 ---
+    GPT2_MODEL_PATH   = os.getenv("GPT2_MODEL_PATH", PROJECT_ROOT / "models" / "gpt2")
+    FAKER_LOCALE      = "zh_TW"
+    FAKER_CACHE_SIZE  = 1000
+
+    # --- ONNX Runtime 推論 ---
+    USE_ONNX         = True
+    ONNX_MODEL_PATH  = os.getenv("ONNX_MODEL_PATH", PROJECT_ROOT / "edge_models" / "bert-ner-zh.onnx")
+    ONNX_PROVIDERS   = ["CPUExecutionProvider","CUDAExecutionProvider","NPUExecutionProvider"]
+
+    # --- Logging & 環境旗標 ---
+    ENVIRONMENT      = os.getenv("ENV", "local")
+    LOG_LEVEL        = os.getenv("LOG_LEVEL", "INFO")
+    ENABLE_PROFILING = False
+    USE_STUB         = False
+````
+
+> **說明**：
+>
+> * `OCR_*`：PDF 文字擷取的閾值與語言配置；
+> * `NER_MODEL_PATH` 等：BERT 模型路徑與 sliding-window 參數；
+> * `REGEX_PATTERNS`：載入 YAML 形式的 PII 正則；
+> * `USE_ONNX`：切換到 ONNX Runtime；
+> * 其餘為 Fake-data、Logging、環境控制旗標。
+
+
 #### 1. Detector 組裝 (`detectors/__init__.py`)
 
 ```python
