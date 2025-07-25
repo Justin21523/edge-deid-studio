@@ -162,6 +162,70 @@ print(pii_classes)
 
 整合成 `DeidPipeline.process(input)` → 回傳 `DeidResult(entities, output, report)`。
 
+#### 1. Detector 組裝 (`detectors/__init__.py`)
+
+```python
+def get_detector(lang: str = "zh") -> CompositeDetector:
+    config = Config()
+    if lang == "zh" and not config.USE_STUB and MODEL_ZH.exists():
+        return CompositeDetector(
+            BertNERDetector(str(MODEL_ZH)),
+            RegexDetector()
+        )
+    # 省略其他分支……
+    else:
+        return CompositeDetector(
+            SpacyDetector(),
+            RegexDetector(config_path="configs/regex_en.yaml")
+        )
+````
+
+> **說明**：動態挑選 BERT/ONNX 或 SpaCy+Regex，並包成 CompositeDetector。
+
+---
+
+#### 2. Entity 定義 (`utils/base.py`)
+
+```python
+class Entity(TypedDict):
+    span: Tuple[int, int]     # 原文中字元位置 (start, end)
+    type: PII_TYPES           # PII 類型，例如 NAME、ID、PHONE…
+    score: float              # 偵測信心值
+    source: str               # 偵測來源，如 "bert", "regex", "spacy"
+```
+
+> **說明**：用 TypedDict 定義可序列化的 PII 實體結構，統一流轉格式。
+
+---
+
+#### 3. 管線入口 (`src/deid_pipeline/__init__.py`)
+
+```python
+class DeidPipeline:
+    def __init__(self, language: str = "zh"):
+        self.detector = get_detector(language)
+        self.replacer = Replacer()
+        self.ocr_proc = ImageDeidProcessor(lang=language)
+
+    def process(self, input_path: str, output_mode: str = "replacement"):
+        # 1. 文字或影像抽取
+        suffix = input_path.lower().rsplit(".", 1)[-1]
+        if suffix in ("txt", "docx", "pdf"):
+            text, _ = extract_text(input_path)
+        else:
+            ocr_res = self.ocr_proc.process_image(input_path)
+            text = ocr_res["original_text"]
+
+        # 2. 偵測
+        entities = self.detector.detect(text)
+
+        # 3. 替換或塗黑
+        clean_text, events = self.replacer.replace(text, entities)
+        return DeidResult(entities=entities, text=clean_text)
+```
+
+> **說明**：整合抽取→偵測→替換三大步驟，對外提供一致化介面。
+
 ---
 
 ### 2. 假資料生成子系統 (`sensitive_data_generator/`)
