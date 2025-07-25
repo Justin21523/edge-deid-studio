@@ -2,6 +2,8 @@ transformers>=4.40.0
 optimum[onnxruntime-gpu]==1.17.0
 datasets>=4.0.0
 sentencepiece>=0.2.0
+pytest
+sentencepiece>=0.2.0
 torch
 torchtext
 faker>=37.4.2
@@ -13,7 +15,6 @@ opencv-python
 pyyaml>=6.0.2
 opencv-python
 Pillow
-easyocr
 python-docx
 PyMuPDF
 beautifulsoup4
@@ -26,3 +27,4 @@ python-pptx
 transformers
 torch
 optimum[onnxruntime]
+
