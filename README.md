@@ -67,3 +67,93 @@ print(pii_classes)
 ### 🧰 [piiranha-v1-detect-personal-information](https://huggingface.co/iiiorg/piiranha-v1-detect-personal-information)
 - open in Colab 可以直接實測
 - 
+
+## 🛠️ Scripts utilities
+
+### 1. `benchmark_formats.py` — 格式效能基準測試
+```python
+from deid_pipeline import DeidPipeline
+def benchmark_formats(dataset_dir, formats=["pdf","docx","xlsx","png"]):
+    pipeline = DeidPipeline(language="zh")
+    for fmt in formats:
+        fmt_files = [f for f in os.listdir(dataset_dir) if f.endswith(fmt)]
+        # 每種格式只測 10 個檔案
+        for file in fmt_files[:10]:
+            start = time.time()
+            pipeline.process(os.path.join(dataset_dir, file))
+            processing_times.append(time.time()-start)
+````
+
+* **功能**：對指定資料夾中，各格式前10個檔案做去識別化，收集執行時間。
+* **用途**：量化不同檔案格式（PDF、Word、Excel、PNG）在去識別化流程中的平均／最小／最大處理時間，幫助調優與資源規劃。
+
+---
+
+### 2. `download_models.py` — 模型預下載
+
+```python
+MODELS = {
+  "ner_zh": ("ckiplab/bert-base-chinese-ner", "models/ner/bert-ner-zh"),
+  "gpt2_base": ("gpt2", "models/gpt2")
+}
+for name, (repo_id, target) in MODELS.items():
+    # Transformers 下載 GPT-2
+    if name=="gpt2_base" and not (Path(target)/"pytorch_model.bin").exists():
+        tokenizer = AutoTokenizer.from_pretrained(repo_id)
+        model = AutoModelForCausalLM.from_pretrained(repo_id)
+        model.save_pretrained(target); tokenizer.save_pretrained(target)
+    # HF Hub snapshot 下載 NER
+    elif not Path(target).exists():
+        snapshot_download(repo_id, local_dir=target)
+```
+
+* **功能**：自動從 HuggingFace 及 Transformers 下載、快照保存 BERT-NER 與 GPT-2 模型到 `models/`。
+* **用途**：確保團隊一鍵執行時已具備本地模型，避免首次運行時手動下載失敗。
+
+---
+
+### 3. `run_automated_pipeline.py` — 自動化測試管線
+
+```python
+from deid_pipeline import DeidPipeline
+def run_automated_test_pipeline(dataset_dir):
+    pipeline = DeidPipeline(language="zh")
+    for root, _, files in os.walk(dataset_dir):
+        for fn in files:
+            res = pipeline.process(os.path.join(root, fn))
+            results.append({
+                "file": fn,
+                "format": fn.split(".")[-1],
+                "pii_count": len(res.entities),
+                "processing_time": res.processing_time
+            })
+    json.dump(results, open("pipeline_results.json","w"), ensure_ascii=False, indent=2)
+```
+
+* **功能**：遞迴遍歷資料集資料夾，對每支檔案呼叫 `DeidPipeline.process()`，並把 PII 偵測數、執行時間輸出成 JSON。
+* **用途**：快速檢視整批測試資料的去識別化成效，方便生成報表或上傳 CI。
+
+---
+
+### 4. `validate_quality.py` — 去識別化品質驗證
+
+```python
+def validate_deidentification_quality(original_dir, processed_dir):
+    for orig in os.listdir(original_dir):
+        proc = os.path.join(processed_dir, orig)
+        orig_text = open(os.path.join(original_dir,orig)).read()
+        proc_text = open(proc).read()
+        # 檢查是否移除所有 PII
+        for label in ["身分證","電話","地址","病歷號"]:
+            if label in orig_text and label in proc_text:
+                pii_removed=False
+        quality_report.append({...})
+    # 計算成功率
+    pii_success = sum(r["pii_removed"] for r in quality_report)/len(quality_report)
+    print(f"PII Removal Success: {pii_success:.2%}")
+```
+
+* **功能**：逐一比對原檔與處理後檔，驗證「所有標註的 PII」確實未出現在去識別化結果中，同時可留待擴充「表格、圖表完整性檢查」。
+* **用途**：在 CICD 流程中自動確認去識別化質量指標（PII 移除率、格式保留率）。
+
+---
