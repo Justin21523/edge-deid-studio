@@ -300,6 +300,125 @@ class MultiFormatDatasetGenerator:
 
 * **功能**：整合以上 Formatter + FileWriter，批次生產多格式測試集並輸出 metadata，便於後續自動化測試與 benchmark。
 
+下面示範如何把 **`file_writers.py`**、**`formatters.py`**、**`generators.py`** 也加入說明，流程與先前一致：
+
+#### 2.6 `file_writers.py`
+
+```python
+class FileWriter:
+    """檔案輸出工具"""
+
+    @staticmethod
+    def write_text_file(content, output_dir, filename=None):
+        """
+        將文字內容寫入 .txt 檔
+        - 自動建立資料夾
+        - 若未指定 filename，則用 timestamp 命名
+        - 回傳檔案完整路徑
+        """
+        ...
+
+    @staticmethod
+    def write_pdf_file(content, output_dir, filename=None):
+        """
+        將文字內容寫入 PDF
+        - 使用 fpdf 套件
+        - 支援多行文字排版（multi_cell）
+        - 回傳檔案完整路徑
+        """
+        ...
+
+    @staticmethod
+    def write_csv_file(rows, output_dir, filename=None):
+        """
+        將 list-of-dict 寫成 CSV
+        - 自動建立資料夾
+        - 依 dict keys 作為欄位
+        """
+        ...
+````
+
+* **目的**：提供最基本的「文字 / PDF / CSV」檔案輸出能力，供上層 generator 輕鬆呼叫。
+
+#### 2.7 `formatters.py`
+
+```python
+class DataFormatter:
+    """敏感資料段落 & 文件範本生成器"""
+
+    @staticmethod
+    def generate_paragraph(min_sentences=3, max_sentences=8, pii_density=0.3):
+        """
+        用多種句型範本隨機拼出一段文字，並依照 pii_density 插入 PII
+        - sentence_templates: 多種含佔位符 {NAME}/{PHONE}/{ADDRESS}… 的句子
+        - 隨機決定要插幾句、每句是否要替換成 PII
+        """
+        ...
+
+    @staticmethod
+    def generate_medical_record():
+        """
+        生成完整醫療紀錄字串
+        - 基本資訊（姓名/性別/出生/身分證/電話/地址/病歷號）
+        - 就診資訊（日期/醫院/科別/醫師）
+        - 診斷與處方、用藥建議
+        """
+        ...
+
+    @staticmethod
+    def generate_financial_document():
+        """
+        生成財務報表文字
+        - 客戶基本資料（姓名/ID/聯絡/帳號/信用卡）
+        - 隨機 3～10 筆交易記錄
+        - 計算總餘額、支出統計
+        """
+        ...
+```
+
+* **目的**：將原始 PII 生成器（`PIIGenerator`）轉成可貼文件的自然段落或完整文件範本。
+
+#### 2.8 `generators.py`
+
+```python
+class PIIGenerator:
+    """繁體中文各類 PII 隨機生成器"""
+
+    @staticmethod
+    def generate_tw_id():
+        """符合規則的臺灣身分證字號（含檢核碼）"""
+        ...
+
+    @staticmethod
+    def generate_tw_phone():
+        """臺灣手機號碼（0912-345-678 或 0912345678）"""
+        ...
+
+    @staticmethod
+    def generate_tw_address():
+        """臺灣地址：隨機區域 + 隨機街道 + 門牌 + 樓層"""
+        ...
+
+    @staticmethod
+    def generate_tw_name():
+        """隨機挑選常見姓氏 + 名字（有 30% 機率雙名）"""
+        ...
+
+    @staticmethod
+    def generate_medical_record():
+        """僅回傳「病歷號」格式，供範本插入"""
+        ...
+
+    @staticmethod
+    def generate_credit_card():
+        """模擬信用卡卡號（16 碼）"""
+        ...
+
+    ...（其他如 email、passport、license_plate、health_insurance、random_pii 等）...
+```
+
+* **目的**：低階 PII API，專注「產生一則」各種敏感欄位值，所有上層 Formatter / FileWriter / DatasetGenerator 都建構在它之上。
+
 
 ---
 
