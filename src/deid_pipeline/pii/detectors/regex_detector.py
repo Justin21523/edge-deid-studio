@@ -1,9 +1,6 @@
 import os
 import yaml
 import re
-import logging
-from datetime import datetime
-from pathlib import Path
 from typing import List
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
 from deid_pipeline.config import Config
