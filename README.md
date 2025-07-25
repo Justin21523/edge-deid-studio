@@ -68,6 +68,187 @@ print(pii_classes)
 - open in Colab 可以直接實測
 - 
 
+下面彙整從最初到目前，我們在 **EdgeDeID Studio** 專案中所實作的全部功能、檔案結構與測試策略，並說明每個模組如何串接成「去識別化＋替換假資料」的完整流程，以及我們如何生成＆應用敏感假資料。
+
+---
+
+## 一、專案目錄總覽
+
+```
+/
+├── configs/
+│   └── regex_zh.yaml                   # 中文正則規則
+│
+├── models/                             # 原始 Hugging Face 模型快取
+│   ├── ner/bert-ner-zh/
+│   └── gpt2/
+│
+├── edge_models/
+│   └── bert-ner-zh.onnx                # ONNX 格式 NER 模型
+│
+├── scripts/                            # 各種工具腳本
+│   ├── download_models.py              # 一鍵下載 HF 模型
+│   ├── run_automated_pipeline.py       # 自動化測試管線
+│   ├── benchmark_formats.py            # 格式效能基準測試
+│   └── validate_quality.py             # 去識別化品質驗證
+│
+├── examples/                           # 使用範例
+│   ├── usage_examples.py               # 基本 & 批量資料生成示範
+│   └── advanced_usage.py               # 進階使用範例
+│
+├── sensitive_data_generator/           # 假資料生成子系統
+│   ├── __init__.py                     # 套件匯出介面
+│   ├── config.py                       # 地區、街道、姓名、醫院等設定
+│   ├── generators.py                   # 各類 PII Generator
+│   ├── formatters.py                   # 基本段落 & 文件模板
+│   ├── advanced_formatters.py          # 進階合約／醫療報告／財務報表模板
+│   ├── file_writers.py                 # 基本 TXT/PDF/Image/CSV/JSON 輸出
+│   ├── advanced_file_writers.py        # 進階 PDF/Word/Excel/PPT/掃描檔輸出
+│   └── dataset_generator.py            # 一鍵產出多格式測試資料集
+│
+├── src/deid_pipeline/                  # 核心 De-ID Pipeline
+│   ├── __init__.py                     # 匯出 DeidPipeline 類
+│   ├── config.py                       # Pipeline 全域設定
+│   ├── parser/                         # 檔案文字抽取
+│   │   ├── ocr.py                      # EasyOCR singleton
+│   │   └── text_extractor.py           # PDF/DOCX/Image → 純文字
+│   ├── image_deid/                     # 影像去識別化
+│   │   └── processor.py                # OCR→Detect→Replace→回寫圖片
+│   ├── pii/                            # PII 偵測 & 假資料替換核心
+│   │   ├── detectors/                  # 各種偵測器
+│   │   │   ├── regex_detector.py
+│   │   │   ├── spacy_detector.py
+│   │   │   ├── bert_detector.py
+│   │   │   ├── bert_onnx_detector.py
+│   │   │   └── composite.py            # 多 detector 結果合併
+│   │   └── utils/                      # 共用工具
+│   │       ├── base.py                 # Entity, PIIDetector 抽象類
+│   │       ├── fake_provider.py        # GPT-2 + Faker 假資料產生器
+│   │       └── replacer.py             # 文本 & 事件記錄取代邏輯
+│
+└── tests/                              # 各層測試
+    ├── test_data_factory.py            # Faker 測試資料產生
+    ├── pii_test_suite.py               # Regex/BERT/Composite/Replacer 單元
+    ├── test_detectors.py               # 多 detector 參數化測試
+    ├── test_replacer.py                # 替換一致性測試
+    ├── test_onnx_speed.py              # ONNX 延遲基準 (<25ms)
+    ├── integration_test.py             # extract→detect→replace 整合測
+    ├── performance_test.py             # 不同長度文本效能趨勢
+    ├── end_to_end_test.py              # TXT/PDF/Image E2E 測試
+    └── test_data_generator_integration.py  # 假資料生成器 + Pipeline 整合驗證
+```
+
+---
+
+## 二、核心模組與功能
+
+### 1. De-ID Pipeline (`src/deid_pipeline/`)
+
+* **`config.py`**
+  管理模型路徑、閾值、OCR 設定、Fake-data 參數、ONNX 開關等。
+* **文字抽取 (`parser/`)**
+
+  * `text_extractor.py`：PDF（`fitz`）、DOCX（`python-docx`）、影像（`EasyOCR`）→ 統一 `extract_text()`。
+* **影像去識別 (`image_deid/processor.py`)**
+  OCR → `get_detector()` 偵測 → `Replacer.replace()` → 塗黑或替換 → 回寫圖片。
+* **PII 偵測 & 假資料替換 (`pii/`)**
+
+  * **RegexDetector**：YAML 規則 → `re.finditer`。
+  * **SpaCyDetector**：spaCy NER + regex 補正。
+  * **BertDetector**、**BertONNXDetector**：Sliding window → Transformer 推論。
+  * **Composite**：依 `ENTITY_PRIORITY` 整合多檢測器結果。
+  * **FakeProvider**：GPT-2 + Faker fallback 生成假值。
+  * **Replacer**：依 span 在原文替換或塗黑，並記錄事件。
+
+整合成 `DeidPipeline.process(input)` → 回傳 `DeidResult(entities, output, report)`。
+
+---
+
+### 2. 假資料生成子系統 (`sensitive_data_generator/`)
+
+#### a. 基本生成
+
+* **`config.py`**：台灣縣市、街道、姓氏、名字、醫院、專科清單。
+* **`generators.py`**：
+
+  * `generate_tw_id()`, `generate_tw_phone()`, `generate_tw_address()`, `generate_tw_name()`…
+  * `generate_random_pii()` 隨機挑選一種 PII。
+* **`formatters.py`**：
+
+  * `generate_paragraph()`：自然語言段落模板，內嵌 PII、可調密度。
+  * `generate_medical_record()`, `generate_financial_document()`, `generate_random_document()`。
+
+#### b. 進階模板
+
+* **`advanced_formatters.py`**：
+
+  * `generate_contract_document()`：合約書範本。
+  * `generate_medical_report()`：圖表引用的醫療報告段落。
+  * `generate_financial_statement()`：Markdown 風格財務報表。
+
+#### c. 檔案輸出
+
+* **`file_writers.py`**：
+  TXT、簡單 PDF、模擬掃描圖片 (PIL)、CSV、JSON。
+* **`advanced_file_writers.py`**：
+
+  * **ReportLab**：複雜 PDF（標題、表格、圖表）。
+  * **python-docx**：Word（標題、表格、圖片、頁尾）。
+  * **xlsxwriter**：Excel（格式化 + 圖表）。
+  * **python-pptx**：PPT（投影片、表格、圖片）。
+  * **PIL**：掃描文件模擬（雜訊、印章、簽名）。
+
+#### d. 多格式資料集生成
+
+* **`dataset_generator.py`**：
+  `MultiFormatDatasetGenerator.generate_full_dataset(output_dir, num_items)`：
+
+  1. 在各子目錄（pdf/word/excel/ppt/scanned/contracts/medical/financial）產出對應檔案。
+  2. 同步儲存純文字版。
+  3. 匯出 `dataset_metadata.json`，記錄每筆的格式、檔案路徑與部分內容。
+
+---
+
+## 三、測試程式碼 & 驗證項目
+
+| 測試檔案                                 | 測試內容                                           |
+| ------------------------------------ | ---------------------------------------------- |
+| `test_data_factory.py`               | 驗證 Faker 產生資料集功能                               |
+| `pii_test_suite.py`                  | Regex/BERT/Composite/Replacer 單元測試             |
+| `test_detectors.py`                  | 多 detector 參數化 correctness                     |
+| `test_replacer.py`                   | 相同原始字串替換一致性                                    |
+| `test_onnx_speed.py`                 | ONNX 模式延遲 < 25 ms                              |
+| `integration_test.py`                | `extract→detect→replace` 整合流程                  |
+| `performance_test.py`                | 不同文本長度（1k/5k/10k/20k）效能基準                      |
+| `end_to_end_test.py`                 | TXT/PDF/Image E2E 測試，準確度 ≥ 80%                 |
+| `test_data_generator_integration.py` | 假資料生成器輸出與 `DeidPipeline` 整合，偵測率 ≥ 95%、一致性 100% |
+
+### 測試目的
+
+1. **功能正確性**：各 Detector、Replacer、Parser 單元輸出符合預期。
+2. **整合流程**：Pipeline 從各格式抽取、PII 偵測到替換不漏讀、不破壞格式。
+3. **效能基準**：ONNX vs PyTorch 推論速率；不同文本長度延遲。
+4. **端到端（E2E）**：含影像 OCR → 偵測 → 替換，全面驗證。
+5. **生成器驗證**：自動產生的假資料，必須能被 Pipeline 偵測，且替換一致。
+
+---
+
+## 四、敏感假資料生成與後續應用
+
+1. **生成**：
+
+   * 呼叫 `PIIGenerator` 系列方法產生單一 PII。
+   * 透過 `DataFormatter`／`AdvancedDataFormatter` 把 PII 嵌入全文件文本或段落。
+   * 再由 `AdvancedFileWriter`／`FileWriter` 輸出多種格式檔案。
+
+2. **應用範例**：
+
+   * 在 CI/CD 中先行產生 100+ 檔案，放到 `test_dataset/`。
+   * 自動化測試管線 `run_automated_pipeline.py` → 驗證每個檔案 PII 偵測率、處理時間。
+   * `benchmark_formats.py` → 比較 PDF、DOCX、XLSX、PNG 各自平均/最慢/最快處理時間。
+   * `validate_quality.py` → 驗證原始 PIIs 是否全被移除，並檢查格式保留情況。
+
+---
 
 ### PII 偵測器模組說明
 
@@ -205,6 +386,61 @@ return self._resolve_conflicts(all_ents)
 ```
 
 * 依 `ENTITY_PRIORITY` 與 score 決定最終保留
+
+### 偵測器與工具模組說明
+
+#### `regex_detector.py`  
+路徑：`src/deid_pipeline/pii/detectors/regex_detector.py`  
+- **功能**：動態載入 `configs/regex_zh.yaml` 中的多個正則規則，對文字做全文掃描，回傳所有命中的 PII Entity  
+- **實作要點**：  
+  1. `load_rules()` 用 `os.path.getmtime` 檢查檔案更新並重載  
+  2. 支援 `"IGNORECASE|MULTILINE"` 等多 flag 字串解析  
+  3. `detect(text)` → `for (type,pattern) in rules: pattern.finditer(text)` → `Entity(span, type, score=1.0, source="regex")`
+
+---
+
+#### `__init__.py` (detectors)  
+路徑：`src/deid_pipeline/pii/detectors/__init__.py`  
+- **功能**：集中引入各 Detector 並實作 `get_detector(lang)`  
+- **選擇邏輯**：  
+  1. 根據語言 (`zh`/`en`)  
+  2. `Config.USE_STUB` 開關  
+  3. 若啟用 ONNX，且模型存在 → 回傳 ONNX + Regex  
+  4. 否則回傳 PyTorch BERT + Regex  
+  5. `CompositeDetector` 負責多檢測器合併與去衝突
+
+---
+
+#### `config.py`  
+路徑：`src/deid_pipeline/config.py`  
+- **功能**：全域設定中心  
+- **主要設定**：  
+  - Regex 規則檔路徑、`OCR_LANGUAGES`、`OCR_THRESHOLD`  
+  - BERT：`NER_MODEL_PATH`, `MAX_SEQ_LENGTH`, `WINDOW_STRIDE`, `ENTITY_PRIORITY`  
+  - ONNX：`USE_ONNX`, `ONNX_MODEL_PATH`, `ONNX_PROVIDERS`  
+  - Fake-data：`GPT2_MODEL_PATH`, `FAKER_LOCALE`  
+  - 管線旗標：`USE_STUB`, `ENABLE_PROFILING`, `LOG_LEVEL`  
+
+---
+
+#### `fake_provider.py`  
+路徑：`src/deid_pipeline/pii/utils/fake_provider.py`  
+- **功能**：混合 GPT-2 + Faker 的 PII 假資料產生  
+- **實作要點**：  
+  1. `GPT2Provider.generate(prompt)` → 失敗則  
+  2. `Faker("zh_TW")` fallback  
+  3. 內部 cache 避免重複生成同一原始字串
+
+---
+
+#### `replacer.py`  
+路徑：`src/deid_pipeline/pii/utils/replacer.py`  
+- **功能**：根據 `Entity.span` 有序替換或回傳遮黑座標  
+- **實作要點**：  
+  1. `entities` 先按 `start` 排序  
+  2. 滑動拼接新字串，更新 `offset`  
+  3. 支援 `"replace"` 與 `"black"` 模式  
+  4. `dumps(events)` → JSON
 
 ---
 
