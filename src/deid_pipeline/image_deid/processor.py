@@ -7,7 +7,6 @@ from deid_pipeline.parser.ocr import get_ocr_reader
 from deid_pipeline.pii.detectors import get_detector
 from deid_pipeline.pii.utils.replacer import Replacer
 from deid_pipeline.config import Config
-from deid_pipeline.pii.utils import logger
 
 class ImageDeidProcessor:
     def __init__(self, lang: str = "zh"):
