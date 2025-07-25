@@ -1,10 +1,8 @@
 from faker import Faker
-import os, logging
-import torch
+import os
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from deid_pipeline.pii.utils.base import Entity
 from deid_pipeline.config import Config 
-logger = logging.getLogger(__name__)
+from deid_pipeline.pii.utils import logger
 
 class GPT2Provider:
     def __init__(self, model_path=None):
