@@ -1,12 +1,10 @@
 import os
+from typing import Dict
 import torch
-import logging
 from faker import Faker
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from deid_pipeline.config import Config
-from typing import Dict
-
-logger = logging.getLogger(__name__)
+from deid_pipeline.pii.utils import logger
 
 class FakeProvider:
     def __init__(self):
