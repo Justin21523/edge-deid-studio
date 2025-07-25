@@ -140,6 +140,60 @@ print(pii_classes)
 
 ---
 
+## 環境建置（Environment Setup）
+
+本專案同時提供 Conda 與 Pip 兩種方式建立相同的開發環境。
+
+### 1. 使用 Conda
+
+```bash
+# 1) 進入到本專案根目錄
+cd path/to/edge-deid-studio
+
+# 2) 建立 conda 環境
+conda env create -f env/conda.yaml
+
+# 3) 啟動環境
+conda activate edge-deid
+````
+
+> **提示**：若環境名稱不是 `edge-deid`，請用 `conda env list` 確認後再切換。
+
+### 2. 使用 Python venv + Pip
+
+```bash
+# 1) 進入到本專案根目錄
+cd path/to/edge-deid-studio
+
+# 2) 建立 virtualenv
+python3 -m venv .venv
+
+# 3) 啟動 venv（Linux/macOS）
+source .venv/bin/activate
+
+#    Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+
+# 4) 安裝所有相依
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 3. 確認安裝
+
+```bash
+# 測試套件
+pytest --maxfail=1 --disable-warnings -q
+
+# 快速檢查
+python quick_tests.py
+
+# 嘗試 CLI
+python main.py -i test_input/sample.pdf --mode replace --json
+```
+
+---
+
 ## 二、核心模組與功能
 
 ### 1. De-ID Pipeline (`src/deid_pipeline/`)
