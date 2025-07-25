@@ -1,7 +1,7 @@
 # tests/test_data_generator_integration.py
 
 import unittest
-from sensitive_data_generator import PIIGenerator, DataFormatter, FileWriter
+from sensitive_data_generator import FileWriter
 from deid_pipeline import DeidPipeline
 
 class DeidentificationTest(unittest.TestCase):

@@ -1,5 +1,6 @@
 # tests/integration_test.py
-import os, time
+import os
+import time
 import pytest
 
 from deid_pipeline.parser.text_extractor import extract_text
