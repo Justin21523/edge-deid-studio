@@ -42,6 +42,7 @@ dependencies:
   - pip:
     - transformers>=4.40.0,<4.41.0
     - optimum[onnxruntime]==1.16.2
+    - pytesseract==0.3.10
     - easyocr
     - opencv-python
     - PyMuPDF
