@@ -24,18 +24,23 @@ class RegexDetector(PIIDetector):
             if mod_time <= self.last_modified:
                 return
 
-            with open(self.config_path, "r", encoding="utf-8") as f:
+            # 支援 list-of-dicts 與單純 dict[str→list of str]
+            with open(self.config_path, encoding="utf-8") as f:
                 raw = yaml.safe_load(f) or {}
-
             rules = {}
             for typ, body in raw.items():
-                # 若直接字串或 list of str，轉成 list of dict
-                if isinstance(body, str):
-                    rules[typ] = [{"pattern": body}]
+                if isinstance(body, list) and all(isinstance(i, dict) for i in body):
+                    # already list of {"pattern":..., "flags":...}
+                    rules[typ] = body
                 elif isinstance(body, list) and all(isinstance(i, str) for i in body):
+                    # shorthand list of str → wrap as dict
                     rules[typ] = [{"pattern": b} for b in body]
+                elif isinstance(body, str):
+                    # single pattern str → wrap into list
+                    rules[typ] = [{"pattern": body}]
                 else:
-                    rules[typ] = body  # assume already list of dict
+                    logger.warning(f"Unknown regex format for {typ}, skipping")
+                    continue
 
             self.patterns = []
             for typ, rule_list in rules.items():
