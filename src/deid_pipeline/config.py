@@ -6,16 +6,17 @@ import yaml
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIGS_DIR  = PROJECT_ROOT / "configs"
 
-# PII 規則檔，可透過環境變數覆寫
-REGEX_RULES_FILE   = Path(os.getenv("REGEX_RULES_FILE", CONFIGS_DIR / "regex_zh.yaml"))
-REGEX_EN_RULES_FILE= Path(os.getenv("REGEX_EN_RULES_FILE", CONFIGS_DIR / "regex_en.yaml"))
 
-def load_regex_rules(path: Path = REGEX_RULES_FILE) -> dict:
+def load_regex_rules(path: Path) -> dict:
     with open(path, encoding="utf-8") as f:
         return yaml.safe_load(f)
-
 class Config:
     """Central configuration for text extraction, PII detection and fake data."""
+    # PII 規則檔，可透過環境變數覆寫
+    REGEX_RULES_FILE    = Path(os.getenv("REGEX_RULES_FILE",
+                                          CONFIGS_DIR/"regex_zh.yaml"))
+    REGEX_EN_RULES_FILE = Path(os.getenv("REGEX_EN_RULES_FILE",
+                                          CONFIGS_DIR/"regex_en.yaml"))
     # --- paths & formats ---
     # 支援的檔案格式：文件、試算表、簡報、影像、純文字、HTML
     SUPPORTED_FILE_TYPES = [
