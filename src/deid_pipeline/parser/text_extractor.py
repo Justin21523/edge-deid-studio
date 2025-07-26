@@ -6,9 +6,9 @@ import time
 from bs4 import BeautifulSoup
 from docx import Document
 import fitz  # PyMuPDF
-import easyocr
-from deid_pipeline.config import Config
-from deid_pipeline.pii.utils import logger
+#import easyocr
+from ..config import Config
+from ..pii.utils import logger
 
 # 全域OCR處理器
 class OCRProcessor:

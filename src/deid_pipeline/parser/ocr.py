@@ -1,6 +1,6 @@
 # src/deid_pipeline/parser/ocr.py
 import easyocr
-from deid_pipeline.config import Config
+from ..config import Config
 
 _OCR_READER = None
 
