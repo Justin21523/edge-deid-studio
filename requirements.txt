@@ -9,6 +9,7 @@ faker>=37.4.2
 typer>=0.3.0,<0.10.0   # 符合 spaCy 3.5 的 typer 範圍
 rich>=14.0.0
 pandas
+numpy>=1.24.3,<1.25.0    # 確保與 spaCy/其他 C-ext 二進位相容
 spacy>=3.5,<3.6
 jieba>=0.42.1,<0.43
 easyocr
