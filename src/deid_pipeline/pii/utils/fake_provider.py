@@ -1,10 +1,11 @@
+# src/deid_pipeline/pii/utils/fake_provider.py
 import os
 from typing import Dict
 import torch
 from faker import Faker
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from deid_pipeline.config import Config
-from deid_pipeline.pii.utils import logger
+from ...config import Config
+from . import logger
 
 class FakeProvider:
     def __init__(self):
