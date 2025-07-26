@@ -1,13 +1,15 @@
 name: edgedeid
 channels:
+  - pytorch
   - conda-forge
+
 dependencies:
-  # Python 基本
+  #── Python 環境
   - python=3.10
   - pip
   - git
 
-  # 科學運算 / 資料處理
+  #── 科學運算 / 資料處理
   - numpy
   - pandas
   - scipy
@@ -17,43 +19,37 @@ dependencies:
   - python-dateutil
   - tzdata
 
-  # NLP 與文本處理
-  - spacy
+  #── NLP ＋ 文本處理
+  - spacy=3.5.*
   - python-docx
   - beautifulsoup4
   - lxml
-  - jieba=0.42.1
-  - PyMuPDF
+  - jieba=0.42.1 
   - openpyxl
   - xlsxwriter
   - python-pptx
-  
-  # 模型推論與 ONNX
-  - pytorch=2.3
-  - torchvision=0.18
-  - onnx=1.16.2
-  - onnxruntime=1.22.1
-  - onnxruntime-gpu=1.22.0
-
-  # YAML 處理
   - pyyaml=6.0.2
 
-  # pip-only packages
+  #── PyTorch + ONNX Runtime
+  - pytorch=2.3
+  - torchvision=0.18
+  - torchtext            # 同步來自 pytorch channel
+  - onnx=1.16.2
+  - onnxruntime=1.16.2
+  - onnxruntime-gpu=1.16.2
+
+  #── 只有 pip 安裝的套件
   - pip:
+    - transformers>=4.40.0
+    - optimum[onnxruntime]==1.17.0
     - easyocr
     - opencv-python
-    - transformers>=4.40.0
-    - optimum[onnxruntime-gpu]==1.17.0
+    - PyMuPDF
     - datasets>=4.0.0
     - sentencepiece>=0.2.0
-    - torch
-    - torchtext
     - faker>=37.4.2
     - typer>=0.16.0
     - pytest
     - rich>=14.0.0
-    - pyyaml>=6.0.2
     - Pillow
     - reportlab
-    - torch
-    - pytest
