@@ -2,11 +2,13 @@
 ID:
   - pattern: "[A-Z]\d{9}"
     flags: IGNORECASE
+  - pattern: "[A-Z]\d{1,2}\d{6,8}"  # 護照變體
 
 PHONE:
   - pattern: "09\d{2}-?\d{3}-?\d{3}"
     flags: MULTILINE
 
+# 加入更多臺灣特定格式：健保卡、銀行帳號、信用卡號、日期、統一編號、機車車牌…
 EMAIL:
   - pattern: "[\w\.-]+@[\w\.-]+\.[A-Za-z]{2,4}"
 
