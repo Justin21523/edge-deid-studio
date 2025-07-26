@@ -1,4 +1,4 @@
-# src/deid_pipeline/pii/legacy/spacy_detector.py
+# src/deid_pipeline/pii/detectors/legacy/spacy_detector.py
 from typing import List
 import spacy, re
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
