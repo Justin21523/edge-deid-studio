@@ -17,7 +17,18 @@ def load_regex_rules(path: Path = REGEX_RULES_FILE) -> dict:
 class Config:
     """Central configuration for text extraction, PII detection and fake data."""
     # --- paths & formats ---
-    SUPPORTED_FILE_TYPES = [".pdf", ".docx", ".png", ".jpg"]
+    # 支援的檔案格式：文件、試算表、簡報、影像、純文字、HTML
+    SUPPORTED_FILE_TYPES = [
+        ".pdf",     # PDF 文件
+        ".docx",    # Word 文件
+        ".xlsx",    # Excel 試算表
+        ".pptx",    # PowerPoint 簡報
+        ".txt",     # 純文字
+        ".html",    # HTML
+        ".png",     # 圖像
+        ".jpg",     # 圖像
+        ".jpeg",    # 圖像
+    ]
 
     # --- text extraction ---
     OCR_ENABLED       = True
