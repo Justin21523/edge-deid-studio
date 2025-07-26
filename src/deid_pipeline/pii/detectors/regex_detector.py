@@ -1,15 +1,18 @@
+# src/deid_pipeline/pii/detectors/regex_detector.py
 import os
 import yaml
 import re
+from pathlib import Path
 from typing import List
-from deid_pipeline.pii.utils.base import PIIDetector, Entity
-from deid_pipeline.config import Config
-from deid_pipeline.pii.utils import logger
+from ..utils.base import PIIDetector, Entity
+from ...config import Config, REGEX_RULES_FILE
+from ..utils import logger
 
 class RegexDetector(PIIDetector):
     def __init__(self, config_path: str = None):
         self.config = Config()
-        self.config_path = config_path or "configs/regex_zh.yaml"
+        # 預設使用 config 裡設定的路徑
+        self.config_path = Path(config_path) if config_path else REGEX_RULES_FILE
         self.last_modified = 0
         self.patterns = []
         self.load_rules()
@@ -22,7 +25,17 @@ class RegexDetector(PIIDetector):
                 return
 
             with open(self.config_path, "r", encoding="utf-8") as f:
-                rules = yaml.safe_load(f)
+                raw = yaml.safe_load(f) or {}
+
+            rules = {}
+            for typ, body in raw.items():
+                # 若直接字串或 list of str，轉成 list of dict
+                if isinstance(body, str):
+                    rules[typ] = [{"pattern": body}]
+                elif isinstance(body, list) and all(isinstance(i, str) for i in body):
+                    rules[typ] = [{"pattern": b} for b in body]
+                else:
+                    rules[typ] = body  # assume already list of dict
 
             self.patterns = []
             for typ, rule_list in rules.items():

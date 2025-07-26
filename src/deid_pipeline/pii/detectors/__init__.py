@@ -1,15 +1,18 @@
+# src/deid_pipeline/pii/detectors/__init__.py
 from pathlib import Path
+import os
 from .bert_detector import BertNERDetector
 from .regex_detector import RegexDetector
 from .composite import CompositeDetector
 from .legacy.spacy_detector import SpacyDetector
-from deid_pipeline.config import Config
-from deid_pipeline.pii.utils import logger
+from ...config import Config
+from ..utils import logger
 
 PACKAGE_ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = PACKAGE_ROOT.parent.parent
-MODEL_ZH = PROJECT_ROOT / "models" / "bert_ner_zh_q"
-MODEL_EN = PROJECT_ROOT / "models" / "bert_ner_en"
+cfg = Config()
+MODEL_ZH = cfg.NER_MODEL_PATH  # use central config
+MODEL_EN = Path(os.getenv("NER_MODEL_PATH_EN", str(PROJECT_ROOT/"models"/"bert-ner-en")))
 
 def get_detector(lang: str = "zh") -> CompositeDetector:
     config = Config()
