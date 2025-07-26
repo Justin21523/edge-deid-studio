@@ -3,12 +3,12 @@ import os
 from pathlib import Path
 import yaml
 
-PROJECT_ROOT       = Path(__file__).resolve().parent.parent
-CONFIGS_DIR        = PROJECT_ROOT / "configs"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CONFIGS_DIR  = PROJECT_ROOT / "configs"
 
-# PII 規則檔
-REGEX_RULES_FILE   = CONFIGS_DIR / "regex_zh.yaml"
-# 你也可以加入 "regex_en.yaml" 等
+# PII 規則檔，可透過環境變數覆寫
+REGEX_RULES_FILE   = Path(os.getenv("REGEX_RULES_FILE", CONFIGS_DIR / "regex_zh.yaml"))
+REGEX_EN_RULES_FILE= Path(os.getenv("REGEX_EN_RULES_FILE", CONFIGS_DIR / "regex_en.yaml"))
 
 def load_regex_rules(path: Path = REGEX_RULES_FILE) -> dict:
     with open(path, encoding="utf-8") as f:
@@ -40,7 +40,7 @@ class Config:
     WINDOW_STRIDE     = 0.5
 
     # --- regex rules ---
-    REGEX_PATTERNS    = load_regex_rules()
+    REGEX_PATTERNS    = load_regex_rules(REGEX_RULES_FILE)
 
     # --- fake data ---
     GPT2_MODEL_PATH   = os.getenv("GPT2_MODEL_PATH", PROJECT_ROOT / "models" / "gpt2")
@@ -49,23 +49,15 @@ class Config:
 
     # --- ONNX runtime ---
     USE_ONNX          = True
-    ONNX_MODEL_PATH   = os.getenv("ONNX_MODEL_PATH", PROJECT_ROOT / "edge_models" / "bert-ner-zh.onnx")
-    ONNX_PROVIDERS    = ["CPUExecutionProvider", "CUDAExecutionProvider", "NPUExecutionProvider"]
+    ONNX_MODEL_PATH   = Path(os.getenv("ONNX_MODEL_PATH", PROJECT_ROOT / "edge_models" / "bert-ner-zh.onnx"))
+    ONNX_PROVIDERS    = ["CPUExecutionProvider","CUDAExecutionProvider","NPUExecutionProvider"]
 
     # --- logging & env ---
     ENVIRONMENT       = os.getenv("ENV", "local")
     LOG_LEVEL         = os.getenv("LOG_LEVEL", "INFO")
     ENABLE_PROFILING  = False
+    USE_STUB          = False
 
-    # System flags
-    USE_STUB = False
-    LOG_LEVEL = "INFO"
-
-    # ONNX 推論相關
-    USE_ONNX          = True
-    ONNX_MODEL_PATH   = Path(os.getenv("ONNX_MODEL_PATH", PROJECT_ROOT / "edge_models" / "bert-ner-zh.onnx"))
-    ONNX_PROVIDERS    = ["CPUExecutionProvider", "CUDAExecutionProvider", "NPUExecutionProvider"]
-
-    # 長文本分段
+    # --- 長文本分段 ---
     MAX_SEQ_LENGTH    = 512
     WINDOW_STRIDE     = 0.5
