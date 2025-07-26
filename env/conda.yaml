@@ -24,7 +24,7 @@ dependencies:
   - python-docx
   - beautifulsoup4
   - lxml
-  - jieba=0.42.1 
+  - jieba=0.42.1
   - openpyxl
   - xlsxwriter
   - python-pptx
@@ -40,8 +40,8 @@ dependencies:
 
   #── 只有 pip 安裝的套件
   - pip:
-    - transformers>=4.40.0
-    - optimum[onnxruntime]==1.17.0
+    - transformers>=4.40.0,<4.41.0
+    - optimum[onnxruntime]==1.16.2
     - easyocr
     - opencv-python
     - PyMuPDF
