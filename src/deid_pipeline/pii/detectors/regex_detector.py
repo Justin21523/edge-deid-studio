@@ -25,7 +25,17 @@ class RegexDetector(PIIDetector):
                 return
 
             with open(self.config_path, "r", encoding="utf-8") as f:
-                rules = yaml.safe_load(f)
+                raw = yaml.safe_load(f) or {}
+
+            rules = {}
+            for typ, body in raw.items():
+                # 若直接字串或 list of str，轉成 list of dict
+                if isinstance(body, str):
+                    rules[typ] = [{"pattern": body}]
+                elif isinstance(body, list) and all(isinstance(i, str) for i in body):
+                    rules[typ] = [{"pattern": b} for b in body]
+                else:
+                    rules[typ] = body  # assume already list of dict
 
             self.patterns = []
             for typ, rule_list in rules.items():
