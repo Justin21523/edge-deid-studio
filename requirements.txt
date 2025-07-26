@@ -1,12 +1,12 @@
 transformers>=4.40.0
 optimum[onnxruntime]==1.16.2
 datasets>=4.0.0
-sentencepiece>=0.2.0ㄛ
+sentencepiece>=0.2.0
 pytest
 torch>=2.3.0,<2.4.0
 torchtext
 faker>=37.4.2
-typer>=0.16.0
+typer>=0.3.0,<0.10.0   # 符合 spaCy 3.5 的 typer 範圍
 rich>=14.0.0
 pandas
 spacy>=3.5,<3.6
