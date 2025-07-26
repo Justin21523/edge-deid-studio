@@ -1,7 +1,8 @@
+# src/deid_pipeline/pii/detectors/composite.py
 from typing import List
-from deid_pipeline.pii.utils.base import PIIDetector, Entity
-from deid_pipeline.config import Config
-from deid_pipeline.pii.utils import logger
+from ..utils.base import PIIDetector, Entity
+from ...config import Config
+from ..utils import logger
 
 class CompositeDetector(PIIDetector):
     def __init__(self, *detectors: PIIDetector):

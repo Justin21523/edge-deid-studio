@@ -5,8 +5,8 @@ import torch
 from transformers import AutoTokenizer, AutoModelForTokenClassification
 from optimum.onnxruntime import ORTModelForTokenClassification
 
-from deid_pipeline.config import Config
-from deid_pipeline.pii.utils.base import PIIDetector, Entity
+from ...config import Config
+from ..utils.base import PIIDetector, Entity
 
 class BertONNXNERDetector(PIIDetector):
     def __init__(self):

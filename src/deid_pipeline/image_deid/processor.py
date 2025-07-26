@@ -3,10 +3,10 @@ import time
 import cv2
 from typing import Dict
 
-from deid_pipeline.parser.ocr import get_ocr_reader
-from deid_pipeline.pii.detectors import get_detector
-from deid_pipeline.pii.utils.replacer import Replacer
-from deid_pipeline.config import Config
+from ..parser.ocr import get_ocr_reader
+from ..pii.detectors import get_detector
+from ..pii.utils.replacer import Replacer
+from ..config import Config
 
 class ImageDeidProcessor:
     def __init__(self, lang: str = "zh"):

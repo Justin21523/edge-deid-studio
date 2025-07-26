@@ -1,8 +1,8 @@
 # src/deid_pipeline/__init__.py
-from deid_pipeline.parser.text_extractor import extract_text
-from deid_pipeline.image_deid.processor import ImageDeidProcessor
-from deid_pipeline.pii.detectors import get_detector
-from deid_pipeline.pii.utils.replacer import Replacer
+from .parser.text_extractor import extract_text
+from .image_deid.processor import ImageDeidProcessor
+from .pii.detectors import get_detector
+from .pii.utils.replacer import Replacer
 
 class DeidResult:
     """
