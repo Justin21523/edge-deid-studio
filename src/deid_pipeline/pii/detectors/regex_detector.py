@@ -5,14 +5,14 @@ import re
 from pathlib import Path
 from typing import List
 from ..utils.base import PIIDetector, Entity
-from ...config import Config, REGEX_RULES_FILE
+from ...config import Config
 from ..utils import logger
 
 class RegexDetector(PIIDetector):
     def __init__(self, config_path: str = None):
         self.config = Config()
         # 預設使用 config 裡設定的路徑
-        self.config_path = Path(config_path) if config_path else REGEX_RULES_FILE
+        self.config_path = Path(config_path) if config_path else self.config.REGEX_RULES_FILE
         self.last_modified = 0
         self.patterns = []
         self.load_rules()
