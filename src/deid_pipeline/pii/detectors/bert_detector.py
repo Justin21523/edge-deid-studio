@@ -1,3 +1,4 @@
+# src/deid_pipeline/pii/detectors/bert_detector.py
 from typing import List
 from pathlib import Path, PurePath
 from optimum.onnxruntime import ORTModelForTokenClassification
@@ -6,9 +7,9 @@ from transformers import AutoTokenizer
 import re
 import time
 import numpy as np
-from deid_pipeline.pii.utils.base import PIIDetector, Entity
-from deid_pipeline.config import Config
-from deid_pipeline.pii.utils import logger
+from ..utils.base import PIIDetector, Entity
+from ...config import Config
+from ...pii.utils import logger
 
 
 # 實體類型標準化映射

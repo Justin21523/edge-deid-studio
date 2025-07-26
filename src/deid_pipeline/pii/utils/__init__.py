@@ -1,4 +1,4 @@
-# src/deid_pipeline/__init__.py
+# src/deid_pipeline/pii/utils/__init__.py
 import logging
 
 logging.basicConfig(
