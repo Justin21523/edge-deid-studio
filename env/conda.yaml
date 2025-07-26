@@ -11,7 +11,7 @@ dependencies:
   - git
 
   #── 科學運算 / 資料處理
-  - numpy
+  - numpy=1.24.3
   - pandas
   - scipy
   - matplotlib
@@ -21,7 +21,7 @@ dependencies:
   - tzdata
 
   #── NLP ＋ 文本處理
-  - spacy=3.5.*
+  - spacy>=3.5,<3.6
   - python-docx
   - beautifulsoup4
   - lxml
