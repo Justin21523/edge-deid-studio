@@ -1,9 +1,7 @@
 # src/deid_pipeline/pii/detectors/bert_detector.py
 from typing import List
-from pathlib import Path, PurePath
-from optimum.onnxruntime import ORTModelForTokenClassification
-import onnxruntime as ort
-from transformers import AutoTokenizer
+from pathlib import PurePath
+from transformers import AutoTokenizer, AutoModelForTokenClassification
 import re
 import time
 import numpy as np
@@ -27,21 +25,9 @@ class BertNERDetector(PIIDetector):
     def __init__(self, model_dir: str | PurePath, provider: str="CPUExecutionProvider"):
         self.config = Config()
         if not self.config.USE_STUB:
-            # 動態選擇最佳執行提供者
-            providers = ["CPUExecutionProvider"]
-            available_providers = ort.get_available_providers()
-
-            if "NPUExecutionProvider" in available_providers:
-                providers.insert(0, "NPUExecutionProvider")
-            elif "CUDAExecutionProvider" in available_providers:
-                providers.insert(0, "CUDAExecutionProvider")
-
-            logger.info(f"使用ONNX執行提供者: {providers}")
-
-            self.model = ORTModelForTokenClassification.from_pretrained(
-                model_dir, providers=providers
-            )
-            self.tok = AutoTokenizer.from_pretrained(model_dir, use_fast=True)
+            # 純 HF Transformers BERT TokenClassification
+            self.model = AutoModelForTokenClassification.from_pretrained(model_dir)
+            self.tok   = AutoTokenizer.from_pretrained(model_dir, use_fast=True)
             self.model_max_length = self.tok.model_max_length
         else:
             self.model = None
