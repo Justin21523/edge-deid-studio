@@ -26,5 +26,5 @@ xlsxwriter
 beautifulsoup4
 lxml
 reportlab
-
+opencv-python-headless>=4.7.0.72
 
