@@ -21,10 +21,10 @@ ADDRESS:
   - pattern: "[^\\n，；。]{1,30}(大樓|社區|大廈|商業大樓)[^,，；。]{0,30}"
 
 PASSPORT:            # 護照號
-  -pattern: "[A-Z]{1,2}\\d{6,8}"
+  - pattern: "[A-Z]{1,2}\\d{6,8}"
 
 UNIFIED_BUSINESS_NO: # 統一編號
-  -pattern: "\\d{8}"
+  - pattern: "\\d{8}"
 
 MEDICAL_ID:          # 病歷號 (示例)
-  -pattern: "[A-Z]\\d{7,8}"
+  - pattern: "[A-Z]\\d{7,8}"
