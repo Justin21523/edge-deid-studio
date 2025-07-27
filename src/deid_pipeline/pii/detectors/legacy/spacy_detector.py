@@ -15,9 +15,23 @@ SPACY_TO_PII_TYPE = {
     "LOC": "ADDRESS"
 }
 
+# 將 YAML 裡的 flags 字串對應到 re.FLAGS
+FLAG_MAP = {
+    "IGNORECASE": re.IGNORECASE,
+    "MULTILINE":  re.MULTILINE,
+    "DOTALL":     re.DOTALL,
+    # 如果還有其他 flag，可以補在這裡
+}
+
 # 預編譯我們的 regex 規則
 PII_PATTERNS = {
-    ent_type: [re.compile(p) for p in patterns]
+    ent_type: [
+        re.compile(
+            rule["pattern"],
+            FLAG_MAP.get( rule.get("flags"), 0 )
+        )
+        for rule in patterns   # patterns 現在是 List[Dict]
+    ]
     for ent_type, patterns in Config.REGEX_PATTERNS.items()
 }
 
