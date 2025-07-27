@@ -1,8 +1,10 @@
 # src/deid_pipeline/pii/detectors/legacy/spacy_detector.py
 from typing import List
-import spacy, re
+import spacy
+import os, re
 from deid_pipeline.pii.utils.base import PIIDetector, Entity
-from deid_pipeline.config import Config
+from deid_pipeline.config import Config, load_regex_rules
+from deid_pipeline.pii.utils import logger
 
 # 新增統一類型映射
 # type mapping: spaCy label → our PII_TYPES
@@ -19,17 +21,25 @@ PII_PATTERNS = {
     for ent_type, patterns in Config.REGEX_PATTERNS.items()
 }
 
-_nlp = spacy.load("en_core_web_sm")
-
 class SpacyDetector(PIIDetector):
-    def __init__(self):
-        self._nlp = _nlp
-        # 預編譯規則
-        self.regex_patterns = PII_PATTERNS
+    def __init__(self, lang: str = "zh"):
+        """
+        lang: 'zh' 用中文模型 (zh_core_web_sm)
+              'en' 用英文模型 (en_core_web_sm)
+        """
+        self.lang = lang
+        # 允許透過 Config 覆寫成任意 spaCy model name
+        if lang == "zh":
+            model_name = os.getenv("SPACY_ZH_MODEL", "zh_core_web_sm")
+        else:
+            model_name = os.getenv("SPACY_EN_MODEL", "en_core_web_sm")
+        logger.info(f"Loading spaCy model '{model_name}' for lang={lang}")
+        self.nlp = spacy.load(model_name)
+        self.regex_patterns = load_regex_rules(Config.REGEX_RULES_FILE if lang=="zh" else Config.REGEX_EN_RULES_FILE)
 
     def detect(self, text: str) -> List[Entity]:
         ents: List[Entity] = []
-        doc = self._nlp(text)
+        doc = self.nlp(text)
         # spaCy 偵測
         for e in doc.ents:
             if e.label_ in SPACY_TO_PII_TYPE:
