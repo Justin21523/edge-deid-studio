@@ -31,9 +31,12 @@ class Config:
         ".jpeg",    # 圖像
     ]
 
-    # --- text extraction ---
+    # --- text extraction OCR 設定 ---
+    OCR_ENGINE = "auto"  # "tesseract", "easyocr", or "auto"
+    OCR_LANGUAGES = "zh"  # "zh" or "en"
+    OCR_CONFIDENCE_THRESHOLD = 60  # 只接受置信度高於此值的結果
+    OCR_THRESHOLD = 50  # 當頁面文字少於此值時觸發OCR回退
     OCR_ENABLED       = True
-    OCR_THRESHOLD     = 50
     OCR_LANGUAGES     = ["ch_tra", "en"]
 
     # --- PII detection (BERT) ---
