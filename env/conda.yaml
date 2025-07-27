@@ -31,10 +31,15 @@ dependencies:
   - python-pptx
   - pyyaml=6.0.2
 
+
   #── PyTorch + ONNX Runtime
   - pytorch=2.3
   - torchvision=0.18
   - torchtext            # 同步來自 pytorch channel
+
+  #── OCR 引擎 & 語言包（from conda-forge）
+  - tesseract               # 安裝 Tesseract 執行檔
+  - tesseract-ocr-chi-tra   # 安裝繁體中文語言檔
 
   #── 只有 pip 安裝的套件
   - pip:
@@ -43,7 +48,7 @@ dependencies:
     - optimum[onnxruntime]==1.16.2
     - pytesseract==0.3.10
     - easyocr
-    - opencv-python
+    - opencv-python-headless  # headless 版，不需要 X11
     - PyMuPDF
     - PyPDF2>=3.0,<4.0
     - datasets>=4.0.0
