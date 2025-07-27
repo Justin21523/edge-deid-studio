@@ -2,9 +2,9 @@
 from typing import List
 import spacy
 import os, re
-from deid_pipeline.pii.utils.base import PIIDetector, Entity
-from deid_pipeline.config import Config, load_regex_rules
-from deid_pipeline.pii.utils import logger
+from ...utils.base import PIIDetector, Entity
+from ....config import Config, load_regex_rules
+from ...utils import logger
 
 # 新增統一類型映射
 # type mapping: spaCy label → our PII_TYPES
