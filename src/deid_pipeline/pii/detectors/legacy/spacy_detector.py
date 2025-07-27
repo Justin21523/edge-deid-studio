@@ -9,10 +9,19 @@ from ...utils import logger
 # 新增統一類型映射
 # type mapping: spaCy label → our PII_TYPES
 SPACY_TO_PII_TYPE = {
-    "PERSON": "NAME",
-    "GPE": "ADDRESS",
-    "ORG": "ORGANIZATION",
-    "LOC": "ADDRESS"
+    # spaCy 原生
+    "PERSON":              "NAME",
+    "GPE":                 "ADDRESS",
+    "LOC":                 "ADDRESS",
+    "ORG":                 "ORGANIZATION",
+    # 以下是我們要注入的自訂 labels
+    "PHONE":               "PHONE",
+    "ID":                  "ID",
+    "PASSPORT":            "PASSPORT",
+    "UNIFIED_BUSINESS_NO": "UNIFIED_BUSINESS_NO",
+    "EMAIL":               "EMAIL",
+    "ADDRESS":             "ADDRESS",
+    "MEDICAL_ID":          "MEDICAL_ID",
 }
 
 # 將 YAML 裡的 flags 字串對應到 re.FLAGS
@@ -38,9 +47,14 @@ class SpacyDetector(PIIDetector):
         logger.info(f"Loading spaCy model '{model_name}' for lang={lang}")
         self.nlp = spacy.load(model_name)
 
-        raw = load_regex_rules(
-            Config.REGEX_RULES_FILE if lang=="zh" else Config.REGEX_EN_RULES_FILE
+        # 讀取正則規則檔 (List[Dict])
+        regex_file = (
+            Config.REGEX_RULES_FILE if lang == "zh"
+            else Config.REGEX_EN_RULES_FILE
         )
+        raw_rules = load_regex_rules(regex_file)
+
+        # 預編譯 regex (單獨用於 regex 偵測)
         self.regex_patterns = {
             ent_type: [
                 re.compile(
@@ -49,13 +63,26 @@ class SpacyDetector(PIIDetector):
                 )
                 for rule in rules
             ]
-            for ent_type, rules in raw.items()
+            for ent_type, rules in raw_rules.items()
         }
+
+        # 用 EntityRuler 把這些 regex patterns 注入到 spaCy pipeline
+        ruler = self.nlp.add_pipe("entity_ruler", before="ner")
+        ruler_patterns = []
+        for ent_type, rules in raw_rules.items():
+            for rule in rules:
+                ruler_patterns.append({
+                    "label": ent_type,
+                    # 利用 spaCy v3 支援的 regex token pattern
+                    "pattern": [{"TEXT": {"REGEX": rule["pattern"]}}]
+                })
+        ruler.add_patterns(ruler_patterns)
 
     def detect(self, text: str) -> List[Entity]:
         ents: List[Entity] = []
+
+        # 1) spaCy NER + EntityRuler 偵測
         doc = self.nlp(text)
-        # spaCy 偵測
         for e in doc.ents:
             if e.label_ in SPACY_TO_PII_TYPE:
                 ents.append(Entity(
@@ -64,9 +91,10 @@ class SpacyDetector(PIIDetector):
                     score=0.99,
                     source="spacy"
                 ))
-        # regex 偵測：直接用 __init__ 裡編好的 self.regex_patterns
-        for pii_type, pats in self.regex_patterns.items():
-            for pat in pats:
+
+        # 2) 獨立的 regex 偵測 (確保沒漏)
+        for pii_type, patterns in self.regex_patterns.items():
+            for pat in patterns:
                 for m in pat.finditer(text):
                     ents.append(Entity(
                         span=(m.start(), m.end()),
