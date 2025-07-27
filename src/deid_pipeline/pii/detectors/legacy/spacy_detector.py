@@ -54,26 +54,38 @@ class SpacyDetector(PIIDetector):
         )
         raw_rules = load_regex_rules(regex_file)
 
-        # 預編譯 regex (單獨用於 regex 偵測)
-        self.regex_patterns = {
-            ent_type: [
-                re.compile(
-                    rule["pattern"],
-                    FLAG_MAP.get(rule.get("flags"), 0)
-                )
-                for rule in rules
-            ]
-            for ent_type, rules in raw_rules.items()
-        }
+        # ── Normalize: 支援 List[Dict], List[str], 以及單一 Dict[str,Any]
+        norm_rules = {}
+        for ent, body in raw_rules.items():
+            # already list of dict: [{"pattern":..., "flags":...}, ...]
+            if isinstance(body, list) and all(isinstance(i, dict) for i in body):
+                norm_rules[ent] = body
+            # list of strings: ["pat1","pat2"]
+            elif isinstance(body, list) and all(isinstance(i, str) for i in body):
+                norm_rules[ent] = [{"pattern": pat} for pat in body]
+            # single dict: {"pattern":..., "flags":...}
+            elif isinstance(body, dict):
+                norm_rules[ent] = [body]
+            else:
+                logger.warning(f"Unknown regex format for {ent}, skipping")
+
+        # 4) 用 normalize 後的規則編譯
+        self.regex_patterns = {}
+        for ent_type, rules in norm_rules.items():
+            compiled = []
+            for rule in rules:
+                pat = rule["pattern"]
+                flags = FLAG_MAP.get(rule.get("flags"), 0)
+                compiled.append(re.compile(pat, flags))
+            self.regex_patterns[ent_type] = compiled
 
         # 用 EntityRuler 把這些 regex patterns 注入到 spaCy pipeline
         ruler = self.nlp.add_pipe("entity_ruler", before="ner")
         ruler_patterns = []
-        for ent_type, rules in raw_rules.items():
+        for ent_type, rules in norm_rules.items():
             for rule in rules:
                 ruler_patterns.append({
                     "label": ent_type,
-                    # 利用 spaCy v3 支援的 regex token pattern
                     "pattern": [{"TEXT": {"REGEX": rule["pattern"]}}]
                 })
         ruler.add_patterns(ruler_patterns)
