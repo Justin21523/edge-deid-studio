@@ -1,14 +1,14 @@
 # quick_tests.py
 from pathlib import Path
 
-from deid_pipeline.parser.text_extractor import extract_text
-from deid_pipeline.pii.detectors import get_detector
-from deid_pipeline.pii.utils.replacer import Replacer
+from src.deid_pipeline.parser.text_extractor import extract_text
+from src.deid_pipeline.pii.detectors import get_detector
+from src.deid_pipeline.pii.utils.replacer import Replacer
 
 def test_detector():
     cases = [
-        ("en", "Alice lives in Taipei, email alice@mail.com", {"EMAIL", "ADDRESS"}),
         ("zh", "王小明身分證A123456789，手機0912345678", {"ID", "PHONE"}),
+        ("en", "Alice lives in Taipei, email alice@mail.com", {"EMAIL", "ADDRESS"}),
     ]
     for lang, txt, expected in cases:
         det = get_detector(lang)
