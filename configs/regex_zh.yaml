@@ -1,25 +1,30 @@
 # configs/regex_zh.yaml
 ID:
-  - pattern: "[A-Z]\d{9}"
+  - pattern: "[A-Z]\\d{9}"
     flags: IGNORECASE
-  - pattern: "[A-Z]\d{1,2}\d{6,8}"  # 護照變體
 
 PHONE:
-  - pattern: "09\d{2}-?\d{3}-?\d{3}"
+  - pattern: "09\\d{2}-?\\d{3}-?\\d{3}"
     flags: MULTILINE
 
 # 加入更多臺灣特定格式：健保卡、銀行帳號、信用卡號、日期、統一編號、機車車牌…
 EMAIL:
-  - pattern: "[\w\.-]+@[\w\.-]+\.[A-Za-z]{2,4}"
+  - pattern: "[\\w\\.-]+@[\\w\\.-]+\\.[A-Za-z]{2,4}"
 
 ADDRESS:
-  - pattern: "(台北市|台中市|高雄市)[^,，°]{3,20}(路|街|巷)\d+號?"
+  - pattern: "(台北市|台中市|高雄市)[^,，°]{3,20}(路|街|巷)\\d+號?"
+  - pattern: "(臺北市|台北市|新北市|桃園市|臺中市|台中市|臺南市|台南市|高雄市)[^,，°]{1,30}(路|街|巷|大道|段)\\d+號"
+  - pattern: "[^\\n，；。]{1,30}(村|里)([^\\n，；。]{1,20})(鄰)\\d+號"
+  - pattern: "(\\d+樓|\\d+樓之\\d|\\d+樓之\\d+)"
+  - pattern: "(建國路|中山北路|信義路|光復南路|民生東路)[^,，°]{1,20}段?\\d+號"
+  - pattern: "\\d{3,4}巷\\d{1,3}弄\\d{1,3}號"
+  - pattern: "[^\\n，；。]{1,30}(大樓|社區|大廈|商業大樓)[^,，；。]{0,30}"
 
 PASSPORT:            # 護照號
-  -pattern: "[A-Z]{1,2}\d{6,8}"
+  -pattern: "[A-Z]{1,2}\\d{6,8}"
 
 UNIFIED_BUSINESS_NO: # 統一編號
-  -pattern: "\d{8}"
+  -pattern: "\\d{8}"
 
 MEDICAL_ID:          # 病歷號 (示例)
-  -pattern: "[A-Z]\d{7,8}"
+  -pattern: "[A-Z]\\d{7,8}"
