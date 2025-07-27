@@ -62,7 +62,7 @@ class Config:
     FAKER_CACHE_SIZE  = 1000
 
     # --- ONNX runtime ---
-    USE_ONNX          = True
+    USE_ONNX          = False
     ONNX_MODEL_PATH   = Path(os.getenv("ONNX_MODEL_PATH", PROJECT_ROOT / "edge_models" / "bert-ner-zh.onnx"))
     ONNX_PROVIDERS    = ["CPUExecutionProvider","CUDAExecutionProvider","NPUExecutionProvider"]
 
@@ -70,7 +70,7 @@ class Config:
     ENVIRONMENT       = os.getenv("ENV", "local")
     LOG_LEVEL         = os.getenv("LOG_LEVEL", "INFO")
     ENABLE_PROFILING  = False
-    USE_STUB          = False
+    USE_STUB          = True
 
     # --- 長文本分段 ---
     MAX_SEQ_LENGTH    = 512
