@@ -7,6 +7,7 @@ from optimum.onnxruntime import ORTModelForTokenClassification
 
 from ...config import Config
 from ..utils.base import PIIDetector, Entity
+from .bert_detector import ENTITY_TYPE_MAP
 
 class BertONNXNERDetector(PIIDetector):
     def __init__(self):
@@ -60,11 +61,15 @@ class BertONNXNERDetector(PIIDetector):
             for idx, label_id in enumerate(preds):
                 label = self.id2label[label_id]
                 if label != "O" and confid[idx] >= Config.BERT_CONFIDENCE_THRESHOLD:
+                    # 去掉 B-/I- 前綴
+                    base = label.replace("B-","").replace("I-","")
+                    # 映射到統一類型
+                    typ = ENTITY_TYPE_MAP.get(base, base)
                     start, end = chunk_off[idx]
                     entities.append(Entity(
                         span=(start, end),
-                        type=label,
+                        type=typ,
                         score=float(confid[idx]),
-                        source="bert"
+                        source="onnx"
                     ))
         return entities
