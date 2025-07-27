@@ -43,8 +43,8 @@ class Config:
     ENTITY_PRIORITY = {
         "ID":               100,
         "PASSPORT":        95,
-        "UNIFIED_BUSINESS_NO": 90,
-        "PHONE":           85,
+        "PHONE":               90,
+        "UNIFIED_BUSINESS_NO": 85,
         "EMAIL":           80,
         "NAME":            75,
         "ADDRESS":         70,
