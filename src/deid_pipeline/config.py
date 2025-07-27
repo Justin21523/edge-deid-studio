@@ -41,13 +41,15 @@ class Config:
     BERT_CONFIDENCE_THRESHOLD = 0.85
     MAX_SEQ_LENGTH    = 512
     ENTITY_PRIORITY = {
-        "TW_ID": 100,
-        "PASSPORT": 95,
+        "ID":               100,
+        "PASSPORT":        95,
         "UNIFIED_BUSINESS_NO": 90,
-        "PHONE": 85,
-        "EMAIL": 80,
-        "NAME": 75,
-        "ADDRESS": 70,
+        "PHONE":           85,
+        "EMAIL":           80,
+        "NAME":            75,
+        "ADDRESS":         70,
+        "ORGANIZATION":    65,
+        "MEDICAL_ID":      60,
     }
     WINDOW_STRIDE     = 0.5
 
