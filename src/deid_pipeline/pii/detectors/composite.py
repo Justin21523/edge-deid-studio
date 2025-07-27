@@ -35,18 +35,18 @@ class CompositeDetector(PIIDetector):
             return []
 
         # 按起始位置排序
-        sorted_ents = sorted(entities, key=lambda e: e.span[0])
+        sorted_ents = sorted(entities, key=lambda e:  e["span"][0])
         resolved: List[Entity] = []
         for ent in sorted_ents:
             if not resolved:
                 resolved.append(ent)
                 continue
 
-
             last = resolved[-1]
-            last_start, last_end = last.span
-            current_start, current_end = ent.span
+            last_start, last_end = last['span']
+            current_start, current_end = ent['span']
 
+            overlap_ratio = 0
             # 檢查重疊
             if current_start < last_end:
                 overlap = min(last_end, current_end) - current_start
@@ -57,8 +57,8 @@ class CompositeDetector(PIIDetector):
                 overlap_ratio = overlap / min(last_length, current_length)
 
 
-                last_priority = self._get_priority(last.type)
-                current_priority = self._get_priority(ent.type)
+                last_priority = self._get_priority(last['type'])
+                current_priority = self._get_priority(ent['type'])
 
              # 決策邏輯
             if overlap_ratio > 0.5:
@@ -66,10 +66,10 @@ class CompositeDetector(PIIDetector):
                     resolved[-1] = ent
                 elif current_priority == last_priority:
                     # same priority 就比較 score
-                    if ent.score > last.score:
+                    if ent['score'] > last['score']:
                         resolved[-1] = ent
                     # score 一樣再比 source (短字串優先)
-                    elif ent.score == last.score and len(ent.source) < len(last.source):
+                    elif ent['score'] == last['score'] and len(ent['source']) < len(last['source']):
                         resolved[-1] = ent
             else:
                  # 部分重疊但未達到阈值，保留雙者

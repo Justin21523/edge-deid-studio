@@ -115,4 +115,4 @@ class SpacyDetector(PIIDetector):
                         source="regex"
                     ))
         # 去掉重疊，保留最高 score
-        return sorted(ents, key=lambda e: e.span[0])
+        return sorted(ents, key=lambda e: e['span'][0])
