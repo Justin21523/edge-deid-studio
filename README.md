@@ -178,6 +178,12 @@ source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
+### OCR Dependencies
+
+- **Ubuntu/Debian**
+  ```bash
+  sudo apt install tesseract-ocr tesseract-ocr-chi-tra
+  ```
 
 ### 3. 確認安裝
 
@@ -300,7 +306,7 @@ def get_detector(lang: str = "zh") -> CompositeDetector:
             SpacyDetector(),
             RegexDetector(config_path="configs/regex_en.yaml")
         )
-````
+```
 
 > **說明**：動態挑選 BERT/ONNX 或 SpaCy+Regex，並包成 CompositeDetector。
 
