@@ -23,18 +23,6 @@ FLAG_MAP = {
     # 如果還有其他 flag，可以補在這裡
 }
 
-# 預編譯我們的 regex 規則
-PII_PATTERNS = {
-    ent_type: [
-        re.compile(
-            rule["pattern"],
-            FLAG_MAP.get( rule.get("flags"), 0 )
-        )
-        for rule in patterns   # patterns 現在是 List[Dict]
-    ]
-    for ent_type, patterns in Config.REGEX_PATTERNS.items()
-}
-
 class SpacyDetector(PIIDetector):
     def __init__(self, lang: str = "zh"):
         """
@@ -49,7 +37,20 @@ class SpacyDetector(PIIDetector):
             model_name = os.getenv("SPACY_EN_MODEL", "en_core_web_sm")
         logger.info(f"Loading spaCy model '{model_name}' for lang={lang}")
         self.nlp = spacy.load(model_name)
-        self.regex_patterns = load_regex_rules(Config.REGEX_RULES_FILE if lang=="zh" else Config.REGEX_EN_RULES_FILE)
+
+        raw = load_regex_rules(
+            Config.REGEX_RULES_FILE if lang=="zh" else Config.REGEX_EN_RULES_FILE
+        )
+        self.regex_patterns = {
+            ent_type: [
+                re.compile(
+                    rule["pattern"],
+                    FLAG_MAP.get(rule.get("flags"), 0)
+                )
+                for rule in rules
+            ]
+            for ent_type, rules in raw.items()
+        }
 
     def detect(self, text: str) -> List[Entity]:
         ents: List[Entity] = []
@@ -63,13 +64,13 @@ class SpacyDetector(PIIDetector):
                     score=0.99,
                     source="spacy"
                 ))
-        # regex 偵測
-        for typ, patterns in self.regex_patterns.items():
-            for pat in patterns:
+        # regex 偵測：直接用 __init__ 裡編好的 self.regex_patterns
+        for pii_type, pats in self.regex_patterns.items():
+            for pat in pats:
                 for m in pat.finditer(text):
                     ents.append(Entity(
                         span=(m.start(), m.end()),
-                        type=typ,
+                        type=pii_type,
                         score=1.0,
                         source="regex"
                     ))
