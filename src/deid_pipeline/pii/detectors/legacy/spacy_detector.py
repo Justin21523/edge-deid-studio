@@ -115,21 +115,4 @@ class SpacyDetector(PIIDetector):
                         source="regex"
                     ))
         # 去掉重疊，保留最高 score
-        return self._resolve_conflicts(sorted(ents, key=lambda x: x["span"][0]))
-
-    def _resolve_conflicts(self, entities: List[Entity]) -> List[Entity]:
-        resolved: List[Entity] = []
-        for ent in entities:
-            if not resolved:
-                resolved.append(ent); continue
-            last = resolved[-1]
-            # 若 overlap
-            if ent["span"][0] < last["span"][1]:
-                if ent["score"] > last["score"]:
-                    resolved[-1] = ent
-            else:
-                resolved.append(ent)
-        return resolved
-
-def detect_pii(text: str) -> list[Entity]:
-    return SpacyDetector().detect(text)
+        return sorted(ents, key=lambda e: e.span[0])
