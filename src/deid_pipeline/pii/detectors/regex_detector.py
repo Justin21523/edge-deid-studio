@@ -71,15 +71,15 @@ class RegexDetector(PIIDetector):
 
     def detect(self, text: str) -> List[Entity]:
         self.load_rules()  # 檢查是否需要重新載入規則
-        entities = []
+        entities: List[Entity] = []
 
         for typ, pattern in self.patterns:
             for match in pattern.finditer(text):
-                entities.append({
-                    "span": [match.start(), match.end()],
-                    "type": typ,
-                    "score": 1.0,
-                    "source": "regex"
-                })
+                entities.append(Entity(
+                    span=(match.start(), match.end()),
+                    type=typ,
+                    score=1.0,
+                    source="regex",
+                ))
 
         return entities

@@ -22,7 +22,6 @@ class FakeProvider:
         if not os.path.exists(self.config.GPT2_MODEL_PATH):
             logger.warning(f"GPT-2 model path not found: {self.config.GPT2_MODEL_PATH}")
             return
-
         try:
             logger.info("Loading GPT-2 model...")
             self.gpt2_tokenizer = AutoTokenizer.from_pretrained(self.config.GPT2_MODEL_PATH)
@@ -37,14 +36,16 @@ class FakeProvider:
     def generate(self, entity_type: str, original: str) -> str:
         """生成假資料，保持一致性"""
         cache_key = f"{entity_type}:{original}"
-
         # 檢查快取
         if cache_key in self.cache:
             return self.cache[cache_key]
-
+        
         # 根據類型生成假資料
         fake_value = self._generate_fake(entity_type, original)
-
+        # enforce cache size
+        if len(self.cache) >= self.config.FAKER_CACHE_SIZE:
+            # pop 最舊一筆
+            self.cache.pop(next(iter(self.cache)))
         # 存入快取
         self.cache[cache_key] = fake_value
         return fake_value
@@ -111,5 +112,13 @@ class FakeProvider:
         elif entity_type == "UNIFIED_BUSINESS_NO":
             # 台灣統一編號
             return str(self.faker.random_int(10000000, 99999999))
+        elif entity_type == "PASSPORT":
+            return self.faker.bothify(text="\?#??????")  # 例如 A1234567
+        elif entity_type == "MEDICAL_ID":
+            return f"M{self.faker.random_number(digits=7, fix_len=True)}"
+        elif entity_type == "CONTRACT_NO":
+            return f"CN-{self.faker.random_number(digits=6)}"
+        elif entity_type == "ORGANIZATION":
+            return self.faker.company()
         else:
             return self.faker.text(max_nb_chars=20)

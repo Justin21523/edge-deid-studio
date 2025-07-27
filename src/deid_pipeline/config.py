@@ -41,13 +41,15 @@ class Config:
     BERT_CONFIDENCE_THRESHOLD = 0.85
     MAX_SEQ_LENGTH    = 512
     ENTITY_PRIORITY = {
-        "TW_ID": 100,
-        "PASSPORT": 95,
-        "UNIFIED_BUSINESS_NO": 90,
-        "PHONE": 85,
-        "EMAIL": 80,
-        "NAME": 75,
-        "ADDRESS": 70,
+        "ID":               100,
+        "PASSPORT":        95,
+        "PHONE":               90,
+        "UNIFIED_BUSINESS_NO": 85,
+        "EMAIL":           80,
+        "NAME":            75,
+        "ADDRESS":         70,
+        "ORGANIZATION":    65,
+        "MEDICAL_ID":      60,
     }
     WINDOW_STRIDE     = 0.5
 
@@ -60,7 +62,7 @@ class Config:
     FAKER_CACHE_SIZE  = 1000
 
     # --- ONNX runtime ---
-    USE_ONNX          = True
+    USE_ONNX          = False
     ONNX_MODEL_PATH   = Path(os.getenv("ONNX_MODEL_PATH", PROJECT_ROOT / "edge_models" / "bert-ner-zh.onnx"))
     ONNX_PROVIDERS    = ["CPUExecutionProvider","CUDAExecutionProvider","NPUExecutionProvider"]
 
@@ -68,7 +70,7 @@ class Config:
     ENVIRONMENT       = os.getenv("ENV", "local")
     LOG_LEVEL         = os.getenv("LOG_LEVEL", "INFO")
     ENABLE_PROFILING  = False
-    USE_STUB          = False
+    USE_STUB          = True
 
     # --- 長文本分段 ---
     MAX_SEQ_LENGTH    = 512
