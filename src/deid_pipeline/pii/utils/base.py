@@ -3,8 +3,9 @@ from typing import TypedDict, Tuple, Literal, List
 
 # 預定義 PII 類型常量
 PII_TYPES = Literal[
-    'NAME','ID','PHONE','EMAIL','ADDRESS',
-    'UNIFIED_BUSINESS_NO','PASSPORT','MEDICAL_ID','CONTRACT_NO','ORGANIZATION'
+  "NAME","ID","PHONE","EMAIL","ADDRESS",
+  "UNIFIED_BUSINESS_NO","TW_ID",
+  "PASSPORT","MEDICAL_ID","CONTRACT_NO","ORGANIZATION"
 ]
 
 # 新增 PII 類型：
