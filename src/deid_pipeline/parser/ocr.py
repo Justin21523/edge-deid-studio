@@ -1,4 +1,3 @@
-# src/deid_pipeline/parser/ocr.py
 import pytesseract
 from PIL import Image
 import cv2
@@ -6,8 +5,7 @@ import numpy as np
 import easyocr
 from ..config import Config
 import logging
-
-logger = logging.getLogger(__name__)
+from pii.utils import logger
 
 class OCRAdapter:
     """統一的OCR介面，支援Tesseract和EasyOCR"""
@@ -172,6 +170,21 @@ class OCRAdapter:
             full_text += " ".join(current_line)
 
         return full_text.strip(), text_blocks
+
+    def _get_tesseract_config(self):
+        """繁體中文專用配置"""
+        if self.lang == "zh":
+            return (
+                r'--oem 3 --psm 6 '
+                r'-c preserve_interword_spaces=1 '
+                r'-c tessedit_char_whitelist='
+                r'abcdefghijklmnopqrstuvwxyz'
+                r'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                r'0123456789'
+                r'.,;:!?()[]{}<>/\\|@#$%^&*_-+=~`\'"'
+                r'中文繁體字庫常用漢字'
+            )
+        return r'--oem 3 --psm 6'
 
 # 單例存取點
 _ocr_instance = None
