@@ -1,0 +1,27 @@
+
+
+
+
+
+Test HTML File
+
+
+
+Sample Test Page
+This HTML file is generated for testing purposes. It includes various elements for scraping tests.
+
+Item 1
+Item 2 with a link
+Item 3
+
+
+Image and Text Section
+
+Here is some bold and italic text for testing.
+
+Lucas is a NTU student here in Taiwan. He's 22 years old and his email is lucasauriant0209@gmail.com
+His phone number is +886966837966. Contact if needed!
+
+Tony Wu is already working in a company named SexyFox.
+
+身分證號是 A123456789。台大統編是 03734301。
