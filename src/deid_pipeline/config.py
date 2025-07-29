@@ -2,6 +2,13 @@
 import os
 from pathlib import Path
 import yaml
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIGS_DIR  = PROJECT_ROOT / "configs"
@@ -78,3 +85,11 @@ class Config:
     # --- 長文本分段 ---
     MAX_SEQ_LENGTH    = 512
     WINDOW_STRIDE     = 0.5
+
+    EXTRACTOR_PLUGINS = {
+        '.pdf': 'src.deid_pipeline.parser.text_extractor.PDFTextExtractor',
+        '.docx': 'src.deid_pipeline.parser.text_extractor.DocxTextExtractor',
+        '.html': 'src.deid_pipeline.parser.text_extractor.HTMLTextExtractor',
+    }
+
+    logger = logging.getLogger(__name__)
