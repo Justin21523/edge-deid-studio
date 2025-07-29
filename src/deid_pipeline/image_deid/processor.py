@@ -4,16 +4,16 @@ import os
 from typing import Dict
 import cv2
 import numpy as np
-
-from ..parser.text_extractor import TextExtractor
+from ..parser.text_extractor import SmartTextExtractor
 from ..pii.detectors import get_detector
 from ..pii.utils.replacer import Replacer
 from ..config import Config
 
 class ImageDeidProcessor:
-    def __init__(self, lang: str = "zh", ocr_engine: str = "auto"):
+    def __init__(self, config: Config = None, lang: str = "zh"):
+        self.config = config or Config()
         # 文字提取器（內含OCR）
-        self.extractor = TextExtractor(lang=lang, ocr_engine=ocr_engine)
+        self.extractor = SmartTextExtractor(config=self.config)
         # PII 偵測器
         self.detector = get_detector(lang)
         # 替換器
@@ -24,7 +24,7 @@ class ImageDeidProcessor:
         start = time.perf_counter()
 
         # 文字提取
-        original_text, offset_map = self.extractor.extract_text(file_path)
+        original_text, offset_map = self.extractor.extract(file_path)
 
         if not original_text.strip():
             return {
