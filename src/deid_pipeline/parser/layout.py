@@ -46,3 +46,15 @@ class TableCell:
         self.col = col
         self.rowspan = rowspan
         self.colspan = colspan
+
+# 座標系統統一化：所有bbox皆介於0~1
+def preserve_formatting(original: TextBlock, new_text: str) -> TextBlock:
+    return TextBlock(
+        text=new_text,
+        bbox=original.bbox,
+        font=original.font,
+        size=original.size,
+        color=original.color,
+        is_bold=original.is_bold,
+        is_italic=original.is_italic
+    )
