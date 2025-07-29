@@ -1,0 +1,27 @@
+
+
+
+
+
+Test HTML File
+
+
+
+Sample Test Page
+This ★★★L file is generated for testing purposes. It includes various elements for scraping tests.
+
+Item 1
+Item 2 with a link
+Item 3
+
+
+Image and Text Section
+
+Here is some bold and italic text for testing.
+
+★★★★★ is a ★★★ student here in ★★★★★★. He's ★★★★★★★★ old and his email is user@example.com
+His phone number is ★★★★★★★★★★★★★. Contact if needed!
+
+★★★★★★★ is already working in a company named ★★★★★★★.
+
+身分證號是 K149018191。台大統編是 48959158。
