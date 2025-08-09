@@ -10,14 +10,14 @@
     <PackageArchitecture>x64</PackageArchitecture>
     <PackageIdentityName>e7cc4560-1382-4b94-a0c9-3f7227755280</PackageIdentityName>
     <PackageIdentityPublisher>CN=user</PackageIdentityPublisher>
-    <IntermediateOutputPath>C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\</IntermediateOutputPath>
     <RemoteDeploymentType>CopyToDevice</RemoteDeploymentType>
     <PackageRegistrationPath>
     </PackageRegistrationPath>
     <RemoveNonLayoutFiles>false</RemoveNonLayoutFiles>
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
-    <LayoutDir>C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AppX</LayoutDir>
+    <LayoutDir>C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AppX</LayoutDir>
     <RegisteredManifestChecksum>2ED5F3ECE04C50A2DC0A3A3CFE4B809D526C45BEC5FBCB52EA21A08E10BAFCBF</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>e7cc4560-1382-4b94-a0c9-3f7227755280_1.0.0.0_x64__yzekw4x8qxe1g</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>e7cc4560-1382-4b94-a0c9-3f7227755280_yzekw4x8qxe1g!App</RegisteredUserModeAppID>
@@ -26,28 +26,28 @@
     <RegisteredVersion>1.0.0.0</RegisteredVersion>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2025-07-24T16:34:16.879</Modified>
+      <Modified>2025-08-08T08:27:05.341</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\resources.pri">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2025-07-24T16:34:16.608</Modified>
+      <Modified>2025-08-08T08:27:04.583</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.runtimeconfig.json">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.runtimeconfig.json">
       <PackagePath>AnoniMe.runtimeconfig.json</PackagePath>
-      <Modified>2025-07-24T16:34:16.208</Modified>
+      <Modified>2025-08-08T08:27:03.598</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.dll">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.dll">
       <PackagePath>AnoniMe.dll</PackagePath>
-      <Modified>2025-07-24T16:34:15.290</Modified>
+      <Modified>2025-08-08T08:27:00.950</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\apphost.exe">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\obj\x64\Debug\net8.0-windows10.0.19041.0\apphost.exe">
       <PackagePath>AnoniMe.exe</PackagePath>
-      <Modified>2025-07-24T16:34:15.358</Modified>
+      <Modified>2025-08-08T08:27:01.139</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\microsoft.windows.sdk.net.ref\10.0.19041.57\lib\net8.0\Microsoft.Windows.SDK.NET.dll">
       <PackagePath>Microsoft.Windows.SDK.NET.dll</PackagePath>
@@ -353,37 +353,37 @@
       <PackagePath>Microsoft.Web.WebView2.Core.Projection.dll</PackagePath>
       <Modified>2024-11-10T08:57:50.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.deps.json">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\bin\x64\Debug\net8.0-windows10.0.19041.0\AnoniMe.deps.json">
       <PackagePath>AnoniMe.deps.json</PackagePath>
-      <Modified>2025-07-24T16:34:16.189</Modified>
+      <Modified>2025-08-08T08:27:03.513</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\Assets\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
-      <Modified>2025-07-12T19:12:13.851</Modified>
+      <Modified>2025-07-27T13:11:17.609</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\Assets\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
-      <Modified>2025-07-12T19:12:13.856</Modified>
+      <Modified>2025-07-27T13:11:17.618</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\Assets\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
-      <Modified>2025-07-12T19:12:13.862</Modified>
+      <Modified>2025-07-27T13:11:17.629</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\Assets\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
-      <Modified>2025-07-12T19:12:13.868</Modified>
+      <Modified>2025-07-27T13:11:17.637</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
-      <Modified>2025-07-12T19:12:13.874</Modified>
+      <Modified>2025-07-27T13:11:17.652</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
-      <Modified>2025-07-12T19:12:13.881</Modified>
+      <Modified>2025-07-27T13:11:17.662</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\Assets\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
-      <Modified>2025-07-12T19:12:13.891</Modified>
+      <Modified>2025-07-27T13:11:17.674</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

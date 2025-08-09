@@ -53,6 +53,9 @@
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Scripts\" />
+	</ItemGroup>
 
 	<!-- 可加上你 View 資料夾 -->
 

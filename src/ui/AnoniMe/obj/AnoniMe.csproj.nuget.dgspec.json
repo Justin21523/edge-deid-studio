@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\source\\repos\\edge-deid-studio\\src\\ui\\AnoniMe\\AnoniMe.csproj": {}
+    "C:\\Users\\user\\OneDrive - 國立臺灣科技大學\\桌面\\edge-deid-studio\\src\\ui\\AnoniMe\\AnoniMe.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\source\\repos\\edge-deid-studio\\src\\ui\\AnoniMe\\AnoniMe.csproj": {
+    "C:\\Users\\user\\OneDrive - 國立臺灣科技大學\\桌面\\edge-deid-studio\\src\\ui\\AnoniMe\\AnoniMe.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\source\\repos\\edge-deid-studio\\src\\ui\\AnoniMe\\AnoniMe.csproj",
+        "projectUniqueName": "C:\\Users\\user\\OneDrive - 國立臺灣科技大學\\桌面\\edge-deid-studio\\src\\ui\\AnoniMe\\AnoniMe.csproj",
         "projectName": "AnoniMe",
-        "projectPath": "C:\\Users\\user\\source\\repos\\edge-deid-studio\\src\\ui\\AnoniMe\\AnoniMe.csproj",
+        "projectPath": "C:\\Users\\user\\OneDrive - 國立臺灣科技大學\\桌面\\edge-deid-studio\\src\\ui\\AnoniMe\\AnoniMe.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\source\\repos\\edge-deid-studio\\src\\ui\\AnoniMe\\obj\\",
+        "outputPath": "C:\\Users\\user\\OneDrive - 國立臺灣科技大學\\桌面\\edge-deid-studio\\src\\ui\\AnoniMe\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
