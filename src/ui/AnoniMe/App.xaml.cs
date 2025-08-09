@@ -1,7 +1,10 @@
-﻿using AnoniMe.ViewModels;
+﻿using AnoniMe.Services;
+using AnoniMe.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
+using System;
+using System.IO;
 
 namespace AnoniMe
 {
@@ -17,6 +20,7 @@ namespace AnoniMe
         public App()
         {
             InitializeComponent();
+
         }
 
         // 啟動時呼叫
@@ -34,6 +38,12 @@ namespace AnoniMe
             HostContainer = Host.CreateDefaultBuilder()
                 .ConfigureServices(services =>
                 {
+
+                    // 路徑依你的專案調整
+                    var pythonExe = @".venv\Scripts\python.exe";
+                    //var scriptPath = Path.Combine(AppContext.BaseDirectory, "Scripts", "processor.py");
+                    //services.AddSingleton(new PythonProcessor(pythonExe, scriptPath));
+
                     // 註冊 MainViewModel，每次呼叫都會建立新的實例 (Transient)
                     services.AddTransient<HomeViewModel>();
                     services.AddTransient<UploadViewModel>();

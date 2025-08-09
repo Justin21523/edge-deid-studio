@@ -1,1 +1,1 @@
-C:\Users\user\source\repos\edge-deid-studio\src\ui\AnoniMe\AnoniMe.csproj;x64
+C:\Users\user\OneDrive - 國立臺灣科技大學\桌面\edge-deid-studio\src\ui\AnoniMe\AnoniMe.csproj;x64

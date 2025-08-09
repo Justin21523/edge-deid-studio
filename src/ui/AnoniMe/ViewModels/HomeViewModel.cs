@@ -6,7 +6,10 @@ using System;
 using System.Threading.Tasks;
 
 namespace AnoniMe.ViewModels
-{   
+{  
+    /// <summary>
+    /// 首頁的 ViewModel，負責處理首頁上的動畫效果與頁面跳轉。
+    /// </summary>
     public partial class HomeViewModel : ObservableObject
     {
 
@@ -33,6 +36,7 @@ namespace AnoniMe.ViewModels
             // 避免一開始就跑完動畫，不放在這裡
         }
 
+        // 啟動首頁動畫（打字機效果 + 點點動畫）。
         public void StartAnimations(int typingDelay = 200)
         {
             _ = ShowTypingEffectAsync("EASILY LIVE WITH SAFETY", typingDelay);
@@ -40,6 +44,7 @@ namespace AnoniMe.ViewModels
         }
 
 
+        // 模擬打字機效果，逐字顯示文字。
         private async Task ShowTypingEffectAsync(string text, int delayMs = 100)
         {
             typingText = "";
@@ -50,6 +55,7 @@ namespace AnoniMe.ViewModels
             }
         }
 
+        // 啟動點點動畫（每 400ms 切換一次內容）。
         private void StartDotsAnimation()
         {
             _dotsTimer = new DispatcherTimer
