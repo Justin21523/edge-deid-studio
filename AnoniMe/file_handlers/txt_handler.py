@@ -17,7 +17,7 @@ class TextHandler:
         with open(input_path, "r", encoding="utf-8") as f:
             text = f.read()
 
-        # 2) 偵測 PII -> language 希望 MVP 先預先知道是英文還是中文
+        # 2) 偵測 PII
         entities = detect_pii(text, language="en", score_threshold=0.6)
         
         # 3) 使用假資料或遮蔽進行替換
