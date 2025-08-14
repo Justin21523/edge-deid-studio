@@ -20,7 +20,7 @@ Image and Text Section
 Here is some bold and italic text for testing.
 
 Lucas is a NTU student here in Taiwan. He's 22 years old and his email is lucasauriant0209@gmail.com
-His phone number is +886966837966. Contact if needed!
+His phone number is 0912345678. Contact if needed!
 
 Tony Wu is already working in a company named SexyFox.
 

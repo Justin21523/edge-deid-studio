@@ -14,6 +14,9 @@ def register_custom_entities(analyzer: AnalyzerEngine):
         regex=r"\b\d{8}\b",
         score=0.80
     )
+    # tw_phone_pattern = Pattern(
+        
+    # )
 
     # 2) Wrap them in PatternRecognizers
     # 為 zh 和 en 各建立一個 recognizer
