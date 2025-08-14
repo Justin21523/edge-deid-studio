@@ -39,46 +39,29 @@ class PdfPiiDetector:
                         else:
                             faker_results = test_all_methods(entities)
                             best_results = keep_highest_score_per_raw_txt(faker_results)
-                            # 全部偵測到的 PII 字串
-                            # for i in range(len(entities)):
-                            #     print(f"實體 {i+1}: {entities[i]["entity_type"]} ({entities[i]["start"]}-{entities[i]["end"]}) -> {entities[i]["raw_text"]}")
-                            
-                            # # 依分數、長度排序
-                            # entities = sorted(entities, key=lambda e: (e.score, e.end - e.start), reverse=True)
-                            # filtered = []
-                            # used_ranges = set()
-                            # for ent in entities:
-                            #     rng = (ent.start, ent.end)
-                            #     if rng not in used_ranges:
-                            #         filtered.append(ent)
-                            #         used_ranges.add(rng)
-                            # # 遮蔽所有不重複的 entity
-                            # masked_text = text
-                            # for ent in filtered:
-                            #     start, end = ent.start, ent.end
-                            #     masked_text = (
-                            #         masked_text[:start] +
-                            #         "*" * (end - start) +
-                            #         masked_text[end:]
-                            #     )
-                            # 依分數、長度排序
-                            entities = sorted(entities, key=lambda e: (e["score"], e["end"] - e["start"]), reverse=True)
-                            filtered = []
-                            used_ranges = set()
-                            for ent in entities:
-                                rng = (ent["start"], ent["end"])
-                                if rng not in used_ranges:
-                                    filtered.append(ent)
-                                    used_ranges.add(rng)
-                            # 遮蔽所有不重複的 entity
+                            # 建立 raw_txt -> fake_value 的 mapping
+                            fake_map = {item["raw_txt"]: item["fake_value"] for item in best_results}
+                            # 依 entities 位置替換
                             masked_text = text
-                            for ent in filtered:
-                                start, end = ent["start"], ent["end"]
-                                masked_text = (
-                                    masked_text[:start] +
-                                    "*" * (end - start) +
-                                    masked_text[end:]
-                                )
+                            offset = 0
+        
+                            for ent in entities:
+                                start, end = ent["start"] + offset, ent["end"] + offset
+                                raw_txt = ent["raw_txt"]
+                                entity_type = ent["entity_type"]
+                                
+                                # 如果是 ORGANIZATION，直接保留原文字
+                                if entity_type == "ORGANIZATION":
+                                    fake_value = raw_txt
+                                else:
+                                    fake_value = fake_map.get(raw_txt, "*" * (end - start))
+                                    # 確保 fake_value 與 raw_txt 長度一致
+                                    fake_value = fake_value[:len(raw_txt)].ljust(len(raw_txt))
+
+                                # 替換並調整 offset
+                                masked_text = masked_text[:start] + fake_value + masked_text[end:]
+                                offset += len(fake_value) - (end - start)
+                            
                         # 用原本的字型、大小、座標插入遮蔽後文字
                         font_path = "/Users/lucasauriant/Downloads/Noto_Sans_TC/NotoSansTC-VariableFont_wght.ttf"
                         new_page.insert_text(

@@ -2,7 +2,7 @@
 
 from presidio_analyzer import AnalyzerEngine, RecognizerRegistry, PatternRecognizer, Pattern
 from presidio_analyzer.nlp_engine import NlpEngineProvider
-from pii_models.custom_recognizer import register_custom_entities
+from pii_models.custom_recognizer_plus import register_custom_entities
 
 # 1) 定義 spaCy 多語模型
 nlp_config = {
@@ -50,7 +50,22 @@ def detect_pii(
         entities=None,
         language=language,
     )
-    return [r for r in results if r.score >= score_threshold]
+    # NEW!!!
+    # 用 dict 包裝每個 result，加上 raw_txt
+    filtered = []
+    for r in results:
+        if r.score >= score_threshold:
+            filtered.append({
+                "entity_type": r.entity_type,
+                "start": r.start,
+                "end": r.end,
+                "score": r.score,
+                "raw_txt": text[r.start:r.end]
+            })
+    print(f"偵測到的 PII 實體：{len(filtered)} 個")
+    print("篩選後的實體：", filtered)
+    # return [r for r in results if r.score >= score_threshold]
+    return filtered
 
 if __name__ == "__main__":
     print("=== Registered recognizers ===")

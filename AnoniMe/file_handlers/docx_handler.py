@@ -27,7 +27,9 @@ class DocxHandler:
         for para in doc.paragraphs:
             for run in para.runs:
                 original = run.text
-                entities = detect_pii(original)
+                entities = detect_pii(original, language="en", score_threshold=0.6)
+                # print("處理段落 run：", original)
+                # print("偵測到的實體：", entities)
                 new_text = replace_pii(original, entities)
                 if new_text != original:
                     run.text = new_text
@@ -39,7 +41,9 @@ class DocxHandler:
                     for para in cell.paragraphs:
                         for run in para.runs:
                             original = run.text
-                            entities = detect_pii(original,score_threshold=0.6)
+                            entities = detect_pii(original, language="en", score_threshold=0.6)
+                            # print("處理表格 cell run：", original)
+                            # print("偵測到的實體：", entities)
                             new_text = replace_pii(original, entities)
                             if new_text != original:
                                 run.text = new_text
