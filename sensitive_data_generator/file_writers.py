@@ -68,8 +68,10 @@ class FileWriter:
         d = ImageDraw.Draw(img)
 
         # 使用繁體中文字型
+        base_dir = os.path.dirname(__file__)
         try:
-            font = ImageFont.truetype("fonts/NotoSansTC-Regular.otf", 16)
+            font_path = os.path.join(base_dir, "fonts", "NotoSansTC-Regular.ttf")
+            font = ImageFont.truetype(font_path, 16)
         except:
             font = ImageFont.load_default()
 

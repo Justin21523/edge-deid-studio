@@ -7,87 +7,19 @@ import pdfplumber
 from docx import Document
 import pandas as pd
 from bs4 import BeautifulSoup
+import importlib
 from .ocr import OCRAdapter
 from ..config import Config
 from ..pii.utils import logger
 from .layout import DocumentLayout, PageLayout, TextBlock, TableBlock, TableCell
+
 
 class TextExtractor(ABC):
     """抽象文字提取器"""
     @abstractmethod
     def extract(self, file_path: str) -> DocumentLayout:
         pass
-
-class TextPositionMapper:
-    """座標映射工具"""
-    def __init__(self, layout: DocumentLayout):
-        self.layout = layout
-        self.char_positions = self._build_char_index()
-
-    def _build_char_index(self) -> List[Tuple]:
-        """建立字符級位置索引"""
-        index = []
-        char_offset = 0
-
-        for page in self.layout.pages:
-            for block in page.blocks:
-                words = re.split(r'(\s+)', block.text)
-                word_x0, word_y0 = block.bbox[0], block.bbox[1]
-
-                for word in words:
-                    if not word.strip():
-                        char_offset += len(word)
-                        continue
-
-                    # 簡化計算：平均分配字符寬度
-                    char_width = (block.bbox[2] - block.bbox[0]) / len(word)
-
-                    for i, char in enumerate(word):
-                        char_bbox = (
-                            word_x0 + i * char_width,
-                            word_y0,
-                            word_x0 + (i+1) * char_width,
-                            block.bbox[3]
-                        )
-                        index.append((char_offset + i, char_bbox, page.page_num))
-
-                    char_offset += len(word)
-                    word_x0 += len(word) * char_width
-
-        return index
-
-    def get_original_position(self, start_idx: int, end_idx: int) -> List[Tuple]:
-        """獲取原始文件中的位置"""
-        positions = []
-        current_bbox = None
-
-        for idx in range(start_idx, end_idx):
-            if idx >= len(self.char_positions):
-                break
-
-            char_idx, bbox, page_num = self.char_positions[idx]
-
-            if current_bbox and self._is_continuous(current_bbox, bbox):
-                # 合併連續bbox
-                current_bbox = (
-                    current_bbox[0], current_bbox[1],
-                    bbox[2], current_bbox[3]
-                )
-            else:
-                if current_bbox:
-                    positions.append((current_bbox, page_num))
-                current_bbox = bbox
-
-        if current_bbox:
-            positions.append((current_bbox, page_num))
-
-        return positions
-
-    def _is_continuous(self, bbox1: Tuple, bbox2: Tuple, threshold=0.1) -> bool:
-        """檢查兩個bbox是否連續"""
-        # 簡化實現：檢查x軸連續性
-        return abs(bbox1[2] - bbox2[0]) < threshold
-
+    
 # 格式解析引擎實作
 #1. PDF 深度處理（使用 pdfplumber）
 class PDFTextExtractor(TextExtractor):
@@ -146,8 +78,8 @@ class PDFTextExtractor(TextExtractor):
         # 實際應根據pdfplumber的表格結構計算
         return (0.1, 0.1, 0.2, 0.2)
 
-# Office 文件支援
 
+# Office 文件支援
 class DocxTextExtractor(TextExtractor):
     def extract(self, file_path: str) -> DocumentLayout:
         layout = DocumentLayout()
@@ -238,6 +170,7 @@ class HTMLTextExtractor(TextExtractor):
         layout.pages.append(page_layout)
         return layout
 
+
 # 智慧回退機制與主提取類
 class SmartTextExtractor:
     def __init__(self, config: Config = None):
@@ -252,6 +185,17 @@ class SmartTextExtractor:
             '.xlsx': self._extract_excel,
             '.xls': self._extract_excel,
         }
+
+
+    def _load_extractor(self, ext: str):
+        if ext not in self.extractors:
+            if ext in self.config.EXTRACTOR_PLUGINS:
+                module_path, class_name = self.config.EXTRACTOR_PLUGINS[ext].rsplit('.', 1)
+                module = importlib.import_module(module_path)
+                self.extractors[ext] = getattr(module, class_name)()
+            else:
+                raise UnsupportedFormatError(f"不支援的格式: {ext}")
+        return self.extractors[ext]
 
     def extract(self, file_path: str) -> Tuple[str, DocumentLayout]:
         """返回 (純文字, 結構化佈局)"""

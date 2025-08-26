@@ -227,8 +227,8 @@ class AdvancedFileWriter:
             '電話號碼': [PIIGenerator.generate_tw_phone() for _ in range(20)],
             '電子郵件': [PIIGenerator.generate_email() for _ in range(20)],
             '帳戶餘額': [round(random.uniform(1000, 100000), 2) for _ in range(20)],
-            '最近交易日期': [(datetime.now() - timedelta(days=random.randint(1, 365))\
-                             .strftime("%Y-%m-%d") for _ in range(20))]
+            '最近交易日期': [(datetime.now() - timedelta(days=random.randint(1, 365)))\
+                             .strftime("%Y-%m-%d") for _ in range(20)]
         }
 
         df = pd.DataFrame(data)
@@ -375,10 +375,16 @@ class AdvancedFileWriter:
             r = random.randint(1, 3)
             draw.ellipse([x, y, x+r, y+r], fill=(220, 220, 220))
 
+        #  先拿到這支 .py 的資料夾路徑
+        base_dir = os.path.dirname(__file__)
         # 使用繁體中文字型
         try:
-            font = ImageFont.truetype("fonts/NotoSansTC-Regular.otf", 24)
-            title_font = ImageFont.truetype("fonts/NotoSansTC-Bold.otf", 36)
+            font_path = os.path.join(base_dir, "fonts", "NotoSansTC-Regular.ttf")
+            # 載入字型
+            font = ImageFont.truetype(font_path, 24)
+
+            font_path = os.path.join(base_dir, "fonts", "NotoSansTC-Bold.ttf")
+            title_font = ImageFont.truetype(font_path, 36)
         except:
             font = ImageFont.load_default()
             title_font = ImageFont.load_default()
@@ -431,9 +437,11 @@ class AdvancedFileWriter:
         stamp_y = 900
         draw.ellipse([stamp_x, stamp_y, stamp_x+stamp_size, stamp_y+stamp_size],
                      outline=(200, 0, 0), width=3)
-
         # 印章文字
-        stamp_font = ImageFont.truetype("fonts/NotoSansTC-Bold.otf", 20)
+        #  在同個資料夾底下的 fonts 子資料夾尋找 .ttf
+        font_path = os.path.join(base_dir, "fonts", "NotoSansTC-Bold.ttf")
+        #  載入字型
+        stamp_font = ImageFont.truetype(font_path, 20)
         draw.text((stamp_x+stamp_size/2, stamp_y+stamp_size/2-15), "核准章",
                  fill=(200, 0, 0), font=stamp_font, anchor="mm")
         draw.text((stamp_x+stamp_size/2, stamp_y+stamp_size/2+15), "測試專用",

@@ -57,8 +57,9 @@ class DataFormatter:
         record_num = PIIGenerator.generate_medical_record()
 
         # 就診資訊
-        visit_date = (datetime.now() - timedelta(days=random.randint(1, 365))\
-            .strftime("%Y-%m-%d"))
+        visit_date = (datetime.now()
+                      - timedelta(days=random.randint(1, 365)))\
+            .strftime("%Y-%m-%d")
         hospital = random.choice(HOSPITALS)
         department = random.choice(MEDICAL_SPECIALTIES)
         doctor = "Dr. " + PIIGenerator.generate_tw_name()
@@ -118,8 +119,9 @@ class DataFormatter:
         # 交易記錄
         transactions = []
         for _ in range(random.randint(3, 10)):
-            date = (datetime.now() - timedelta(days=random.randint(1, 30))\
-                .strftime("%Y-%m-%d"))
+            date = (datetime.now()
+                    - timedelta(days=random.randint(1, 30)))\
+                .strftime("%Y-%m-%d")
             merchant = random.choice(["百貨公司", "超市", "餐廳", "加油站", "線上購物", "電信繳費"])
             amount = round(random.uniform(100, 10000), 2)
             transactions.append(f"{date} | {merchant} | NT${amount:,.2f}")

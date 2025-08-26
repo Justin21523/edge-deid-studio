@@ -1,0 +1,1228 @@
+[
+  {
+    "id": 1,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_1.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_1.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_1.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：賴雅惠彥廷（身分證字號：N153536090）\n        住址：桃園市民族街68巷36號3樓\n\n        乙方：李志豪（身分證字號：M101814370）\n        住址：台中市民生大道48號\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2024年09月12日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣342,748元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠償..."
+    }
+  },
+  {
+    "id": 2,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_2.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_2.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_2.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_2.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_2.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 謝雅惠\n        身分證字號: R220767708\n        帳戶號碼: 312040359680\n        信用卡號: 6180352915965306\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-18 | 餐廳 | 9,986.99\n2025-07-11 | 超市 | 4,789.52\n2025-07-16 | 線上購物 | 7,608.80\n2025-07-15 | 百貨公司 | 6,469.62\n2025-07-09 | 超市 | 8,778.58\n2025-07-26 | 線上購物 | 3,750.47\n2025-07-25 | 線上購物 | 5,873.94\n2025-07-23 | 百貨公司 | 2,773.79\n2025-07-05 | 百貨公司 | 8,871.18\n..."
+    }
+  },
+  {
+    "id": 3,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_3.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_3.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_3.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_3.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_3.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 吳淑惠建志\n        身分證字號: C165873458\n        帳戶號碼: 672876699399\n        信用卡號: 5795117347719700\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-07 | 加油站 | 9,357.67\n2025-07-14 | 餐廳 | 5,417.80\n2025-06-29 | 線上購物 | 5,117.06\n2025-07-14 | 電信繳費 | 7,040.20\n2025-07-06 | 百貨公司 | 9,624.82\n2025-07-15 | 餐廳 | 8,357.94\n2025-07-10 | 超市 | 9,013.67\n2025-06-30 | 線上購物 | 9,290.51\n2025-07-27 | 線上購物 | 2,747.18..."
+    }
+  },
+  {
+    "id": 4,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_4.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_4.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_4.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_4.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_4.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 許志豪\n        身分證字號: Q259959676\n        帳戶號碼: 512750265137\n        信用卡號: 5757449840549972\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-21 | 超市 | 1,072.04\n2025-07-25 | 電信繳費 | 9,272.60\n2025-07-17 | 電信繳費 | 9,599.05\n2025-07-05 | 超市 | 1,253.58\n2025-07-22 | 超市 | 8,214.49\n2025-07-08 | 線上購物 | 6,779.15\n2025-07-05 | 電信繳費 | 8,055.05\n2025-06-30 | 加油站 | 3,874.09\n2025-07-28 | 超市 | 8,754.94\n202..."
+    }
+  },
+  {
+    "id": 5,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_5.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_5.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_5.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：張靜怡（身分證字號：E193491018）\n        住址：台東縣中山街7號3樓\n\n        乙方：張靜怡（身分證字號：T113247079）\n        住址：台東縣信義路29號\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2024年10月01日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣473,342元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠償他方因此所受之..."
+    }
+  },
+  {
+    "id": 6,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_6.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_6.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_6.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_6.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_6.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 陳冠宇\n        身分證字號: Z218880267\n        帳戶號碼: 850454188738\n        信用卡號: 342868579340902\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-22 | 加油站 | 4,635.85\n2025-07-24 | 餐廳 | 6,548.81\n2025-07-13 | 電信繳費 | 8,333.35\n2025-07-16 | 百貨公司 | 4,560.10\n2025-07-15 | 電信繳費 | 5,942.16\n2025-07-10 | 線上購物 | 9,834.11\n2025-07-24 | 百貨公司 | 3,767.29\n2025-07-14 | 餐廳 | 4,908.26\n2025-07-04 | 加油站 | 5,845.37\n2..."
+    }
+  },
+  {
+    "id": 7,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_7.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_7.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_7.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        長庚紀念醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 吳彥廷\n        病歷號: 亞東醫-158417\n        出生日期: 1995年9月16日\n        聯絡電話: 0939286932\n        住址: 花蓮縣仁愛街22巷8號17樓之3\n\n        就診日期: 2025-07-05\n        主治醫師: 曾靜怡 醫師\n\n        臨床診斷:\n        - 高血壓\n        - 胃食道逆流\n\n        檢驗結果:\n        1. 血壓: 127/71 mmHg\n        2. 心率: 93 bpm\n        3. 血糖: 146 mg/dL\n        4. 膽固醇: 161 mg/dL\n\n        影像檢查:\n        - 心電圖: 竇性心律\n\n        處方:\n        1. M..."
+    }
+  },
+  {
+    "id": 8,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_8.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_8.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_8.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_8.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_8.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 鄭佩珊\n        身分證字號: S274284989\n        帳戶號碼: 219147131148\n        信用卡號: 5722649358405187\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-18 | 電信繳費 | 3,845.26\n2025-07-23 | 餐廳 | 464.38\n2025-07-26 | 百貨公司 | 5,780.88\n2025-07-28 | 電信繳費 | 9,386.81\n2025-06-29 | 線上購物 | 230.75\n2025-07-23 | 超市 | 9,918.19\n2025-07-03 | 餐廳 | 1,297.66\n2025-07-18 | 餐廳 | 6,162.24\n2025-07-12 | 超市 | 9,607.80\n2025-07-..."
+    }
+  },
+  {
+    "id": 9,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_9.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_9.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_9.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_9.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_9.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 張佩珊\n        身分證字號: P287087991\n        帳戶號碼: 819658352868\n        信用卡號: 342224904169661\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-26 | 線上購物 | 5,651.25\n2025-07-22 | 超市 | 4,612.19\n2025-07-14 | 百貨公司 | 444.73\n2025-07-08 | 百貨公司 | 140.96\n2025-07-05 | 加油站 | 8,700.44\n2025-07-25 | 線上購物 | 5,002.71\n2025-07-11 | 餐廳 | 460.74\n2025-07-15 | 餐廳 | 6,597.65\n2025-07-25 | 百貨公司 | 3,477.25\n2025-07-..."
+    }
+  },
+  {
+    "id": 10,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_10.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_10.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_10.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：謝家豪佳蓉（身分證字號：U291316056）\n        住址：嘉義市新生路58號\n\n        乙方：楊志明（身分證字號：G196862779）\n        住址：連江縣成功路35巷58號\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2025年06月18日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣388,104元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠償他方因..."
+    }
+  },
+  {
+    "id": 11,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_11.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_11.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_11.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        國泰醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 洪雅惠\n        病歷號: MRB63201\n        出生日期: 28/3/56\n        聯絡電話: 0910101303\n        住址: 台北市和平街27號\n\n        就診日期: 2025-07-04\n        主治醫師: 曾怡君 醫師\n\n        臨床診斷:\n        - 退化性關節炎\n        - 輕度貧血\n\n        檢驗結果:\n        1. 血壓: 133/88 mmHg\n        2. 心率: 77 bpm\n        3. 血糖: 187 mg/dL\n        4. 膽固醇: 227 mg/dL\n\n        影像檢查:\n        - 胸部X光: 無明顯異常\n\n        處方:\n        1. Lisinopril ..."
+    }
+  },
+  {
+    "id": 12,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_12.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_12.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_12.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_12.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_12.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 楊佩珊\n        身分證字號: V234925704\n        帳戶號碼: 015643272321\n        信用卡號: 4771550120880371\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-01 | 餐廳 | 9,737.03\n2025-06-30 | 電信繳費 | 2,781.73\n2025-07-15 | 超市 | 6,257.82\n2025-07-26 | 百貨公司 | 4,969.29\n2025-07-18 | 線上購物 | 7,633.75\n2025-07-07 | 超市 | 1,455.30\n2025-07-19 | 餐廳 | 4,889.67\n2025-07-26 | 電信繳費 | 4,382.42\n2025-07-12 | 線上購物 | 8,899.81\n20..."
+    }
+  },
+  {
+    "id": 13,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_13.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_13.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_13.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_13.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_13.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 廖冠廷淑芬\n        身分證字號: U239330337\n        帳戶號碼: 701740867584\n        信用卡號: 6910486566675078\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-14 | 餐廳 | 9,134.73\n2025-07-07 | 餐廳 | 2,793.96\n2025-07-04 | 加油站 | 6,089.87\n2025-07-04 | 超市 | 430.92\n2025-07-19 | 百貨公司 | 8,391.27\n2025-07-09 | 餐廳 | 854.08\n2025-07-06 | 餐廳 | 2,026.22\n2025-07-26 | 線上購物 | 6,571.77\n2025-07-06 | 電信繳費 | 7,473.67\n2025-07..."
+    }
+  },
+  {
+    "id": 14,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_14.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_14.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_14.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_14.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_14.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 廖怡如雅惠\n        身分證字號: L146821965\n        帳戶號碼: 549368937047\n        信用卡號: 6568327425080860\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-20 | 超市 | 7,474.95\n2025-07-16 | 超市 | 4,100.98\n2025-07-01 | 百貨公司 | 5,640.84\n2025-07-11 | 餐廳 | 6,300.15\n2025-07-08 | 加油站 | 1,141.29\n2025-07-24 | 百貨公司 | 4,903.98\n2025-07-28 | 電信繳費 | 7,182.40\n2025-07-05 | 電信繳費 | 2,938.13\n2025-07-08 | 加油站 | 3,562.18\n..."
+    }
+  },
+  {
+    "id": 15,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_15.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_15.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_15.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_15.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_15.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 楊靜怡\n        身分證字號: X117187552\n        帳戶號碼: 819982399834\n        信用卡號: 373438829290053\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-02 | 線上購物 | 2,638.86\n2025-07-01 | 餐廳 | 4,217.10\n2025-07-26 | 電信繳費 | 7,217.67\n2025-07-10 | 加油站 | 461.53\n2025-06-30 | 加油站 | 5,659.52\n2025-07-18 | 加油站 | 1,261.38\n2025-07-15 | 超市 | 8,151.38\n2025-07-22 | 線上購物 | 3,319.60\n2025-07-09 | 超市 | 2,827.76\n2025-0..."
+    }
+  },
+  {
+    "id": 16,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_16.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_16.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_16.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        三軍總醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 吳家豪佩珊\n        病歷號: MRA43450\n        出生日期: 30/1/95\n        聯絡電話: 0965873031\n        住址: 澎湖縣和平大道40號\n\n        就診日期: 2025-06-29\n        主治醫師: 李佳蓉 醫師\n\n        臨床診斷:\n        - 高血壓\n        - 胃食道逆流\n\n        檢驗結果:\n        1. 血壓: 135/89 mmHg\n        2. 心率: 73 bpm\n        3. 血糖: 152 mg/dL\n        4. 膽固醇: 178 mg/dL\n\n        影像檢查:\n        - 心電圖: 竇性心律\n\n        處方:\n        1. Metformin 5..."
+    }
+  },
+  {
+    "id": 17,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_17.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_17.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_17.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_17.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_17.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 鄭俊宏\n        身分證字號: X276044306\n        帳戶號碼: 595991241559\n        信用卡號: 4821958680234764\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-06-30 | 線上購物 | 7,424.66\n2025-07-03 | 餐廳 | 6,043.95\n2025-07-13 | 餐廳 | 9,487.93\n2025-07-17 | 電信繳費 | 4,421.85\n2025-07-10 | 電信繳費 | 7,717.84\n2025-06-29 | 百貨公司 | 9,203.92\n2025-07-07 | 超市 | 9,917.05\n2025-07-14 | 加油站 | 1,111.65\n2025-07-28 | 電信繳費 | 4,834.95\n2..."
+    }
+  },
+  {
+    "id": 18,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_18.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_18.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_18.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：王志豪志偉（身分證字號：P125578668）\n        住址：金門縣民權街53號7樓之1\n\n        乙方：劉彥廷雅玲（身分證字號：X223339362）\n        住址：連江縣仁愛街11號\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2024年12月03日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣471,090元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠償..."
+    }
+  },
+  {
+    "id": 19,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_19.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_19.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_19.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_19.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_19.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 吳宗翰佳蓉\n        身分證字號: R248756420\n        帳戶號碼: 854612501492\n        信用卡號: 4384123848046544\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-06-29 | 線上購物 | 5,049.19\n2025-06-30 | 餐廳 | 351.10\n2025-07-04 | 餐廳 | 3,721.76\n2025-07-12 | 加油站 | 5,218.87\n2025-07-17 | 線上購物 | 2,632.71\n2025-07-10 | 線上購物 | 681.58\n2025-07-26 | 電信繳費 | 8,916.14\n2025-07-16 | 超市 | 4,485.36\n2025-07-10 | 線上購物 | 1,596.60\n202..."
+    }
+  },
+  {
+    "id": 20,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_20.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_20.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_20.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_20.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_20.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 賴志強\n        身分證字號: U243900518\n        帳戶號碼: 377883492248\n        信用卡號: 6317467871566962\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-15 | 線上購物 | 1,663.49\n2025-07-28 | 加油站 | 5,886.51\n2025-07-28 | 電信繳費 | 1,042.06\n2025-07-19 | 電信繳費 | 3,196.91\n2025-07-18 | 百貨公司 | 1,923.32\n2025-07-02 | 加油站 | 5,764.31\n2025-06-30 | 線上購物 | 6,088.46\n2025-07-02 | 超市 | 6,741.62\n2025-07-12 | 百貨公司 | 8,270.7..."
+    }
+  },
+  {
+    "id": 21,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_21.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_21.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_21.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        長庚紀念醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 謝志偉\n        病歷號: 馬偕醫-616109\n        出生日期: 1937-02-20\n        聯絡電話: 0967-840-423\n        住址: 彰化縣和平路62號\n\n        就診日期: 2025-07-03\n        主治醫師: 蔡欣怡宗翰 醫師\n\n        臨床診斷:\n        - 高血壓\n        - 高血脂症\n\n        檢驗結果:\n        1. 血壓: 123/88 mmHg\n        2. 心率: 69 bpm\n        3. 血糖: 74 mg/dL\n        4. 膽固醇: 169 mg/dL\n\n        影像檢查:\n        - 腹部超音波: 輕度脂肪肝\n\n        處方:\n        1. Lis..."
+    }
+  },
+  {
+    "id": 22,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_22.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_22.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_22.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        長庚紀念醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 蔡冠廷\n        病歷號: MRA33245\n        出生日期: 1983-01-20\n        聯絡電話: 0985-940-996\n        住址: 高雄市新生街73號24樓之1\n\n        就診日期: 2025-07-27\n        主治醫師: 賴建宏 醫師\n\n        臨床診斷:\n        - 高血壓\n        - 輕度貧血\n\n        檢驗結果:\n        1. 血壓: 124/71 mmHg\n        2. 心率: 72 bpm\n        3. 血糖: 74 mg/dL\n        4. 膽固醇: 220 mg/dL\n\n        影像檢查:\n        - 胸部X光: 無明顯異常\n\n        處方:\n        1. Amo..."
+    }
+  },
+  {
+    "id": 23,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_23.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_23.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_23.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        國泰醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 吳怡婷\n        病歷號: 14436537\n        出生日期: 1996-10-20\n        聯絡電話: 0996390966\n        住址: 金門縣中山街84號14樓\n\n        就診日期: 2025-07-19\n        主治醫師: 鄭柏翰 醫師\n\n        臨床診斷:\n        - 高血壓\n        - 高血脂症\n\n        檢驗結果:\n        1. 血壓: 140/71 mmHg\n        2. 心率: 66 bpm\n        3. 血糖: 110 mg/dL\n        4. 膽固醇: 240 mg/dL\n\n        影像檢查:\n        - 腹部超音波: 輕度脂肪肝\n\n        處方:\n        1. Lisinop..."
+    }
+  },
+  {
+    "id": 24,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_24.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_24.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_24.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：周俊傑淑惠（身分證字號：B122442120）\n        住址：澎湖縣南京路58號\n\n        乙方：陳雅惠（身分證字號：Y263717054）\n        住址：基隆市仁愛大道43號\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2025年03月22日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣491,320元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠償他方因此所..."
+    }
+  },
+  {
+    "id": 25,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_25.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_25.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_25.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_25.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_25.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 陳美玲\n        身分證字號: J219084398\n        帳戶號碼: 711378323453\n        信用卡號: 5234390605629366\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-18 | 電信繳費 | 1,484.34\n2025-07-12 | 超市 | 4,441.15\n2025-07-14 | 線上購物 | 6,150.77\n2025-07-28 | 百貨公司 | 4,598.94\n2025-07-17 | 電信繳費 | 6,397.93\n2025-07-12 | 線上購物 | 7,219.94\n2025-07-17 | 百貨公司 | 3,183.34\n2025-07-16 | 線上購物 | 8,841.19\n2025-07-02 | 百貨公司 | 439.8..."
+    }
+  },
+  {
+    "id": 26,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_26.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_26.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_26.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：林淑惠（身分證字號：N193108065）\n        住址：南投縣南京大道56巷16弄81號15樓\n\n        乙方：黃家豪（身分證字號：D135209589）\n        住址：台北市重慶大道59號5樓\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2024年11月07日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣438,157元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款..."
+    }
+  },
+  {
+    "id": 27,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_27.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_27.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_27.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        台大醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 郭美玲\n        病歷號: 病歷號：8863648305\n        出生日期: 1955年11月11日\n        聯絡電話: 0916-661-951\n        住址: 彰化縣中山大道16號12樓\n\n        就診日期: 2025-07-23\n        主治醫師: 蔡怡如 醫師\n\n        臨床診斷:\n        - 上呼吸道感染\n        - 高血脂症\n\n        檢驗結果:\n        1. 血壓: 110/71 mmHg\n        2. 心率: 65 bpm\n        3. 血糖: 124 mg/dL\n        4. 膽固醇: 242 mg/dL\n\n        影像檢查:\n        - 胸部X光: 無明顯異常\n\n        處方:\n      ..."
+    }
+  },
+  {
+    "id": 28,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_28.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_28.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_28.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_28.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_28.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 賴怡君\n        身分證字號: A255099429\n        帳戶號碼: 190634219474\n        信用卡號: 5794064001414666\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-02 | 線上購物 | 1,754.13\n2025-07-21 | 電信繳費 | 9,845.05\n2025-07-15 | 餐廳 | 8,524.66\n2025-07-25 | 電信繳費 | 8,043.08\n2025-07-27 | 百貨公司 | 3,025.06\n2025-07-04 | 餐廳 | 4,311.52\n2025-07-26 | 加油站 | 7,644.30\n2025-07-13 | 超市 | 6,537.98\n2025-07-26 | 電信繳費 | 116.10\n202..."
+    }
+  },
+  {
+    "id": 29,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_29.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_29.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_29.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        三軍總醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 曾志強\n        病歷號: 長庚紀-173396\n        出生日期: 14/12/61\n        聯絡電話: 0926428038\n        住址: 苗栗縣仁愛路5巷11弄61號\n\n        就診日期: 2025-07-10\n        主治醫師: 鄭柏翰淑芬 醫師\n\n        臨床診斷:\n        - 高血壓\n        - 胃食道逆流\n\n        檢驗結果:\n        1. 血壓: 113/82 mmHg\n        2. 心率: 65 bpm\n        3. 血糖: 189 mg/dL\n        4. 膽固醇: 179 mg/dL\n\n        影像檢查:\n        - 心電圖: 竇性心律\n\n        處方:\n        1. Metf..."
+    }
+  },
+  {
+    "id": 30,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_30.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_30.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_30.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_30.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_30.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 陳冠宇\n        身分證字號: T261428955\n        帳戶號碼: 210801557027\n        信用卡號: 5831782186601543\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-22 | 餐廳 | 4,485.06\n2025-07-23 | 超市 | 4,819.34\n2025-06-29 | 百貨公司 | 9,368.06\n2025-07-26 | 餐廳 | 5,799.47\n2025-07-12 | 百貨公司 | 1,805.83\n2025-07-27 | 加油站 | 2,333.31\n2025-06-29 | 加油站 | 2,256.37\n2025-07-13 | 線上購物 | 3,505.38\n2025-06-29 | 餐廳 | 2,113.93\n2025..."
+    }
+  },
+  {
+    "id": 31,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_31.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_31.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_31.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        慈濟醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 李美玲建宏\n        病歷號: 病歷號：6454422914\n        出生日期: 2004-01-09\n        聯絡電話: 0982979338\n        住址: 新竹縣光復大道16號6樓\n\n        就診日期: 2025-07-24\n        主治醫師: 張俊宏 醫師\n\n        臨床診斷:\n        - 第二型糖尿病\n        - 胃食道逆流\n\n        檢驗結果:\n        1. 血壓: 125/80 mmHg\n        2. 心率: 67 bpm\n        3. 血糖: 140 mg/dL\n        4. 膽固醇: 182 mg/dL\n\n        影像檢查:\n        - 胸部X光: 無明顯異常\n\n        處方:\n       ..."
+    }
+  },
+  {
+    "id": 32,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_32.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_32.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_32.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        長庚紀念醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 邱建宏俊宏\n        病歷號: 74328138\n        出生日期: 2/9/03\n        聯絡電話: 0992-912-239\n        住址: 雲林縣仁愛街32號\n\n        就診日期: 2025-07-28\n        主治醫師: 李俊宏 醫師\n\n        臨床診斷:\n        - 退化性關節炎\n        - 高血脂症\n\n        檢驗結果:\n        1. 血壓: 140/75 mmHg\n        2. 心率: 63 bpm\n        3. 血糖: 141 mg/dL\n        4. 膽固醇: 209 mg/dL\n\n        影像檢查:\n        - 胸部X光: 無明顯異常\n\n        處方:\n        1. Lisino..."
+    }
+  },
+  {
+    "id": 33,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_33.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_33.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_33.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：廖宗翰（身分證字號：R168650122）\n        住址：澎湖縣中正路82號\n\n        乙方：吳雅婷淑娟（身分證字號：E257812251）\n        住址：台東縣光復街86號13樓之4\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2024年10月21日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣326,034元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠償他..."
+    }
+  },
+  {
+    "id": 34,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_34.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_34.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_34.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：賴志強（身分證字號：J149237988）\n        住址：金門縣忠孝街17巷62號15樓\n\n        乙方：賴柏翰（身分證字號：R138109214）\n        住址：高雄市復興路92號\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2025年03月09日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣409,586元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠償他方..."
+    }
+  },
+  {
+    "id": 35,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_35.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_35.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_35.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：李佩珊（身分證字號：H154503639）\n        住址：花蓮縣復興大道67巷20弄80號11樓\n\n        乙方：張建志雅婷（身分證字號：B156989667）\n        住址：台南市和平路69號\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2025年07月22日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣313,622元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時..."
+    }
+  },
+  {
+    "id": 36,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_36.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_36.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_36.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_36.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_36.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 洪靜怡\n        身分證字號: P230293541\n        帳戶號碼: 730922761736\n        信用卡號: 4481773232832548\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-10 | 電信繳費 | 6,091.13\n2025-07-07 | 百貨公司 | 7,642.98\n2025-07-26 | 超市 | 3,446.83\n2025-07-17 | 餐廳 | 2,616.35\n2025-07-20 | 加油站 | 7,446.89\n2025-06-29 | 電信繳費 | 9,776.53\n2025-07-13 | 餐廳 | 6,138.10\n2025-07-09 | 電信繳費 | 8,903.47\n2025-06-29 | 餐廳 | 3,105.92\n202..."
+    }
+  },
+  {
+    "id": 37,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_37.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_37.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_37.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_37.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_37.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 鄭美玲\n        身分證字號: K186829556\n        帳戶號碼: 471171112516\n        信用卡號: 348747719070734\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-18 | 百貨公司 | 3,984.05\n2025-07-04 | 加油站 | 1,840.36\n2025-07-07 | 超市 | 7,000.82\n2025-07-23 | 線上購物 | 8,644.93\n2025-07-01 | 餐廳 | 2,734.56\n2025-07-19 | 餐廳 | 5,533.87\n2025-07-14 | 電信繳費 | 9,889.13\n2025-07-07 | 電信繳費 | 539.41\n2025-07-19 | 加油站 | 8,216.45\n2025-..."
+    }
+  },
+  {
+    "id": 38,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_38.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_38.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_38.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_38.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_38.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 王建宏\n        身分證字號: H211238513\n        帳戶號碼: 034880995484\n        信用卡號: 4227207087200270\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-17 | 加油站 | 7,640.68\n2025-07-26 | 電信繳費 | 7,617.93\n2025-07-27 | 餐廳 | 1,379.32\n2025-07-08 | 超市 | 5,633.23\n2025-07-22 | 餐廳 | 7,206.97\n2025-07-22 | 電信繳費 | 6,384.34\n2025-06-29 | 百貨公司 | 5,481.80\n2025-06-29 | 加油站 | 9,159.09\n2025-07-20 | 電信繳費 | 8,291.13\n20..."
+    }
+  },
+  {
+    "id": 39,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_39.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_39.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_39.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        萬芳醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 吳承翰\n        病歷號: 病歷號：9843409524\n        出生日期: 17/7/94\n        聯絡電話: 0954-591-677\n        住址: 連江縣成功路2巷18弄5號13樓之3\n\n        就診日期: 2025-07-16\n        主治醫師: 林靜怡欣怡 醫師\n\n        臨床診斷:\n        - 第二型糖尿病\n        - 高血脂症\n\n        檢驗結果:\n        1. 血壓: 131/86 mmHg\n        2. 心率: 60 bpm\n        3. 血糖: 133 mg/dL\n        4. 膽固醇: 191 mg/dL\n\n        影像檢查:\n        - 胸部X光: 無明顯異常\n\n        處方:\n   ..."
+    }
+  },
+  {
+    "id": 40,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_40.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_40.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_40.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_40.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_40.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 吳志偉\n        身分證字號: N245693538\n        帳戶號碼: 981749142325\n        信用卡號: 6487042229781121\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-16 | 餐廳 | 5,668.10\n2025-07-19 | 加油站 | 9,411.41\n2025-07-10 | 百貨公司 | 4,916.34\n2025-07-10 | 超市 | 3,571.28\n2025-07-17 | 餐廳 | 8,719.71\n2025-07-20 | 超市 | 8,964.63\n2025-07-03 | 線上購物 | 1,546.25\n2025-06-30 | 超市 | 711.92\n2025-07-21 | 加油站 | 8,373.97\n2025-07-..."
+    }
+  },
+  {
+    "id": 41,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_41.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_41.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_41.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        台大醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 謝志偉\n        病歷號: MRB12585\n        出生日期: 1978年2月13日\n        聯絡電話: 0944352041\n        住址: 連江縣羅斯福大道29巷1弄87號\n\n        就診日期: 2025-07-26\n        主治醫師: 曾淑惠 醫師\n\n        臨床診斷:\n        - 退化性關節炎\n        - 胃食道逆流\n\n        檢驗結果:\n        1. 血壓: 134/77 mmHg\n        2. 心率: 77 bpm\n        3. 血糖: 141 mg/dL\n        4. 膽固醇: 193 mg/dL\n\n        影像檢查:\n        - 腹部超音波: 輕度脂肪肝\n\n        處方:\n        1...."
+    }
+  },
+  {
+    "id": 42,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_42.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_42.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_42.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：楊靜怡怡婷（身分證字號：M165962818）\n        住址：花蓮縣成功大道12巷17弄2號\n\n        乙方：謝佩珊（身分證字號：N243492588）\n        住址：台東縣信義街2巷9弄48號20樓之5\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2025年02月18日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣363,849元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本..."
+    }
+  },
+  {
+    "id": 43,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_43.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_43.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_43.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：陳志偉（身分證字號：U154467603）\n        住址：台南市中山大道2號17樓\n\n        乙方：陳欣怡（身分證字號：C196906080）\n        住址：嘉義市南京大道43號15樓之4\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2025年04月27日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣310,764元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠..."
+    }
+  },
+  {
+    "id": 44,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_44.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_44.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_44.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        馬偕醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 王佩珊志豪\n        病歷號: 12075835\n        出生日期: 7/5/49\n        聯絡電話: 0939-412-493\n        住址: 台中市民族街35巷73號\n\n        就診日期: 2025-07-13\n        主治醫師: 林雅玲宗翰 醫師\n\n        臨床診斷:\n        - 高血壓\n        - 胃食道逆流\n\n        檢驗結果:\n        1. 血壓: 131/83 mmHg\n        2. 心率: 100 bpm\n        3. 血糖: 177 mg/dL\n        4. 膽固醇: 243 mg/dL\n\n        影像檢查:\n        - 胸部X光: 無明顯異常\n\n        處方:\n        1. Metf..."
+    }
+  },
+  {
+    "id": 45,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_45.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_45.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_45.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_45.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_45.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 郭建宏\n        身分證字號: Y289856583\n        帳戶號碼: 978109130960\n        信用卡號: 347145367812793\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-21 | 超市 | 6,256.99\n2025-06-29 | 百貨公司 | 3,826.27\n2025-07-15 | 電信繳費 | 7,342.42\n2025-07-16 | 餐廳 | 1,281.97\n2025-07-18 | 線上購物 | 1,408.72\n2025-07-18 | 超市 | 7,737.06\n2025-07-20 | 加油站 | 5,247.63\n2025-07-02 | 線上購物 | 9,200.41\n2025-07-08 | 加油站 | 6,202.78\n202..."
+    }
+  },
+  {
+    "id": 46,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_46.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_46.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_46.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：楊彥廷（身分證字號：Y244803139）\n        住址：彰化縣杭州街98號12樓\n\n        乙方：賴欣怡志豪（身分證字號：U166240724）\n        住址：雲林縣中正大道99巷11號\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2024年10月06日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣342,945元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠..."
+    }
+  },
+  {
+    "id": 47,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_47.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_47.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_47.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        亞東醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 邱志明\n        病歷號: 49669088\n        出生日期: 1986年4月21日\n        聯絡電話: 0916243618\n        住址: 雲林縣中正大道64號\n\n        就診日期: 2025-07-13\n        主治醫師: 邱志豪美玲 醫師\n\n        臨床診斷:\n        - 高血壓\n        - 胃食道逆流\n\n        檢驗結果:\n        1. 血壓: 135/75 mmHg\n        2. 心率: 77 bpm\n        3. 血糖: 197 mg/dL\n        4. 膽固醇: 217 mg/dL\n\n        影像檢查:\n        - 腹部超音波: 輕度脂肪肝\n\n        處方:\n        1. Amoxic..."
+    }
+  },
+  {
+    "id": 48,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\contract_doc_48.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\contract_doc_48.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\contract_doc_48.png"
+      }
+    ],
+    "metadata": {
+      "type": "contract",
+      "content": "\n                        合 約 書\n\n        立合約書人：\n        甲方：洪冠宇建志（身分證字號：L214789722）\n        住址：澎湖縣光復路96巷12號\n\n        乙方：楊靜怡（身分證字號：M178832404）\n        住址：花蓮縣民權路96號17樓\n\n        茲因雙方同意訂立本合約，共同遵守下列條款：\n\n        第一條 合約目的\n        甲方同意委託乙方進行專案開發，乙方同意接受委託。\n\n        第二條 合約期間\n        本合約自簽訂之日起生效，有效期間為一年，至2024年09月27日止。\n\n        第三條 報酬及支付方式\n        甲方應支付乙方總報酬新台幣177,791元整。\n        付款方式：簽約時支付30%，期中支付40%，驗收完成支付30%。\n\n        第四條 保密條款\n        雙方同意對本合約內容及執行過程中獲知之他方營業秘密負保密義務。\n\n        第五條 違約處理\n        任一方違反本合約條款時，應賠償..."
+    }
+  },
+  {
+    "id": 49,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\medical_doc_49.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\medical_doc_49.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\medical_doc_49.png"
+      }
+    ],
+    "metadata": {
+      "type": "medical",
+      "content": "\n        ==============================\n        慈濟醫院 醫療報告\n        ==============================\n\n        病患資訊:\n        姓名: 張靜怡\n        病歷號: 75038834\n        出生日期: 1955年11月22日\n        聯絡電話: 0916629717\n        住址: 桃園市羅斯福路77號23樓\n\n        就診日期: 2025-07-01\n        主治醫師: 郭靜怡冠廷 醫師\n\n        臨床診斷:\n        - 上呼吸道感染\n        - 輕度貧血\n\n        檢驗結果:\n        1. 血壓: 121/73 mmHg\n        2. 心率: 88 bpm\n        3. 血糖: 77 mg/dL\n        4. 膽固醇: 234 mg/dL\n\n        影像檢查:\n        - 胸部X光: 無明顯異常\n\n        處方:\n        1. Li..."
+    }
+  },
+  {
+    "id": 50,
+    "formats": [
+      {
+        "format": "pdf",
+        "path": "generated_dataset\\pdf\\financial_doc_50.pdf"
+      },
+      {
+        "format": "word",
+        "path": "generated_dataset\\word\\financial_doc_50.docx"
+      },
+      {
+        "format": "image",
+        "path": "generated_dataset\\scanned\\financial_doc_50.png"
+      },
+      {
+        "format": "excel",
+        "path": "generated_dataset\\excel\\financial_data_50.xlsx"
+      },
+      {
+        "format": "ppt",
+        "path": "generated_dataset\\ppt\\financial_report_50.pptx"
+      }
+    ],
+    "metadata": {
+      "type": "financial",
+      "content": "\n        客戶財務報表\n\n        客戶資訊:\n        姓名: 郭淑惠\n        身分證字號: E199903699\n        帳戶號碼: 455480136557\n        信用卡號: 6841804231984719\n\n        交易記錄:\n        日期         | 描述         | 金額 (NT$)\n        ------------|--------------|-----------\n        2025-07-19 | 加油站 | 4,618.73\n2025-07-01 | 電信繳費 | 533.75\n2025-07-08 | 線上購物 | 1,606.86\n2025-07-02 | 餐廳 | 6,880.85\n2025-07-01 | 線上購物 | 2,459.73\n2025-07-13 | 超市 | 603.78\n2025-06-30 | 百貨公司 | 6,816.78\n2025-07-12 | 百貨公司 | 6,486.81\n2025-06-29 | 百貨公司 | 4,366.40\n202..."
+    }
+  }
+]
