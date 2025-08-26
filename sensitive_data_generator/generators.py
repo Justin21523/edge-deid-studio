@@ -2,6 +2,9 @@ import random
 import string
 from datetime import datetime, timedelta
 from .config import *
+from faker import Faker
+
+fake = Faker()
 
 class PIIGenerator:
     """繁體中文PII資料生成器"""
@@ -203,21 +206,278 @@ class PIIGenerator:
         """生成健保卡號 (模擬格式)"""
         return f"{random.randint(10000000000, 99999999999)}"
 
+    # === 以下新增三大類：保險、完整醫療紀錄、財務報表 ===
+
+    @staticmethod
+    def generate_insurance(variant: str = "life") -> dict:
+        """生成保險合約資料，variant in ['life','health','property']"""
+        variants = {
+            "life":     PIIGenerator._gen_insurance_life,
+            "health":   PIIGenerator._gen_insurance_health,
+            "property": PIIGenerator._gen_insurance_property
+        }
+        if variant not in variants:
+            raise ValueError(f"Unknown insurance variant: {variant}")
+        return variants[variant]()
+
+    @staticmethod
+    def _gen_insurance_life() -> dict:
+        return {
+            "policy_number":   f"LI-{random.randint(100000,999999)}",
+            "insured":         fake.name(),
+            "beneficiary":     fake.name(),
+            "coverage_amount": random.randint(500_000,5_000_000),
+            "premium":         random.randint(500,5_000),
+            "term":            f"{random.randint(10,30)} years",
+            "exclusions":      random.choice(["War","Suicide","Extreme sports"])
+        }
+
+    @staticmethod
+    def _gen_insurance_health() -> dict:
+        return {
+            "policy_number":   f"HI-{random.randint(100000,999999)}",
+            "insured":         fake.name(),
+            "provider":        fake.company(),
+            "coverage_limit":  random.randint(100_000,1_000_000),
+            "premium":         random.randint(300,3_000),
+            "waiting_period":  f"{random.randint(0,6)} months",
+            "network":         random.choice(["A Network","B Network","C Network"])
+        }
+
+    @staticmethod
+    def _gen_insurance_property() -> dict:
+        return {
+            "policy_number":   f"PI-{random.randint(100000,999999)}",
+            "insured":         fake.name(),
+            "property_address":PIIGenerator.generate_tw_address(),
+            "property_type":   random.choice(["Home","Condo","Commercial"]),
+            "coverage_amount": random.randint(200_000,2_000_000),
+            "premium":         random.randint(800,8_000),
+            "deductible":      random.choice([500,1000,2000])
+        }
+
+    @staticmethod
+    def generate_medical_record_detail(variant: str = "inpatient") -> dict:
+        """生成完整醫療紀錄，variant in ['inpatient','outpatient','emergency']"""
+        variants = {
+            "inpatient":  PIIGenerator._gen_med_inpatient,
+            "outpatient": PIIGenerator._gen_med_outpatient,
+            "emergency":  PIIGenerator._gen_med_emergency
+        }
+        if variant not in variants:
+            raise ValueError(f"Unknown medical variant: {variant}")
+        return variants[variant]()
+
+    @staticmethod
+    def _gen_med_inpatient() -> dict:
+        return {
+            "patient_id":      PIIGenerator.generate_medical_record(),
+            "admission_date":  fake.date_this_decade(),
+            "discharge_date":  fake.date_this_decade(),
+            "diagnosis":       random.choice(["Myocardial infarction","Pneumonia","Appendicitis"]),
+            "procedures":      [random.choice(["CT scan","MRI","Surgery"]) for _ in range(3)],
+            "medications":     [fake.catch_phrase() for _ in range(2)]
+        }
+
+    @staticmethod
+    def _gen_med_outpatient() -> dict:
+        return {
+            "patient_id":      PIIGenerator.generate_medical_record(),
+            "visit_date":      fake.date_this_decade(),
+            "clinic":          random.choice(["General Practice","Pediatrics","Dermatology"]),
+            "diagnosis":       random.choice(["Allergy","Flu","Sprain"]),
+            "prescriptions":   [fake.lexify(text="Drug-???") for _ in range(2)],
+            "doctor":          fake.name()
+        }
+
+    @staticmethod
+    def _gen_med_emergency() -> dict:
+        return {
+            "patient_id":       PIIGenerator.generate_medical_record(),
+            "arrival_datetime": fake.date_time_this_year().isoformat(),
+            "severity":         random.choice(["Low","Medium","High"]),
+            "diagnosis":        random.choice(["Fracture","Stroke","Heart attack"]),
+            "treatments":       [random.choice(["CPR","Defibrillation","Stabilization"]) for _ in range(2)],
+            "attending_physician": fake.name()
+        }
+
+    @staticmethod
+    def generate_financial_report(variant: str = "quarterly") -> dict:
+        """生成財務報表，variant in ['quarterly','annual','audit']"""
+        variants = {
+            "quarterly": PIIGenerator._gen_fin_quarterly,
+            "annual":    PIIGenerator._gen_fin_annual,
+            "audit":     PIIGenerator._gen_fin_audit
+        }
+        if variant not in variants:
+            raise ValueError(f"Unknown financial variant: {variant}")
+        return variants[variant]()
+
+    @staticmethod
+    def _gen_fin_quarterly() -> dict:
+        qs = ["Q1","Q2","Q3","Q4"]
+        return {
+            "fiscal_year": datetime.now().year,
+            "revenue":     {q: random.randint(100_000,500_000) for q in qs},
+            "expenses":    {q: random.randint(50_000,300_000)  for q in qs},
+            "net_income":  {q: random.randint(20_000,150_000)  for q in qs}
+        }
+
+    @staticmethod
+    def _gen_fin_annual() -> dict:
+        year = datetime.now().year
+        rev  = random.randint(1_000_000,5_000_000)
+        exp  = random.randint(500_000,4_000_000)
+        return {
+            "fiscal_year": year,
+            "revenue":     rev,
+            "expenses":    exp,
+            "net_income":  rev - exp
+        }
+
+    @staticmethod
+    def _gen_fin_audit() -> dict:
+        return {
+            "fiscal_year":     datetime.now().year,
+            "auditor":         fake.company(),
+            "audit_date":      fake.date_this_year().isoformat(),
+            "findings":        fake.sentence(),
+            "recommendations": fake.sentence()
+        }
+
     @staticmethod
     def generate_random_pii():
-        """隨機生成一種PII類型"""
+        """隨機生成一種 PII 類型，回傳 (type, generator_func)"""
         pii_types = [
-            ("TW_ID", PIIGenerator.generate_tw_id),
-            ("PHONE", PIIGenerator.generate_tw_phone),
-            ("ADDRESS", PIIGenerator.generate_tw_address),
-            ("NAME", PIIGenerator.generate_tw_name),
-            ("MEDICAL_RECORD", PIIGenerator.generate_medical_record),
-            ("DATE_OF_BIRTH", PIIGenerator.generate_date_of_birth),
-            ("EMAIL", PIIGenerator.generate_email),
-            ("CREDIT_CARD", PIIGenerator.generate_credit_card),
-            ("PASSPORT", PIIGenerator.generate_passport),
-            ("LICENSE_PLATE", PIIGenerator.generate_license_plate),
-            ("HEALTH_INSURANCE", PIIGenerator.generate_health_insurance)
+            # —— 舊的單純 PII ——
+            ("TW_ID",      PIIGenerator.generate_tw_id),
+            ("PHONE",      PIIGenerator.generate_tw_phone),
+            ("ADDRESS",    PIIGenerator.generate_tw_address),
+            ("NAME",       PIIGenerator.generate_tw_name),
+            ("MEDICAL_NO", PIIGenerator.generate_medical_record),
+            ("DOB",        PIIGenerator.generate_date_of_birth),
+            ("EMAIL",      PIIGenerator.generate_email),
+            ("CREDIT_CARD",PIIGenerator.generate_credit_card),
+            ("PASSPORT",   PIIGenerator.generate_passport),
+            ("LICENSE",    PIIGenerator.generate_license_plate),
+            ("HEALTH_INS", PIIGenerator.generate_health_insurance),
+
+            # —— 新增的保險合約 ——
+            ("INSURANCE_LIFE",     lambda: PIIGenerator.generate_insurance("life")),
+            ("INSURANCE_HEALTH",   lambda: PIIGenerator.generate_insurance("health")),
+            ("INSURANCE_PROPERTY", lambda: PIIGenerator.generate_insurance("property")),
+
+            # —— 新增的完整醫療紀錄 ——
+            ("MED_INPATIENT",  lambda: PIIGenerator.generate_medical_record_detail("inpatient")),
+            ("MED_OUTPATIENT", lambda: PIIGenerator.generate_medical_record_detail("outpatient")),
+            ("MED_EMERGENCY",  lambda: PIIGenerator.generate_medical_record_detail("emergency")),
+
+            # —— 新增的財務報表 ——
+            ("FIN_QUARTERLY", lambda: PIIGenerator.generate_financial_report("quarterly")),
+            ("FIN_ANNUAL",    lambda: PIIGenerator.generate_financial_report("annual")),
+            ("FIN_AUDIT",     lambda: PIIGenerator.generate_financial_report("audit")),
         ]
 
+        # 隨機 pick 一組 (type, func)，你可以再自行呼叫 func() 拿到實際資料
         return random.choice(pii_types)
+
+
+class InsuranceGenerator:
+    def generate(self, variant="life"):
+        """生成保險合約資料"""
+        variants = {
+            "life": self._generate_life_insurance,
+            "health": self._generate_health_insurance,
+            "property": self._generate_property_insurance
+        }
+        return variants[variant]()
+
+    def _generate_life_insurance(self):
+        return {
+            "policy_number": f"LI-{random.randint(100000, 999999)}",
+            "insured": fake.name(),
+            "beneficiary": fake.name(),
+            "coverage_amount": random.randint(500000, 5000000),
+            "premium": random.randint(500, 5000),
+            "term": f"{random.randint(10, 30)} years",
+            "exclusions": random.choice(["War", "Suicide", "Extreme sports"])
+        }
+
+class MedicalGenerator:
+    def generate(self, variant="inpatient"):
+        """生成醫療病歷資料"""
+        variants = {
+            "inpatient": self._generate_inpatient_record,
+            "outpatient": self._generate_outpatient_record,
+            "emergency": self._generate_emergency_record
+        }
+        return variants[variant]()
+
+    def _generate_inpatient_record(self):
+        return {
+            "patient_id": f"PT-{random.randint(10000, 99999)}",
+            "admission_date": fake.date_this_decade(),
+            "discharge_date": fake.date_this_decade(),
+            "diagnosis": random.choice(["Myocardial infarction", "Pneumonia", "Appendicitis"]),
+            "procedures": [random.choice(["CT scan", "MRI", "Surgery"]) for _ in range(3)],
+            "medications": [fake.catch_phrase() for _ in range(2)]
+        }
+
+class FinancialGenerator:
+    def generate(self, variant="quarterly"):
+        """生成財務報告資料"""
+        variants = {
+            "quarterly": self._generate_quarterly_report,
+            "annual": self._generate_annual_report,
+            "audit": self._generate_audit_report
+        }
+        return variants[variant]()
+
+    def _generate_quarterly_report(self):
+        quarters = ["Q1", "Q2", "Q3", "Q4"]
+        return {
+            "fiscal_year": datetime.now().year,
+            "revenue": {q: random.randint(100000, 500000) for q in quarters},
+            "expenses": {q: random.randint(50000, 300000) for q in quarters},
+            "net_income": {q: random.randint(20000, 150000) for q in quarters}
+        }
+class InsuranceGenerator:
+    def generate(self, variant="life"):
+        """生成保險合約資料"""
+        variants = {
+            "life": self._generate_life_insurance,
+            "health": self._generate_health_insurance,
+            "property": self._generate_property_insurance
+        }
+        return variants[variant]()
+
+    def _generate_life_insurance(self):
+        return {
+            "policy_number": f"LI-{random.randint(100000, 999999)}",
+            "insured": fake.name(),
+            "beneficiary": fake.name(),
+            "coverage_amount": random.randint(500000, 5000000),
+            "premium": random.randint(500, 5000),
+            "term": f"{random.randint(10, 30)} years",
+            "exclusions": random.choice(["War", "Suicide", "Extreme sports"])
+        }
+
+class MedicalGenerator:
+    def generate(self, variant="inpatient"):
+        """生成醫療病歷資料"""
+        variants = {
+            "inpatient": self._generate_inpatient_record,
+            "outpatient": self._generate_outpatient_record,
+            "emergency": self._generate_emergency_record
+        }
+        return variants[variant]()
+
+    def _generate_inpatient_record(self):
+        return {
+            "patient_id": f"PT-{random.randint(10000, 99999)}",
+            "admission_date": fake.date_this_decade(),
+            "discharge_date": fake.date_this_decade(),
+            "diagnosis": random.choice(["Myocardial infarction", "Pneumonia", "Appendicitis"]),
+            "procedures": [random.choice(["CT scan", "MRI", "Surgery"]) for _ in range(3)],
+            "medications": [fake.catch_phrase() for _ in range(2)]
+        }

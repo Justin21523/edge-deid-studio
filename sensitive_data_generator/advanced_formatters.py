@@ -4,6 +4,8 @@ import random
 from datetime import datetime, timedelta
 from .generators import PIIGenerator
 from .config import HOSPITALS
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 
 class AdvancedDataFormatter:
     """進階資料格式生成器"""
@@ -18,8 +20,8 @@ class AdvancedDataFormatter:
             "乙方身分證": PIIGenerator.generate_tw_id(),
             "甲方地址": PIIGenerator.generate_tw_address(),
             "乙方地址": PIIGenerator.generate_tw_address(),
-            "簽約日期": (datetime.now() - timedelta(days=random.randint(1, 365))\
-                        .strftime("%Y年%m月%d日"))
+            "簽約日期": (datetime.now() - timedelta(days=random.randint(1, 365)))
+                        .strftime("%Y年%m月%d日")
         }
 
         contract = f"""
@@ -98,7 +100,7 @@ class AdvancedDataFormatter:
         聯絡電話: {patient['phone']}
         住址: {patient['address']}
 
-        就診日期: {(datetime.now() - timedelta(days=random.randint(1, 30)).strftime('%Y-%m-%d'))}
+        就診日期: {(datetime.now() - timedelta(days=random.randint(1, 30))).strftime('%Y-%m-%d')}
         主治醫師: {PIIGenerator.generate_tw_name()} 醫師
 
         臨床診斷:
@@ -122,7 +124,7 @@ class AdvancedDataFormatter:
 
         醫囑:
         - {random.choice(['建議定期追蹤血壓', '控制飲食與體重', '適度運動'])}
-        - 下次回診日期: {(datetime.now() + timedelta(days=random.randint(14, 60)).strftime('%Y-%m-%d'))}
+        - 下次回診日期: {(datetime.now() + timedelta(days=random.randint(14, 60))).strftime('%Y-%m-%d')}
 
         [請參閱附件圖表分析]
         ==============================
@@ -143,8 +145,10 @@ class AdvancedDataFormatter:
         # 生成交易記錄
         transactions = []
         for _ in range(10):
-            date = (datetime.now() - timedelta(days=random.randint(1, 30))\
-                .strftime("%Y-%m-%d"))
+            date = (
+                datetime.now()
+                - timedelta(days=random.randint(1, 30))
+            ).strftime("%Y-%m-%d")
             merchant = random.choice(["百貨公司", "超市", "餐廳", "加油站", "線上購物", "電信繳費"])
             amount = round(random.uniform(100, 10000), 2)
             transactions.append({
@@ -180,3 +184,99 @@ class AdvancedDataFormatter:
         """
 
         return statement
+
+
+class PPTXFinancialFormatter:
+    """財務報告PPTX格式化器"""
+    def format(self, data):
+        prs = Presentation()
+
+        # 標題頁
+        slide = prs.slides.add_slide(prs.slide_layouts[0])
+        title = slide.shapes.title
+        subtitle = slide.placeholders[1]
+        title.text = f"{data['company']} {data['year']} Financial Report"
+        subtitle.text = f"Generated on {datetime.today().strftime('%Y-%m-%d')}"
+
+        # 收入圖表頁
+        chart_slide = prs.slides.add_slide(prs.slide_layouts[5])
+        chart_title = chart_slide.shapes.title
+        chart_title.text = "Revenue by Quarter"
+
+        # 添加圖表
+        chart_data = CategoryChartData()
+        chart_data.categories = list(data['revenue'].keys())
+        chart_data.add_series('Revenue', list(data['revenue'].values()))
+
+        x, y, cx, cy = Inches(1), Inches(2), Inches(8), Inches(5)
+        chart = chart_slide.shapes.add_chart(
+            XL_CHART_TYPE.COLUMN_CLUSTERED, x, y, cx, cy, chart_data
+        ).chart
+
+        return prs
+
+class ScannedConsentFormatter:
+    """掃描版同意書格式化器"""
+    def format(self, data):
+        # 創建模擬掃描文件
+        image = Image.new('RGB', (1240, 1754), color=(248, 246, 240))
+        draw = ImageDraw.Draw(image)
+
+        # 添加噪點和紋理
+        for _ in range(5000):
+            x, y = random.randint(0, 1240), random.randint(0, 1754)
+            draw.point((x, y), fill=(200 + random.randint(0, 40),) * 3)
+
+        # 添加文字內容
+        font = ImageFont.truetype("arial.ttf", 24)
+        draw.text((100, 200), f"Consent Form: {data['form_title']}", fill=(0, 0, 0), font=font)
+        draw.text((100, 300), f"Participant: {data['participant_name']}", fill=(0, 0, 0), font=font)
+
+        # 添加模擬簽名區域
+        draw.rectangle([(100, 500), (500, 600)], outline=(0, 0, 0))
+        draw.text((110, 510), "Signature: __________________", fill=(0, 0, 0), font=font)
+
+        # 添加模擬日期戳
+        draw.rectangle([(800, 1500), (1100, 1600)], outline=(0, 0, 0))
+        draw.text((810, 1510), f"Date: {data['date_signed']}", fill=(0, 0, 0), font=font)
+
+        # 輕微旋轉模擬掃描歪斜
+        return image.rotate(random.uniform(-1.5, 1.5), "scanned_consent")
+
+class ExcelEmployeeFormatter:
+    """員工記錄Excel格式化器"""
+    def format(self, data):
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Employee Records"
+
+        # 標題行
+        headers = ["Employee ID", "Name", "Department", "Position", "Salary", "Hire Date"]
+        ws.append(headers)
+
+        # 數據行
+        for emp in data['employees']:
+            ws.append([
+                emp['id'],
+                emp['name'],
+                emp['department'],
+                emp['position'],
+                emp['salary'],
+                emp['hire_date']
+            ])
+
+        # 添加公式和格式
+        ws['F1'] = "Total Employees"
+        ws['F2'] = f"=COUNTA(A2:A{len(data['employees'])+1})"
+
+        ws['G1'] = "Average Salary"
+        ws['G2'] = f"=AVERAGE(E2:E{len(data['employees'])+1})"
+
+        # 添加條件格式
+        green_fill = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+        for row in ws.iter_rows(min_row=2, max_row=len(data['employees'])+1, min_col=5, max_col=5):
+            for cell in row:
+                if cell.value > 80000:
+                    cell.fill = green_fill
+
+        return wb, "employee_records"

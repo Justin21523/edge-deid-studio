@@ -37,3 +37,61 @@ MEDICAL_SPECIALTIES = [
     "內科", "外科", "兒科", "婦產科", "骨科",
     "神經科", "心臟科", "眼科", "耳鼻喉科", "皮膚科"
 ]
+
+MEDICAL_TEMPLATE = {
+    "header": "=== {hospital_name} 病歷記錄 ===",
+    "sections": [
+        {"label": "姓名", "field": "patient", "generator": "name"},
+        {"label": "病歷號", "generator": "medical_id"},
+        {"label": "出生日期", "generator": "birthdate"},
+        {"label": "主訴", "options": ["頭痛", "發燒", "咳嗽", "胸痛"]},
+        {"label": "診斷", "field": "diagnosis"},
+        {"label": "處方", "field": "medication"}
+    ],
+    "footer": "醫師簽名：{doctor_name}\n日期：{date}"
+}
+
+INSURANCE_TEMPLATE = {
+    "title": "【{company} 保險契約書】",
+    "clauses": [
+        "契約編號：{contract_id}",
+        "被保險人：{insured} 身份證號：{id}",
+        "保險期間：{start_date} 至 {end_date}",
+        "保險金額：NT${amount}",
+        "保費繳納方式：{payment_method}"
+    ],
+    "signature": "立約人簽署：__________________\n日期：{sign_date}"
+}
+
+DOCUMENT_TEMPLATES = {
+    "insurance_contract": {
+        "formats": ["docx", "pdf", "html"],
+        "generator": "InsuranceGenerator",
+        "formatter": "InsuranceContractFormatter"
+    },
+    "medical_record": {
+        "formats": ["pdf", "txt", "csv"],
+        "generator": "MedicalGenerator",
+        "formatter": "MedicalRecordFormatter"
+    },
+    "legal_agreement": {
+        "formats": ["docx", "pdf"],
+        "generator": "LegalGenerator",
+        "formatter": "LegalAgreementFormatter"
+    },
+    "consent_form": {
+        "formats": ["pdf", "png", "jpg"],
+        "generator": "ConsentGenerator",
+        "formatter": "ConsentFormFormatter"
+    },
+    "financial_report": {
+        "formats": ["xlsx", "pptx", "html"],
+        "generator": "FinancialGenerator",
+        "formatter": "FinancialReportFormatter"
+    },
+    "employee_record": {
+        "formats": ["csv", "xlsx"],
+        "generator": "EmployeeGenerator",
+        "formatter": "EmployeeRecordFormatter"
+    }
+}
