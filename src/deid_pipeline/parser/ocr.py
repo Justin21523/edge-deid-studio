@@ -1,183 +1,202 @@
-# src/deid_pipeline/parser/ocr.py
-import pytesseract
-from PIL import Image
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
+
 import cv2
 import numpy as np
-import easyocr
+
 from ..config import Config
-import logging
 
 logger = logging.getLogger(__name__)
 
+
+@dataclass(frozen=True)
+class OCRTextBlock:
+    text: str
+    left: int
+    top: int
+    width: int
+    height: int
+    conf: float
+
+
 class OCRAdapter:
-    """統一的OCR介面，支援Tesseract和EasyOCR"""
-    def __init__(self, engine="auto", lang="zh"):
+    """A small adapter that unifies Tesseract and EasyOCR under a single interface.
+
+    This module intentionally avoids importing heavy optional dependencies at import-time.
+    If an engine is not installed, initialization falls back (or raises) at runtime.
+    """
+
+    def __init__(self, engine: str = "auto", lang: str = "zh"):
         self.engine = engine
         self.lang = lang
-        self.tesseract_config = self._get_tesseract_config()
+        self.cfg = Config()
 
-        if engine == "easyocr" or engine == "auto":
+        self.active_engine = "tesseract"
+        self.easyocr_reader = None
+
+        if engine in {"easyocr", "auto"}:
             try:
+                import easyocr  # type: ignore
+
                 self.easyocr_reader = easyocr.Reader(
-                    ['ch_tra' if lang == "zh" else 'en'],
-                    gpu=Config.USE_GPU
+                    ["ch_tra" if lang == "zh" else "en"],
+                    gpu=self.cfg.USE_GPU,
                 )
                 self.active_engine = "easyocr"
-                logger.info("EasyOCR引擎初始化成功")
-            except Exception as e:
-                logger.warning(f"EasyOCR初始化失敗: {str(e)}")
+                logger.info("EasyOCR initialized (lang=%s, gpu=%s)", lang, self.cfg.USE_GPU)
+            except Exception as exc:
+                logger.warning("EasyOCR unavailable; falling back to Tesseract: %s", exc)
                 self.active_engine = "tesseract"
-        else:
-            self.active_engine = "tesseract"
 
         if self.active_engine == "tesseract":
-            logger.info(f"使用Tesseract引擎，語言: {lang}")
+            # Validate dependency presence early to produce a clearer error.
+            try:
+                import pytesseract  # noqa: F401
+            except Exception as exc:
+                raise ImportError(
+                    "pytesseract is required for OCR_ENGINE=tesseract (or auto fallback)."
+                ) from exc
 
-    def _get_tesseract_config(self):
-        """繁體中文專用配置"""
-        if self.lang == "zh":
-            return r'--oem 3 --psm 6 -c preserve_interword_spaces=1'
-        return r'--oem 3 --psm 6'
+    def recognize(self, image: str | np.ndarray) -> Tuple[str, List[Dict[str, Any]]]:
+        """Recognize text and return (full_text, blocks)."""
 
-    def _preprocess_image(self, image):
-        """影像預處理增強OCR準確度"""
-        # 轉換為灰度圖
-        if len(image.shape) == 3:
+        if isinstance(image, str):
+            img = cv2.imread(image)
+            if img is None:
+                raise ValueError(f"Failed to read image: {image}")
+        else:
+            img = image
+
+        processed = self._preprocess_image(img)
+
+        if self.active_engine == "easyocr":
+            return self._recognize_easyocr(processed)
+        return self._recognize_tesseract(processed)
+
+    def _preprocess_image(self, image: np.ndarray) -> np.ndarray:
+        if image.ndim == 3:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         else:
             gray = image
 
-        # 自適應閾值二值化
         processed = cv2.adaptiveThreshold(
-            gray, 255,
+            gray,
+            255,
             cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-            cv2.THRESH_BINARY, 11, 2
+            cv2.THRESH_BINARY,
+            11,
+            2,
         )
+        return cv2.medianBlur(processed, 3)
 
-        # 中值濾波去噪
-        processed = cv2.medianBlur(processed, 3)
-        return processed
+    def _confidence_threshold(self) -> float:
+        """Return the engine-specific confidence threshold."""
 
-    def recognize(self, image):
-        """辨識影像中的文字，返回文字和文字框"""
-        if isinstance(image, str):  # 檔案路徑
-            image = cv2.imread(image)
+        threshold = float(self.cfg.OCR_CONFIDENCE_THRESHOLD)
 
-        processed_img = self._preprocess_image(image)
+        # EasyOCR confidence is [0, 1]; Tesseract uses [0, 100] integers.
+        if self.active_engine == "easyocr" and threshold > 1:
+            return threshold / 100.0
+        if self.active_engine == "tesseract" and threshold <= 1:
+            return threshold * 100.0
+        return threshold
 
-        if self.active_engine == "easyocr":
-            return self._recognize_easyocr(processed_img)
-        else:
-            return self._recognize_tesseract(processed_img)
+    def _recognize_tesseract(self, image: np.ndarray) -> Tuple[str, List[Dict[str, Any]]]:
+        import pytesseract  # type: ignore
+        from PIL import Image  # type: ignore
 
-    def _recognize_tesseract(self, image):
-        """Tesseract辨識實現"""
-        # 轉換為PIL格式
-        pil_img = Image.fromarray(image)
-
-        # 繁體中文專用配置
         lang_code = "chi_tra" if self.lang == "zh" else "eng"
+        config = r"--oem 3 --psm 6 -c preserve_interword_spaces=1" if self.lang == "zh" else r"--oem 3 --psm 6"
 
+        pil_img = Image.fromarray(image)
         data = pytesseract.image_to_data(
             pil_img,
             lang=lang_code,
             output_type=pytesseract.Output.DICT,
-            config=self.tesseract_config
+            config=config,
         )
 
-        text_blocks = []
-        full_text = ""
-        current_line = []
-        prev_top = -1
+        threshold = self._confidence_threshold()
+        blocks: List[Dict[str, Any]] = []
+        full_text_parts: List[str] = []
 
-        for i in range(len(data['text'])):
-            conf = int(data['conf'][i])
-            text = data['text'][i].strip()
-
-            if conf > Config.OCR_CONFIDENCE_THRESHOLD and text:
-                left, top, width, height = (
-                    data['left'][i], data['top'][i],
-                    data['width'][i], data['height'][i]
-                )
-
-                # 換行檢測
-                if prev_top != -1 and abs(top - prev_top) > height * 0.5:
-                    line_text = " ".join(current_line)
-                    full_text += line_text + "\n"
-                    current_line = []
-
-                current_line.append(text)
-                prev_top = top
-
-                text_blocks.append({
-                    'text': text,
-                    'left': left,
-                    'top': top,
-                    'width': width,
-                    'height': height,
-                    'conf': conf
-                })
-
-        # 添加最後一行
-        if current_line:
-            full_text += " ".join(current_line)
-
-        return full_text.strip(), text_blocks
-
-    def _recognize_easyocr(self, image):
-        """EasyOCR辨識實現"""
-        results = self.easyocr_reader.readtext(
-            image,
-            detail=1,
-            paragraph=False
-        )
-
-        text_blocks = []
-        full_text = ""
-        current_line = []
-        prev_top = -1
-
-        for result in results:
-            bbox, text, conf = result
-            if conf < Config.OCR_CONFIDENCE_THRESHOLD:
+        for i in range(len(data.get("text", []))):
+            raw_text = str(data["text"][i]).strip()
+            if not raw_text:
                 continue
 
-            # 提取邊界框座標
+            try:
+                conf = float(data["conf"][i])
+            except Exception:
+                continue
+
+            if conf < threshold:
+                continue
+
+            left = int(data["left"][i])
+            top = int(data["top"][i])
+            width = int(data["width"][i])
+            height = int(data["height"][i])
+
+            blocks.append(
+                {
+                    "text": raw_text,
+                    "left": left,
+                    "top": top,
+                    "width": width,
+                    "height": height,
+                    "conf": conf,
+                }
+            )
+            full_text_parts.append(raw_text)
+
+        return " ".join(full_text_parts).strip(), blocks
+
+    def _recognize_easyocr(self, image: np.ndarray) -> Tuple[str, List[Dict[str, Any]]]:
+        if self.easyocr_reader is None:
+            raise RuntimeError("EasyOCR reader is not initialized.")
+
+        threshold = self._confidence_threshold()
+        results = self.easyocr_reader.readtext(image, detail=1, paragraph=False)
+
+        blocks: List[Dict[str, Any]] = []
+        full_text_parts: List[str] = []
+
+        for bbox, text, conf in results:
+            if float(conf) < threshold:
+                continue
             top_left = tuple(map(int, bbox[0]))
             bottom_right = tuple(map(int, bbox[2]))
             left, top = top_left
             width = bottom_right[0] - left
             height = bottom_right[1] - top
 
-            # 換行檢測
-            if prev_top != -1 and abs(top - prev_top) > height * 0.5:
-                line_text = " ".join(current_line)
-                full_text += line_text + "\n"
-                current_line = []
+            blocks.append(
+                {
+                    "text": text,
+                    "left": left,
+                    "top": top,
+                    "width": width,
+                    "height": height,
+                    "conf": float(conf),
+                }
+            )
+            full_text_parts.append(text)
 
-            current_line.append(text)
-            prev_top = top
+        return " ".join(full_text_parts).strip(), blocks
 
-            text_blocks.append({
-                'text': text,
-                'left': left,
-                'top': top,
-                'width': width,
-                'height': height,
-                'conf': conf
-            })
 
-        # 添加最後一行
-        if current_line:
-            full_text += " ".join(current_line)
+_ocr_instances: dict[tuple[str, str], OCRAdapter] = {}
 
-        return full_text.strip(), text_blocks
 
-# 單例存取點
-_ocr_instance = None
+def get_ocr_reader(engine: str = "auto", lang: str = "zh") -> OCRAdapter:
+    """Return a cached OCR adapter keyed by (engine, lang)."""
 
-def get_ocr_reader(engine="auto", lang="zh"):
-    global _ocr_instance
-    if _ocr_instance is None:
-        _ocr_instance = OCRAdapter(engine, lang)
-    return _ocr_instance
+    key = (engine, lang)
+    if key not in _ocr_instances:
+        _ocr_instances[key] = OCRAdapter(engine=engine, lang=lang)
+    return _ocr_instances[key]
+

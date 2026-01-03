@@ -1,30 +1,34 @@
-# src/deid_pipeline/pii/detectors/regex_detector.py
+from __future__ import annotations
+
 import os
-import yaml
 import re
 from pathlib import Path
-from typing import List
-from ..utils.base import PIIDetector, Entity
+
+import yaml
+
 from ...config import Config
 from ..utils import logger
+from ..utils.base import Entity, PIIDetector
+
 
 class RegexDetector(PIIDetector):
-    def __init__(self, config_path: str = None):
+    def __init__(self, config_path: str | Path | None = None):
         self.config = Config()
-        # 預設使用 config 裡設定的路徑
+        # Default to the path configured in Config.
         self.config_path = Path(config_path) if config_path else self.config.REGEX_RULES_FILE
         self.last_modified = 0
-        self.patterns = []
+        self.patterns: list[tuple[str, re.Pattern[str]]] = []
         self.load_rules()
 
     def load_rules(self):
-        """載入正則規則，支援熱更新"""
+        """Load regex rules and support hot reload when the YAML changes."""
+
         try:
             mod_time = os.path.getmtime(self.config_path)
             if mod_time <= self.last_modified:
                 return
 
-            # 支援 list-of-dicts 與單純 dict[str→list of str]
+            # Support list-of-dicts and shorthand list-of-strings forms.
             with open(self.config_path, encoding="utf-8") as f:
                 raw = yaml.safe_load(f) or {}
             rules = {}
@@ -39,7 +43,7 @@ class RegexDetector(PIIDetector):
                     # single pattern str → wrap into list
                     rules[typ] = [{"pattern": body}]
                 else:
-                    logger.warning(f"Unknown regex format for {typ}, skipping")
+                    logger.warning("Unknown regex format for %s, skipping", typ)
                     continue
 
             self.patterns = []
@@ -48,7 +52,7 @@ class RegexDetector(PIIDetector):
                     pattern = rule["pattern"]
                     flags = 0
 
-                    # 處理正則標誌
+                    # Resolve regex flags (e.g. "IGNORECASE|MULTILINE").
                     if "flags" in rule:
                         for flag in rule["flags"].split("|"):
                             flag = flag.strip().upper()
@@ -58,20 +62,20 @@ class RegexDetector(PIIDetector):
                     try:
                         compiled = re.compile(pattern, flags)
                         self.patterns.append((typ, compiled))
-                        logger.debug(f"編譯正則成功: {typ} - {pattern}")
-                    except Exception as e:
-                        logger.error(f"正則編譯失敗: {pattern}, 錯誤: {str(e)}")
+                        logger.debug("Compiled regex: %s - %s", typ, pattern)
+                    except Exception as exc:
+                        logger.error("Failed to compile regex: %s (%s)", pattern, exc)
 
             self.last_modified = mod_time
-            logger.info(f"已載入 {len(self.patterns)} 條正則規則")
+            logger.info("Loaded %d regex rules", len(self.patterns))
 
-        except Exception as e:
-            logger.error(f"載入正則規則失敗: {str(e)}")
+        except Exception as exc:
+            logger.error("Failed to load regex rules: %s", exc)
             self.patterns = []
 
-    def detect(self, text: str) -> List[Entity]:
-        self.load_rules()  # 檢查是否需要重新載入規則
-        entities: List[Entity] = []
+    def detect(self, text: str) -> list[Entity]:
+        self.load_rules()  # check for updated YAML rules
+        entities: list[Entity] = []
 
         for typ, pattern in self.patterns:
             for match in pattern.finditer(text):

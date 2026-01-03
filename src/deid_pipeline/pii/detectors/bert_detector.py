@@ -1,16 +1,18 @@
-# src/deid_pipeline/pii/detectors/bert_detector.py
-from typing import List
-from pathlib import PurePath
-from transformers import AutoTokenizer, AutoModelForTokenClassification
+from __future__ import annotations
+
 import re
 import time
-import numpy as np
-from ..utils.base import PIIDetector, Entity
+from pathlib import Path
+from typing import List
+
+import torch
+
 from ...config import Config
 from ...pii.utils import logger
+from ...runtime.registry import ensure_local_path, get_hf_token_classifier, get_hf_tokenizer
+from ..utils.base import Entity, PIIDetector
 
 
-# 實體類型標準化映射
 ENTITY_TYPE_MAP = {
     "PER": "NAME",
     "PERSON": "NAME",
@@ -19,96 +21,110 @@ ENTITY_TYPE_MAP = {
     "ORG": "ORGANIZATION",
     "ID": "ID",
     "PHONE": "PHONE",
-    "EMAIL": "EMAIL"
+    "EMAIL": "EMAIL",
 }
+
+
 class BertNERDetector(PIIDetector):
-    def __init__(self, model_dir: str | PurePath, provider: str="CPUExecutionProvider"):
+    """Hugging Face Transformers token-classification detector with caching."""
+
+    def __init__(self, model_dir: str | Path, provider: str = "CPUExecutionProvider"):
         self.config = Config()
-        if not self.config.USE_STUB:
-            # 純 HF Transformers BERT TokenClassification
-            self.model = AutoModelForTokenClassification.from_pretrained(model_dir)
-            self.tok   = AutoTokenizer.from_pretrained(model_dir, use_fast=True)
-            self.model_max_length = self.tok.model_max_length
-        else:
+        self.model = None
+        self.tok = None
+        self.model_max_length = 512
+
+        if self.config.USE_STUB:
+            logger.info("BERT detector is disabled (USE_STUB=true).")
+            return
+
+        model_path = ensure_local_path(Path(model_dir))
+        try:
+            self.model = get_hf_token_classifier(model_path)
+            self.tok = get_hf_tokenizer(model_path)
+            self.model.eval()
+            self.model_max_length = int(getattr(self.tok, "model_max_length", 512) or 512)
+        except Exception as exc:
+            logger.warning("Failed to initialize HF detector; falling back to stub: %s", exc)
             self.model = None
-            logger.warning("使用存根模式，BERT檢測器未初始化")
+            self.tok = None
 
     def detect(self, text: str) -> List[Entity]:
         start_time = time.perf_counter()
 
-        if self.config.USE_STUB or self.model is None:
+        if self.config.USE_STUB or self.model is None or self.tok is None:
             return self._stub_detection(text)
 
-        # 處理長文本的滑動窗口
-        entities = []
-        stride = self.model_max_length // 2
-        chunks = [
-            (i, text[i:i+self.model_max_length])
-            for i in range(0, len(text), stride)
-        ]
+        entities: List[Entity] = []
+        stride = max(1, self.model_max_length // 2)
+        chunks = [(i, text[i : i + self.model_max_length]) for i in range(0, len(text), stride)]
 
         for offset, chunk in chunks:
-            chunk_entities = self._process_chunk(chunk, offset)
-            entities.extend(chunk_entities)
+            entities.extend(self._process_chunk(chunk, offset))
 
-        # 合併重疊實體
         merged_entities = self._merge_entities(entities)
 
-        # 記錄效能
-        elapsed = (time.perf_counter() - start_time) * 1000
-        logger.debug(f"BERT檢測完成，字數: {len(text)}, 實體數: {len(merged_entities)}, 耗時: {elapsed:.2f}ms")
+        elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+        logger.debug(
+            "BERT detection completed (chars=%d, entities=%d, time_ms=%.2f)",
+            len(text),
+            len(merged_entities),
+            elapsed_ms,
+        )
 
         return merged_entities
 
     def _process_chunk(self, text: str, offset: int = 0) -> List[Entity]:
-        """處理文本塊並返回實體"""
         inputs = self.tok(
             text,
             return_tensors="pt",
             truncation=True,
-            return_offsets_mapping=True
+            return_offsets_mapping=True,
         )
 
-        # 獲取預測結果
-        outputs = self.model(**inputs)
-        logits = outputs.logits[0].numpy()
-        predictions = np.argmax(logits, axis=1)
-        scores = np.max(logits, axis=1)
+        with torch.no_grad():
+            outputs = self.model(**{k: v for k, v in inputs.items() if k != "offset_mapping"})
 
-        # 處理實體
-        entities = []
+        logits = outputs.logits[0]
+        probs = torch.softmax(logits, dim=-1)
+        pred_ids = torch.argmax(probs, dim=-1).tolist()
+        pred_conf = torch.max(probs, dim=-1).values.tolist()
+
+        entities: List[Entity] = []
         current_entity = None
 
-        for idx, (token_id, pred_idx, score) in enumerate(zip(inputs.input_ids[0], predictions, scores)):
-            # 跳過特殊token
-            if token_id in [self.tok.cls_token_id, self.tok.sep_token_id, self.tok.pad_token_id]:
+        for idx, (token_id, label_id, confidence) in enumerate(
+            zip(inputs.input_ids[0].tolist(), pred_ids, pred_conf)
+        ):
+            if token_id in {self.tok.cls_token_id, self.tok.sep_token_id, self.tok.pad_token_id}:
                 continue
 
-            # 獲取原始文本位置
             token_start, token_end = inputs.offset_mapping[0][idx]
-            if token_start == token_end == 0:  # 特殊token
+            if token_start == token_end == 0:
                 continue
 
-            label = self.model.config.id2label[pred_idx]
-            score = float(score)
+            label = self.model.config.id2label[label_id]
+            confidence = float(confidence)
 
-            # 標準化實體類型
             base_label = label.replace("B-", "").replace("I-", "")
             normalized_type = ENTITY_TYPE_MAP.get(base_label, base_label)
 
-            # 處理實體邊界
             if label.startswith("B-"):
                 if current_entity:
                     entities.append(current_entity)
                 current_entity = {
-                    "span": [token_start + offset, token_end + offset],
+                    "span": [int(token_start) + offset, int(token_end) + offset],
                     "type": normalized_type,
-                    "score": score,
-                    "source": "bert"
+                    "score": confidence,
+                    "source": "bert",
                 }
-            elif label.startswith("I-") and current_entity and current_entity["type"] == normalized_type:
-                current_entity["span"][1] = token_end + offset
-                current_entity["score"] = max(current_entity["score"], score)
+            elif (
+                label.startswith("I-")
+                and current_entity
+                and current_entity["type"] == normalized_type
+            ):
+                current_entity["span"][1] = int(token_end) + offset
+                current_entity["score"] = max(float(current_entity["score"]), confidence)
             else:
                 if current_entity:
                     entities.append(current_entity)
@@ -120,26 +136,20 @@ class BertNERDetector(PIIDetector):
         return entities
 
     def _merge_entities(self, entities: List[Entity]) -> List[Entity]:
-        """合併重疊的實體"""
         if not entities:
             return []
 
-        # 按起始位置排序
         entities = sorted(entities, key=lambda x: x["span"][0])
-        merged = [entities[0]]
+        merged: List[Entity] = [entities[0]]
 
         for current in entities[1:]:
             last = merged[-1]
-
-            # 檢查重疊
             if current["span"][0] <= last["span"][1]:
-                # 合併條件：相同類型且重疊部分超過50%
                 overlap = min(last["span"][1], current["span"][1]) - current["span"][0]
                 min_length = min(
                     last["span"][1] - last["span"][0],
-                    current["span"][1] - current["span"][0]
+                    current["span"][1] - current["span"][0],
                 )
-
                 if current["type"] == last["type"] and overlap > min_length * 0.5:
                     merged[-1]["span"][1] = max(last["span"][1], current["span"][1])
                     merged[-1]["score"] = max(last["score"], current["score"])
@@ -150,25 +160,18 @@ class BertNERDetector(PIIDetector):
         return merged
 
     def _stub_detection(self, text: str) -> List[Entity]:
-        """存根模式下的簡單檢測"""
-        entities = []
+        """Simple regex-based stub used when models are disabled/unavailable."""
 
-        # 台灣身分證
-        for m in re.finditer(r"[A-Z][12]\d{8}", text):
-            entities.append({
-                "span": [m.start(), m.end()],
-                "type": "TW_ID",
-                "score": 1.0,
-                "source": "regex_stub"
-            })
+        entities: List[Entity] = []
 
-        # 台灣手機號
-        for m in re.finditer(r"09\d{2}-?\d{3}-?\d{3}", text):
-            entities.append({
-                "span": [m.start(), m.end()],
-                "type": "PHONE",
-                "score": 1.0,
-                "source": "regex_stub"
-            })
+        for match in re.finditer(r"[A-Z][12]\d{8}", text):
+            entities.append(
+                {"span": [match.start(), match.end()], "type": "ID", "score": 1.0, "source": "regex_stub"}
+            )
+
+        for match in re.finditer(r"09\d{2}-?\d{3}-?\d{3}", text):
+            entities.append(
+                {"span": [match.start(), match.end()], "type": "PHONE", "score": 1.0, "source": "regex_stub"}
+            )
 
         return entities
