@@ -5,12 +5,13 @@ from datetime import datetime, timedelta
 from .generators import PIIGenerator
 from .config import HOSPITALS
 
+
 class AdvancedDataFormatter:
-    """進階資料格式生成器"""
+    """Advanced formatters for generating multi-format synthetic documents."""
 
     @staticmethod
     def generate_contract_document():
-        """生成合約文件（含敏感資料）"""
+        """Generate a contract-like document containing synthetic sensitive data."""
         parties = {
             "甲方": PIIGenerator.generate_tw_name(),
             "乙方": PIIGenerator.generate_tw_name(),
@@ -18,8 +19,7 @@ class AdvancedDataFormatter:
             "乙方身分證": PIIGenerator.generate_tw_id(),
             "甲方地址": PIIGenerator.generate_tw_address(),
             "乙方地址": PIIGenerator.generate_tw_address(),
-            "簽約日期": (datetime.now() - timedelta(days=random.randint(1, 365))\
-                        .strftime("%Y年%m月%d日"))
+            "簽約日期": (datetime.now() - timedelta(days=random.randint(1, 365))).strftime("%Y年%m月%d日"),
         }
 
         contract = f"""
@@ -68,7 +68,7 @@ class AdvancedDataFormatter:
 
     @staticmethod
     def generate_medical_report():
-        """生成詳細醫療報告（含圖表引用）"""
+        """Generate a detailed medical report-like document (with placeholder chart references)."""
         patient = {
             "name": PIIGenerator.generate_tw_name(),
             "id": PIIGenerator.generate_tw_id(),
@@ -78,7 +78,7 @@ class AdvancedDataFormatter:
             "record_num": PIIGenerator.generate_medical_record()
         }
 
-        # 醫療數據
+        # Medical measurements (synthetic)
         test_results = {
             "blood_pressure": f"{random.randint(110, 140)}/{random.randint(70, 90)} mmHg",
             "heart_rate": f"{random.randint(60, 100)} bpm",
@@ -98,7 +98,7 @@ class AdvancedDataFormatter:
         聯絡電話: {patient['phone']}
         住址: {patient['address']}
 
-        就診日期: {(datetime.now() - timedelta(days=random.randint(1, 30)).strftime('%Y-%m-%d'))}
+        就診日期: {(datetime.now() - timedelta(days=random.randint(1, 30))).strftime('%Y-%m-%d')}
         主治醫師: {PIIGenerator.generate_tw_name()} 醫師
 
         臨床診斷:
@@ -122,7 +122,7 @@ class AdvancedDataFormatter:
 
         醫囑:
         - {random.choice(['建議定期追蹤血壓', '控制飲食與體重', '適度運動'])}
-        - 下次回診日期: {(datetime.now() + timedelta(days=random.randint(14, 60)).strftime('%Y-%m-%d'))}
+        - 下次回診日期: {(datetime.now() + timedelta(days=random.randint(14, 60))).strftime('%Y-%m-%d')}
 
         [請參閱附件圖表分析]
         ==============================
@@ -132,7 +132,7 @@ class AdvancedDataFormatter:
 
     @staticmethod
     def generate_financial_statement():
-        """生成財務報表（含複雜表格）"""
+        """Generate a financial statement-like document (with a simple table)."""
         client = {
             "name": PIIGenerator.generate_tw_name(),
             "id": PIIGenerator.generate_tw_id(),
@@ -140,11 +140,10 @@ class AdvancedDataFormatter:
             "credit_card": PIIGenerator.generate_credit_card()
         }
 
-        # 生成交易記錄
+        # Generate transactions.
         transactions = []
         for _ in range(10):
-            date = (datetime.now() - timedelta(days=random.randint(1, 30))\
-                .strftime("%Y-%m-%d"))
+            date = (datetime.now() - timedelta(days=random.randint(1, 30))).strftime("%Y-%m-%d")
             merchant = random.choice(["百貨公司", "超市", "餐廳", "加油站", "線上購物", "電信繳費"])
             amount = round(random.uniform(100, 10000), 2)
             transactions.append({
@@ -153,7 +152,7 @@ class AdvancedDataFormatter:
                 "amount": amount
             })
 
-        # 生成報表
+        # Assemble statement.
         statement = f"""
         客戶財務報表
 

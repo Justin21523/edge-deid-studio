@@ -1,15 +1,19 @@
+from __future__ import annotations
+
 import random
 from datetime import datetime, timedelta
+
 from .generators import PIIGenerator
 from . import HOSPITALS, MEDICAL_SPECIALTIES
 
+
 class DataFormatter:
-    """資料格式生成引擎"""
+    """Formatting utilities for synthetic document generation."""
 
     @staticmethod
     def generate_paragraph(min_sentences=3, max_sentences=8, pii_density=0.3):
-        """生成包含PII的自然語言段落"""
-        # 繁體中文句子模板
+        """Generate a paragraph containing synthetic PII placeholders."""
+        # Traditional Chinese sentence templates (zh_TW locale content)
         sentence_templates = [
             "根據最新報告顯示，{PII} 的情況需要進一步關注。",
             "在 {DATE} 的會議中，我們討論了關於 {NAME} 的提案。",
@@ -23,20 +27,20 @@ class DataFormatter:
             "護照號碼 {PASSPORT} 已通過審核，可至櫃台領取。"
         ]
 
-        # 生成段落
+        # Build paragraph.
         paragraph = ""
         num_sentences = random.randint(min_sentences, max_sentences)
 
         for _ in range(num_sentences):
             template = random.choice(sentence_templates)
 
-            # 替換PII佔位符
+            # Replace placeholders with generated values.
             while True:
                 pii_count = template.count("{")
                 if pii_count == 0 or random.random() > pii_density:
                     break
 
-                # 隨機選擇一個PII類型替換
+                # Randomly choose a PII type to replace.
                 pii_type, generator = PIIGenerator.generate_random_pii()
                 template = template.replace("{" + pii_type + "}", generator(), 1)
 
@@ -46,8 +50,8 @@ class DataFormatter:
 
     @staticmethod
     def generate_medical_record():
-        """生成完整的醫療記錄"""
-        # 基本資訊
+        """Generate a full medical record-like document."""
+        # Basic info
         name = PIIGenerator.generate_tw_name()
         gender = random.choice(["男", "女"])
         dob = PIIGenerator.generate_date_of_birth()
@@ -56,14 +60,13 @@ class DataFormatter:
         address = PIIGenerator.generate_tw_address()
         record_num = PIIGenerator.generate_medical_record()
 
-        # 就診資訊
-        visit_date = (datetime.now() - timedelta(days=random.randint(1, 365))\
-            .strftime("%Y-%m-%d"))
+        # Visit info
+        visit_date = (datetime.now() - timedelta(days=random.randint(1, 365))).strftime("%Y-%m-%d")
         hospital = random.choice(HOSPITALS)
         department = random.choice(MEDICAL_SPECIALTIES)
         doctor = "Dr. " + PIIGenerator.generate_tw_name()
 
-        # 診斷與處方
+        # Diagnosis and prescription
         diagnoses = ["感冒", "流感", "高血壓", "糖尿病", "氣喘", "胃炎", "關節炎", "偏頭痛"]
         treatments = ["藥物治療", "物理治療", "手術", "追蹤觀察", "飲食控制"]
         medications = ["抗生素", "止痛藥", "降血壓藥", "胰島素", "消炎藥"]
@@ -72,7 +75,7 @@ class DataFormatter:
         treatment = random.choice(treatments)
         medication = random.choice(medications)
 
-        # 組合成醫療記錄
+        # Assemble into a medical record.
         record = f"""
         ====== 醫療記錄 ======
         病歷號: {record_num}
@@ -103,28 +106,27 @@ class DataFormatter:
 
     @staticmethod
     def generate_financial_document():
-        """生成財務文件"""
-        # 客戶資訊
+        """Generate a financial statement-like document."""
+        # Client info
         client_name = PIIGenerator.generate_tw_name()
         client_id = PIIGenerator.generate_tw_id()
         client_address = PIIGenerator.generate_tw_address()
         client_phone = PIIGenerator.generate_tw_phone()
         client_email = PIIGenerator.generate_email(client_name)
 
-        # 帳戶資訊
+        # Account info
         account_number = ''.join(str(random.randint(0, 9)) for _ in range(14))
         credit_card = PIIGenerator.generate_credit_card()
 
-        # 交易記錄
+        # Transactions
         transactions = []
         for _ in range(random.randint(3, 10)):
-            date = (datetime.now() - timedelta(days=random.randint(1, 30))\
-                .strftime("%Y-%m-%d"))
+            date = (datetime.now() - timedelta(days=random.randint(1, 30))).strftime("%Y-%m-%d")
             merchant = random.choice(["百貨公司", "超市", "餐廳", "加油站", "線上購物", "電信繳費"])
             amount = round(random.uniform(100, 10000), 2)
             transactions.append(f"{date} | {merchant} | NT${amount:,.2f}")
 
-        # 組合成財務文件
+        # Assemble into a document.
         document = f"""
         ====== 帳戶對帳單 ======
         客戶姓名: {client_name}
@@ -147,7 +149,7 @@ class DataFormatter:
 
     @staticmethod
     def generate_random_document():
-        """隨機生成不同類型的文件"""
+        """Randomly generate one of the supported synthetic documents."""
         doc_types = [
             DataFormatter.generate_medical_record,
             DataFormatter.generate_financial_document,
