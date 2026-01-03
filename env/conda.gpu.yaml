@@ -1,6 +1,7 @@
-name: edgedeid
+name: ai_env
 channels:
   - pytorch
+  - nvidia
   - conda-forge
   - defaults
 
@@ -31,21 +32,17 @@ dependencies:
   - python-pptx
   - pyyaml=6.0.2
 
-  # -- PyTorch + ONNX Runtime
+  # -- PyTorch (CUDA) + ONNX Runtime (GPU via pip below)
   - pytorch=2.3
   - torchvision=0.18
-  - torchtext            # Synced from the pytorch channel
+  - torchtext
+  - pytorch-cuda=12.1
 
   # -- Packages installed via pip only
   - pip:
     - transformers>=4.40.0,<4.41.0
-    - onnxruntime-gpu==1.16.2
     - optimum[onnxruntime]==1.16.2
-    - pytesseract==0.3.10
-    - easyocr
-    - opencv-python
-    - PyMuPDF
-    - PyPDF2>=3.0,<4.0
+    - onnxruntime-gpu==1.16.2
     - datasets>=2.21.0,<3.0.0
     - sentencepiece>=0.2.0
     - faker>=37.4.2
@@ -53,4 +50,10 @@ dependencies:
     - pytest
     - rich>=14.0.0
     - Pillow
+    - pytesseract==0.3.10
+    - easyocr
+    - opencv-python
+    - PyMuPDF
+    - PyPDF2>=3.0,<4.0
     - reportlab
+    - onnxscript>=0.5.0

@@ -41,3 +41,10 @@ src/ui/AnoniMe/bin/
 
 .reports/
 .pytest-html
+
+# Allow committed notebooks under notebooks/
+!notebooks/*.ipynb
+!notebooks/**/*.ipynb
+
+# Generated local evaluation artifacts (keep demo JSONL fixtures tracked).
+data/processed/eval_*/
