@@ -1,0 +1,49 @@
+# Smoke-test profile for canonical PII fine-tuning (dev-only, GPU recommended).
+run_name: pii-large-zh-gpu-canonical-smoke
+language: zh
+split: train
+
+datasets:
+  - ai4privacy/pii-masking-300k:2000
+  - nvidia/Nemotron-PII:2000
+  - synthetic:2000
+  - levow/msra_ner:2000
+  - tner/wikiann:2000
+  - hltcoe/weibo_ner:1000
+
+mix:
+  shuffle: false
+  seed: 0
+
+training:
+  epochs: 1
+  max_steps: 300
+  batch_size: 8
+  gradient_accumulation_steps: 1
+  max_length: 256
+  precision: auto
+  tf32: true
+  canonicalize_types: true
+  learning_rate: 5.0e-5
+  weight_decay: 0.0
+  warmup_ratio: 0.0
+  preprocess_batch_size: 256
+  preprocess_num_proc: 0
+
+export:
+  opset: 17
+
+onnx:
+  providers:
+    - CUDAExecutionProvider
+    - CPUExecutionProvider
+
+quantize: false
+
+benchmark:
+  chars: 10000
+  runs: 10
+  warmup: 2
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/pii-large-zh-gpu-canonical-smoke/report.json

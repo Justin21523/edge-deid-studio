@@ -1,0 +1,43 @@
+# Large GPT-2 (Chinese) rewriter fine-tuning profile (dev-only).
+#
+# Notes:
+# - Run the placeholder large pipeline first to build the input corpus:
+#   `configs/training/gpt2_zh_placeholder_large.yaml`
+# - This can take hours depending on corpus size and GPU settings.
+run_name: gpt2-zh-rewriter-large
+language: zh
+split: train
+
+placeholder_input_jsonl: /mnt/data/datasets/edge_deid/processed/gpt2-zh-placeholder-large/train/corpus.jsonl
+
+rewriter:
+  min_chars: 40
+  filter_cjk: true
+  max_examples: 0
+  seed: 0
+  noise_punct_prob: 0.35
+  noise_space_prob: 0.25
+  noise_dup_prob: 0.08
+
+training:
+  epochs: 1
+  # Set to 0 for full-epoch training.
+  max_steps: 0
+  batch_size: 2
+  gradient_accumulation_steps: 8
+  block_size: 256
+  precision: auto
+  tf32: true
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  preprocess_batch_size: 512
+  preprocess_num_proc: 0
+
+allow_network: false
+trust_remote_code: false
+force_prepare: false
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/gpt2-zh-rewriter-large/report.json
+

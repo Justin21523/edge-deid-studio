@@ -1,30 +1,30 @@
 # configs/regex_en.yaml
 
-# 身分證號 (SSN)
+# Social Security Number (SSN)
 ID:
   - pattern: "\\b\\d{3}-\\d{2}-\\d{4}\\b"
     flags: IGNORECASE
 
-# 電話號碼 (US phone)
+# Phone number (US)
 PHONE:
   - pattern: "\\b(?:\\+1[-.\\s]?|1[-.\\s]?)?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}\\b"
 
-# 電子郵件
+# Email address
 EMAIL:
   - pattern: "[\\w\\.\\-]+@[\\w\\.\\-]+\\.[A-Za-z]{2,}"
 
-# 地址 (簡易版)
+# Address (simplified)
 ADDRESS:
   - pattern: "\\b\\d+\\s+\\w+\\s+(?:Street|St|Avenue|Ave|Boulevard|Blvd|Road|Rd|Lane|Ln)\\b"
 
-# 護照號
+# Passport number (example)
 PASSPORT:
   - pattern: "[A-PR-WYa-pr-wy][1-9]\\d\\s?\\d{4}[1-9]"
 
-# 統一編號 (EIN)
+# Employer Identification Number (EIN)
 UNIFIED_BUSINESS_NO:
   - pattern: "\\b\\d{2}-\\d{7}\\b"
 
-# 醫療編號 (示例)
+# Medical id (example)
 MEDICAL_ID:
   - pattern: "\\b[A-Za-z0-9]{6,12}\\b"

@@ -1,0 +1,7 @@
+{"id":"demo-1","input":"任命函請寄到 <PII type=\"ADDRESS\">台北市信義區信義路一段 1 號</PII>，聯絡電話 <PII type=\"PHONE\">0912-345-678</PII>。","output":"任命函請寄到台北市中山區中山路 10 號，聯絡電話 0918-222-333。"}
+{"id":"demo-2","input":"請通知 [NAME]王小明[/NAME] 於 [DATE]1993-02-14[/DATE] 前完成報到。","output":"請通知陳怡君於 1994-11-03 前完成報到。"}
+{"id":"demo-3","input":"E-mail 請寄至 [EMAIL]alice.chen@example.com[/EMAIL]，謝謝。","output":"E-mail 請寄至 user482910@example.com，謝謝。"}
+{"id":"demo-4","input":"病歷號 <PII type=\"MEDICAL_ID\">M1234567</PII>，主治醫師 <PII type=\"NAME\">林志明</PII>。","output":"病歷號 M7654321，主治醫師 張雅婷。"}
+{"id":"demo-5","input":"公司 [ORGANIZATION]宏達電股份有限公司[/ORGANIZATION] 的統編 [UNIFIED_BUSINESS_NO]12345678[/UNIFIED_BUSINESS_NO] 已完成登記。","output":"公司 星河科技股份有限公司 的統編 87654321 已完成登記。"}
+{"id":"demo-6","input":"車牌 [LICENSE_PLATE]ABC-1234[/LICENSE_PLATE] 於 [DATE]2024-08-15[/DATE] 發生事故。","output":"車牌 KLM-7788 於 2024-06-02 發生事故。"}
+

@@ -1,0 +1,39 @@
+# Fast smoke-test profile for the multi-dataset training pipeline (dev-only).
+run_name: multi-zh-ner-quick
+language: zh
+split: train
+
+datasets:
+  - levow/msra_ner:500
+  - tner/wikiann:500
+  - hltcoe/weibo_ner:300
+
+mix:
+  shuffle: true
+  seed: 0
+
+training:
+  epochs: 1
+  batch_size: 8
+  max_length: 256
+  precision: auto
+  tf32: true
+  canonicalize_types: true
+
+export:
+  opset: 17
+
+onnx:
+  providers:
+    - CUDAExecutionProvider
+    - CPUExecutionProvider
+
+quantize: false
+
+benchmark:
+  chars: 5000
+  runs: 10
+  warmup: 2
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/multi-zh-ner-quick/report.json

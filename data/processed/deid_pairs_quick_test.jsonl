@@ -1,0 +1,6 @@
+{"id":"qt-1","input":"請聯絡 [NAME]測試者甲[/NAME]（[EMAIL]test.user01@example.com[/EMAIL]），電話 [PHONE]0912-345-678[/PHONE]。同一個人 [NAME]測試者甲[/NAME] 再次來電。","output":""}
+{"id":"qt-2","input":"公司 <PII type=\"ORGANIZATION\">示範科技股份有限公司</PII> 統編 <PII type=\"UNIFIED_BUSINESS_NO\">12345678</PII>，地址 <PII type=\"ADDRESS\">台北市信義區信義路五段 7 號</PII>。","output":""}
+{"id":"qt-3","input":"身分證 [ID]A123456789[/ID]，銀行帳號 [BANK_ACCOUNT]0123456789012345[/BANK_ACCOUNT]，車牌 [LICENSE_PLATE]ABC-1234[/LICENSE_PLATE]。","output":""}
+{"id":"qt-4","input":"護照 [PASSPORT]PA1234567[/PASSPORT]，病歷號 [MEDICAL_ID]M1234567[/MEDICAL_ID]，生日 [DATE]1990-01-02[/DATE]。","output":""}
+{"id":"qt-5","input":"客服電話 02-1234-5678，請找 [NAME]王小明[/NAME]。Email: bob@example.com（未標記）。","output":""}
+

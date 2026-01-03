@@ -1,0 +1,20 @@
+# Banned phrases used by evaluation to detect "extra explanations" in model outputs.
+#
+# Notes:
+# - This file may contain non-English phrases because it is consumed as model-output data
+#   (not documentation). Keep repository docs/code in English.
+banned_phrases:
+  - 任務：
+  - 規則：
+  - 解釋
+  - 原因
+  - 步驟
+  - 分析
+  - 以下是
+  - 下面是
+  - 我會
+  - 你可以
+  - Explanation
+  - Steps
+  - Reason
+

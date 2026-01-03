@@ -7,7 +7,7 @@ PHONE:
   - pattern: "09\\d{2}-?\\d{3}-?\\d{3}"
     flags: MULTILINE
 
-# 加入更多臺灣特定格式：健保卡、銀行帳號、信用卡號、日期、統一編號、機車車牌…
+# TODO: Add more Taiwan-specific patterns (health card, bank accounts, credit cards, dates, UBN, license plates, etc.)
 EMAIL:
   - pattern: "[\\w\\.-]+@[\\w\\.-]+\\.[A-Za-z]{2,4}"
 
@@ -20,11 +20,11 @@ ADDRESS:
   - pattern: "\\d{3,4}巷\\d{1,3}弄\\d{1,3}號"
   - pattern: "[^\\n，；。]{1,30}(大樓|社區|大廈|商業大樓)[^,，；。]{0,30}"
 
-PASSPORT:            # 護照號
+PASSPORT:            # Passport number
   - pattern: "[A-Z]{1,2}\\d{6,8}"
 
-UNIFIED_BUSINESS_NO: # 統一編號
+UNIFIED_BUSINESS_NO: # Unified business number (Taiwan)
   - pattern: "\\d{8}"
 
-MEDICAL_ID:          # 病歷號 (示例)
+MEDICAL_ID:          # Medical record id (example)
   - pattern: "[A-Z]\\d{7,8}"
