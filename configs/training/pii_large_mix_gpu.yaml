@@ -1,0 +1,61 @@
+# Large multi-source PII + Chinese NER fine-tuning profile (dev-only, GPU recommended).
+#
+# Notes:
+# - This profile is intentionally "large". Expect long download + preprocessing + training time.
+# - For a fast validation run, use `configs/training/pii_large_mix_smoke_gpu.yaml`.
+run_name: pii-large-zh-gpu
+language: zh
+split: train
+
+datasets:
+  # Large PII masked-pair corpora (span extraction via placeholders).
+  - ai4privacy/pii-masking-300k:100000
+  - nvidia/Nemotron-PII:100000
+
+  # Offline deterministic zh_TW PII coverage (PHONE/EMAIL/ID + simple contexts).
+  - synthetic:50000
+
+  # Chinese NER robustness (names/locations/orgs).
+  - levow/msra_ner:20000
+  - tner/wikiann:20000
+  - hltcoe/weibo_ner:10000
+
+mix:
+  # For large datasets, disable file-level shuffling (streaming concat) and rely on Trainer shuffling.
+  shuffle: false
+  seed: 0
+
+training:
+  epochs: 1
+  # Set to 0 for full-epoch training. Use a positive value to limit runtime (smoke runs).
+  max_steps: 0
+  batch_size: 8
+  gradient_accumulation_steps: 2
+  max_length: 256
+  precision: auto
+  tf32: true
+  canonicalize_types: true
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  preprocess_batch_size: 512
+  preprocess_num_proc: 0
+
+export:
+  opset: 17
+
+onnx:
+  providers:
+    - CUDAExecutionProvider
+    - CPUExecutionProvider
+
+# Export a second INT8 model (model.int8.onnx).
+quantize: true
+
+benchmark:
+  chars: 10000
+  runs: 10
+  warmup: 2
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/pii-large-zh-gpu/report.json

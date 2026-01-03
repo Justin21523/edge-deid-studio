@@ -1,0 +1,4 @@
+{"id":"demo-v1","input":"請聯絡 [PHONE]0912-345-678[/PHONE] 或寄信到 [EMAIL]bob@example.com[/EMAIL]。","output":"請聯絡 0916-010-909 或寄信到 user093214@example.com。"}
+{"id":"demo-v2","input":"[NAME]王小明[/NAME] 與 [NAME]王小明[/NAME] 皆已簽署合約。","output":"陳怡君與陳怡君皆已簽署合約。"}
+{"id":"demo-v3","input":"地址：<PII type=\"ADDRESS\">新北市板橋區文化路 99 號</PII>。","output":"地址：台中市民生路 88 號。"}
+

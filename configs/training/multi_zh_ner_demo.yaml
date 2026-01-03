@@ -1,0 +1,39 @@
+# Repeatable multi-dataset Chinese NER fine-tuning profile (dev-only).
+run_name: multi-zh-ner-demo
+language: zh
+split: train
+
+datasets:
+  - levow/msra_ner:2000
+  - tner/wikiann:2000
+  - hltcoe/weibo_ner:1350
+
+mix:
+  shuffle: true
+  seed: 0
+
+training:
+  epochs: 1
+  batch_size: 8
+  max_length: 256
+  precision: auto
+  tf32: true
+  canonicalize_types: true
+
+export:
+  opset: 17
+
+onnx:
+  providers:
+    - CUDAExecutionProvider
+    - CPUExecutionProvider
+
+quantize: false
+
+benchmark:
+  chars: 10000
+  runs: 20
+  warmup: 2
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/multi-zh-ner-demo/report.json

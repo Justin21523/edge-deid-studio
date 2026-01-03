@@ -1,0 +1,53 @@
+# Large multi-source PII fine-tuning profile with canonical entity types (dev-only, GPU recommended).
+#
+# This profile is tuned for production use:
+# - Entity labels are canonicalized to keep the classifier head small and fast.
+# - INT8 quantization is disabled by default because ORT dynamic quantization often falls back to CPU.
+run_name: pii-large-zh-gpu-canonical
+language: zh
+split: train
+
+datasets:
+  - ai4privacy/pii-masking-300k:100000
+  - nvidia/Nemotron-PII:100000
+  - synthetic:50000
+  - levow/msra_ner:20000
+  - tner/wikiann:20000
+  - hltcoe/weibo_ner:10000
+
+mix:
+  shuffle: false
+  seed: 0
+
+training:
+  epochs: 1
+  max_steps: 0
+  batch_size: 8
+  gradient_accumulation_steps: 2
+  max_length: 256
+  precision: auto
+  tf32: true
+  canonicalize_types: true
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  preprocess_batch_size: 512
+  preprocess_num_proc: 0
+
+export:
+  opset: 17
+
+onnx:
+  providers:
+    - CUDAExecutionProvider
+    - CPUExecutionProvider
+
+quantize: false
+
+benchmark:
+  chars: 10000
+  runs: 10
+  warmup: 2
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/pii-large-zh-gpu-canonical/report.json

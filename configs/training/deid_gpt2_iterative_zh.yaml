@@ -1,0 +1,73 @@
+# Iterative GPT-2 DeID fine-tuning loop (dev-only).
+#
+# Expected dataset format (JSONL):
+#   {"id": "...", "input": "...", "output": "..."}
+#
+# Input may optionally include PII markup:
+#   A) <PII type="PHONE">0912-345-678</PII>
+#   B) [PHONE]0912-345-678[/PHONE]
+#
+# Notes:
+# - This loop runs for at least `iterative.time_budget_s` seconds (default: 3600).
+# - Checkpoints are pruned to avoid disk growth (keep last-K and top-K).
+run_name: deid-gpt2-zh-iterative
+language: zh
+
+data:
+  # Replace these paths with your real datasets.
+  train_jsonl: data/processed/deid_pairs_demo_train.jsonl
+  valid_jsonl: data/processed/deid_pairs_demo_valid.jsonl
+
+  # Optional weak-label rules when input markup is missing.
+  # regex_rules: configs/regex_zh.yaml
+
+  max_train_examples: 0
+  max_valid_examples: 0
+  min_chars: 20
+  split_paragraphs: true
+
+prompt:
+  template_path: configs/prompts/deid_zh_v1.txt
+
+training:
+  # Start from an existing local checkpoint (recommended: rewriter-large).
+  init_model_dir: /mnt/c/ai_models/llm/edge_deid/gpt2-zh-rewriter-large
+
+  # Per-round training budget.
+  steps_per_round: 800
+
+  # Trainer settings.
+  epochs: 1
+  batch_size: 2
+  gradient_accumulation_steps: 8
+  block_size: 256
+  precision: auto
+  tf32: true
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  preprocess_batch_size: 512
+  preprocess_num_proc: 0
+  seed: 0
+
+iterative:
+  time_budget_s: 3600
+  keep_last_k: 2
+  keep_top_k: 2
+  seed: 0
+
+generation:
+  max_prompt_tokens: 768
+  max_new_tokens: 256
+  do_sample: false
+  temperature: 1.0
+  top_p: 0.9
+
+evaluation:
+  banned_phrases: configs/eval/deid_format_zh.yaml
+  # Optional: compute perplexity on predictions for a fluency proxy.
+  # fluency_model_dir: /mnt/c/ai_models/llm/gpt2-zh-base
+
+allow_network: false
+trust_remote_code: false
+

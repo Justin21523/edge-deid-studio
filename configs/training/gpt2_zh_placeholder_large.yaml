@@ -1,0 +1,43 @@
+# Large GPT-2 (Chinese) placeholder fine-tuning profile (dev-only).
+#
+# Notes:
+# - This can take hours depending on corpus size and GPU settings.
+# - For a quick validation run, start with `gpt2_zh_placeholder_smoke.yaml`.
+run_name: gpt2-zh-placeholder-large
+language: zh
+split: train
+
+datasets:
+  - levow/msra_ner:20000
+  - tner/wikiann:20000
+  - hltcoe/weibo_ner:10000
+  - synthetic:50000
+  - ai4privacy/pii-masking-300k:100000
+  - nvidia/Nemotron-PII:100000
+
+corpus:
+  min_chars: 20
+  filter_cjk: true
+  canonicalize_placeholders: true
+
+training:
+  epochs: 1
+  # Set to 0 for full-epoch training. Increase for longer training.
+  max_steps: 0
+  batch_size: 2
+  gradient_accumulation_steps: 8
+  block_size: 256
+  precision: auto
+  tf32: true
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  preprocess_batch_size: 512
+  preprocess_num_proc: 0
+
+allow_network: true
+trust_remote_code: true
+force_prepare: false
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/gpt2-zh-placeholder-large/report.json

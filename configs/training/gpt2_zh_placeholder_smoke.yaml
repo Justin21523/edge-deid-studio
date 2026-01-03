@@ -1,0 +1,38 @@
+# Smoke-test GPT-2 (Chinese) placeholder fine-tuning profile (dev-only).
+run_name: gpt2-zh-placeholder-smoke
+language: zh
+split: train
+
+datasets:
+  - levow/msra_ner:2000
+  - tner/wikiann:2000
+  - hltcoe/weibo_ner:1000
+  - synthetic:2000
+  - ai4privacy/pii-masking-300k:5000
+  - nvidia/Nemotron-PII:5000
+
+corpus:
+  min_chars: 20
+  filter_cjk: true
+  canonicalize_placeholders: true
+
+training:
+  epochs: 1
+  max_steps: 200
+  batch_size: 2
+  gradient_accumulation_steps: 4
+  block_size: 256
+  precision: auto
+  tf32: true
+  learning_rate: 5.0e-5
+  weight_decay: 0.0
+  warmup_ratio: 0.03
+  preprocess_batch_size: 512
+  preprocess_num_proc: 0
+
+allow_network: true
+trust_remote_code: true
+force_prepare: false
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/gpt2-zh-placeholder-smoke/report.json

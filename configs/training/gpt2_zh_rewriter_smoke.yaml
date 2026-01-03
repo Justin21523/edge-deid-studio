@@ -1,0 +1,41 @@
+# Smoke-test GPT-2 (Chinese) rewriter fine-tuning profile (dev-only).
+#
+# This trains the "Model B" rewriter which improves fluency after replacement.
+# It reuses the placeholder corpus produced by the placeholder pipeline.
+run_name: gpt2-zh-rewriter-smoke
+language: zh
+split: train
+
+# Reuse a prepared placeholder corpus to avoid re-downloading datasets.
+placeholder_input_jsonl: /mnt/data/datasets/edge_deid/processed/gpt2-zh-placeholder-smoke/train/corpus.jsonl
+
+rewriter:
+  min_chars: 40
+  filter_cjk: true
+  max_examples: 0
+  seed: 0
+  noise_punct_prob: 0.35
+  noise_space_prob: 0.25
+  noise_dup_prob: 0.08
+
+training:
+  epochs: 1
+  max_steps: 200
+  batch_size: 2
+  gradient_accumulation_steps: 4
+  block_size: 256
+  precision: auto
+  tf32: true
+  learning_rate: 5.0e-5
+  weight_decay: 0.0
+  warmup_ratio: 0.03
+  preprocess_batch_size: 512
+  preprocess_num_proc: 0
+
+allow_network: false
+trust_remote_code: false
+force_prepare: false
+
+outputs:
+  json_out: /mnt/data/training/logs/edge_deid/gpt2-zh-rewriter-smoke/report.json
+
