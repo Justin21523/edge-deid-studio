@@ -1,15 +1,15 @@
 transformers>=4.40.0
 optimum[onnxruntime]==1.16.2
-datasets>=4.0.0
+datasets>=2.21.0,<3.0.0
 sentencepiece>=0.2.0
 pytest
 torch>=2.3.0,<2.4.0
 torchtext
 faker>=37.4.2
-typer>=0.3.0,<0.10.0   # 符合 spaCy 3.5 的 typer 範圍
+typer>=0.3.0,<0.10.0   # Compatible with spaCy 3.5's pinned typer range
 rich>=14.0.0
 pandas
-numpy==1.24.3          # 鎖定與 spaCy/onxxruntime 編譯時相同的版本
+numpy==1.24.3          # Pinned to match the versions used by spaCy/onnxruntime wheels
 spacy>=3.5,<3.6
 jieba>=0.42.1,<0.43
 easyocr
@@ -26,5 +26,3 @@ xlsxwriter
 beautifulsoup4
 lxml
 reportlab
-
-
