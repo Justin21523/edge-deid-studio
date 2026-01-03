@@ -1,30 +1,37 @@
 import os
 import time
+
+import pytest
+
 from deid_pipeline import DeidPipeline
-from tests.test_data_factory import TestDataFactory    # 注意路徑
+from tests.test_data_factory import TestDataFactory
+
+if not os.getenv("EDGE_DEID_RUN_E2E_TESTS"):
+    pytest.skip("End-to-end tests are opt-in. Set EDGE_DEID_RUN_E2E_TESTS=1.", allow_module_level=True)
 
 
 def run_full_pipeline_test(file_type='text'):
-    """執行完整流程測試"""
+    """Run an end-to-end pipeline test (opt-in)."""
+
     pipeline = DeidPipeline(language="zh")
     data_factory = TestDataFactory()
 
-    # 根據文件類型生成測試文件
+    # Generate test input by file type
     if file_type == 'text':
-        content, pii_data = data_factory.generate_test_document(pii_count=15)
-        os.makedirs("tests/test_input", exist_ok=True)
-        with open("tests/test_input/sample.txt", "w", encoding="utf-8") as f:
+        content, inserted = data_factory.generate_test_document(pii_count=15)
+        os.makedirs("test_input", exist_ok=True)
+        with open("test_input/sample.txt", "w", encoding="utf-8") as f:
             f.write(content)
         input_path = "test_input/sample.txt"
 
     elif file_type == 'pdf':
-        # 實際專案中需使用PDF生成庫
+        # Real projects should generate PDFs via a library (e.g., reportlab)
         input_path = "test_input/medical_report.pdf"
 
     elif file_type == 'image':
         input_path = "test_input/prescription.jpg"
 
-    # 執行處理流程
+    # Run pipeline
     start_time = time.time()
     result = pipeline.process(
         input_path=input_path,
@@ -33,7 +40,7 @@ def run_full_pipeline_test(file_type='text'):
     )
     elapsed = time.time() - start_time
 
-    # 驗證結果
+    # Verify results
     verification = {
         "file_type": file_type,
         "pii_count": len(result.entities),
@@ -42,16 +49,17 @@ def run_full_pipeline_test(file_type='text'):
         "content_integrity": True
     }
 
-    # 檢查替換一致性
+    # Check replacement consistency (same original -> same replacement).
     original_map = {}
-    for entity in result.entities:
-        if entity['text'] not in original_map:
-            original_map[entity['text']] = entity['replaced_with']
-        else:
-            if original_map[entity['text']] != entity['replaced_with']:
-                verification['replacement_consistency'] = False
+    for event in result.events:
+        key = (event.get("entity_type"), event.get("original"))
+        replacement = event.get("replacement")
+        if key not in original_map:
+            original_map[key] = replacement
+        elif original_map[key] != replacement:
+            verification["replacement_consistency"] = False
 
-    # 檢查內容完整性（簡單版本）
+    # Check content integrity (simple heuristic)
     if file_type == 'text':
         with open(input_path, encoding="utf-8") as f:
             original_content = f.read()
@@ -60,20 +68,21 @@ def run_full_pipeline_test(file_type='text'):
     return verification
 
 def test_all_formats():
-    """測試所有文件格式"""
+    """Test multiple formats (opt-in)."""
+
     formats = ['text', 'pdf', 'image']
     results = {}
 
     for fmt in formats:
-        print(f"測試 {fmt} 文件處理...")
+        print(f"Testing format: {fmt} ...")
         results[fmt] = run_full_pipeline_test(fmt)
 
-    # 生成測試報告
-    print("\n測試結果摘要:")
+    # Print report
+    print("\nTest summary:")
     for fmt, data in results.items():
-        print(f"格式: {fmt.upper()}")
-        print(f"  PII偵測數量: {data['pii_count']}")
-        print(f"  處理時間: {data['processing_time']:.2f}秒")
-        print(f"  替換一致性: {'通過' if data['replacement_consistency'] else '失敗'}")
-        print(f"  內容完整性: {'通過' if data['content_integrity'] else '失敗'}")
+        print(f"Format: {fmt.upper()}")
+        print(f"  PII entities: {data['pii_count']}")
+        print(f"  Time: {data['processing_time']:.2f}s")
+        print(f"  Replacement consistency: {'PASS' if data['replacement_consistency'] else 'FAIL'}")
+        print(f"  Content integrity: {'PASS' if data['content_integrity'] else 'FAIL'}")
         print("-" * 40)
