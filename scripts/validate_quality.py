@@ -1,56 +1,71 @@
-# scripts/validate_quality.py
+from __future__ import annotations
 
-import os, re
+import os
+import re
 from pathlib import Path
+from typing import Any, Dict, List
 
-def validate_deidentification_quality(original_dir, processed_dir):
-    """去識別化品質驗證 (De-ID quality validation)"""
-    quality_report = []
 
-    for orig_file in os.listdir(original_dir):
-        # 獲取處理後文件路徑
-        processed_file = os.path.join(processed_dir, orig_file)
+PII_PATTERNS: Dict[str, str] = {
+    "ID": r"[A-Z]\d{9}",
+    "PHONE": r"09\d{2}-?\d{3}-?\d{3}",
+    "EMAIL": r"[\w\.-]+@[\w\.-]+\.[A-Za-z]{2,}",
+}
 
-        if not os.path.exists(processed_file):
+
+def validate_deidentification_quality(original_dir: str, processed_dir: str) -> List[Dict[str, Any]]:
+    """Validate that PII strings from the original files are not present after de-identification.
+
+    Notes:
+    - This script is intended for plain-text outputs (txt/csv/json). Binary formats (pdf/docx/xlsx/pptx)
+      require format-aware validation and are out of scope for this lightweight check.
+    """
+
+    original_path = Path(original_dir).expanduser().resolve()
+    processed_path = Path(processed_dir).expanduser().resolve()
+
+    if not original_path.exists():
+        raise FileNotFoundError(f"Original directory not found: {original_path}")
+    if not processed_path.exists():
+        raise FileNotFoundError(f"Processed directory not found: {processed_path}")
+
+    report: List[Dict[str, Any]] = []
+
+    for filename in os.listdir(original_path):
+        orig_file = original_path / filename
+        proc_file = processed_path / filename
+        if not orig_file.is_file() or not proc_file.exists():
             continue
 
-        # 讀取原始內容
-        with open(os.path.join(original_dir, orig_file), "r", encoding="utf-8") as f:
-            orig_content = f.read()
+        orig_content = orig_file.read_text(encoding="utf-8", errors="replace")
+        proc_content = proc_file.read_text(encoding="utf-8", errors="replace")
 
-        # 讀取處理後內容
-        with open(processed_file, "r", encoding="utf-8") as f:
-            processed_content = f.read()
+        leaked: Dict[str, List[str]] = {}
+        for pii_type, pattern in PII_PATTERNS.items():
+            values = set(re.findall(pattern, orig_content))
+            leaked_values = [v for v in values if v and v in proc_content]
+            if leaked_values:
+                leaked[pii_type] = leaked_values
 
-        # 驗證PII移除
-        pii_removed = True
-        for pii_type in ["身分證", "電話", "地址", "病歷號"]:
-            if pii_type in orig_content and pii_type in processed_content:
-                # 檢查原始PII是否出現在處理後文件中
-                orig_pii = re.findall(rf"{pii_type}[：:]\s*([^\s]+)", orig_content)
-                for pii in orig_pii:
-                    if pii in processed_content:
-                        pii_removed = False
-                        break
+        pii_removed = not leaked
 
-        # 驗證格式完整性
-        format_preserved = True
-        # 這裡可以添加格式特定檢查（如表格結構、圖表存在性等）
+        report.append(
+            {
+                "file": filename,
+                "pii_removed": pii_removed,
+                "leaked": leaked,
+            }
+        )
 
-        # 記錄結果
-        quality_report.append({
-            "file": orig_file,
-            "pii_removed": pii_removed,
-            "format_preserved": format_preserved
-        })
+    if not report:
+        print("No comparable files found for validation.")
+        return report
 
-    # 計算成功率
-    pii_success_rate = sum(1 for r in quality_report if r["pii_removed"]) / len(quality_report)
-    format_success_rate = sum(1 for r in quality_report if r["format_preserved"]) / len(quality_report)
+    pii_success_rate = sum(1 for r in report if r["pii_removed"]) / len(report)
+    print(f"PII removal success rate: {pii_success_rate:.2%}")
+    return report
 
-    print(f"PII移除成功率: {pii_success_rate:.2%}")
-    print(f"格式保留成功率: {format_success_rate:.2%}")
-    return quality_report
 
 if __name__ == "__main__":
-    validate_deidentification_quality("contracts","processed/contracts")
+    validate_deidentification_quality("contracts", "processed/contracts")
+

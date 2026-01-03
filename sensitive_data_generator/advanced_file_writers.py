@@ -1,5 +1,7 @@
 # sensitive_data_generator/advanced_file_writers.py
 
+from __future__ import annotations
+
 import os
 import random
 from datetime import datetime, timedelta
@@ -23,11 +25,11 @@ import io
 from .generators import PIIGenerator
 
 class AdvancedFileWriter:
-    """進階多格式檔案輸出工具"""
+    """Advanced multi-format file writers for synthetic datasets."""
 
     @staticmethod
     def create_complex_pdf(content, output_dir, filename=None, include_charts=True):
-        """建立複雜PDF文件（含表格、圖表）"""
+        """Create a complex PDF document (tables + charts)."""
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
@@ -37,23 +39,23 @@ class AdvancedFileWriter:
 
         filepath = os.path.join(output_dir, filename)
 
-        # 建立PDF文件
+        # Build the PDF document.
         doc = SimpleDocTemplate(filepath, pagesize=letter)
         elements = []
         styles = getSampleStyleSheet()
 
-        # 添加標題
+        # Add title.
         title_style = ParagraphStyle(
             'Title',
             parent=styles['Heading1'],
             fontSize=18,
-            alignment=1,  # 置中
+            alignment=1,  # centered
             spaceAfter=12
         )
         title = Paragraph("機密文件 - 個人資料報告", title_style)
         elements.append(title)
 
-        # 添加敏感資料段落
+        # Add content paragraph.
         pii_style = ParagraphStyle(
             'PIIContent',
             parent=styles['BodyText'],
@@ -65,7 +67,7 @@ class AdvancedFileWriter:
         elements.append(pii_paragraph)
         elements.append(Spacer(1, 12))
 
-        # 添加表格
+        # Add a table.
         table_data = [
             ['項目', '原始資料', '備註'],
             ['姓名', PIIGenerator.generate_tw_name(), '測試用虛構姓名'],
@@ -88,7 +90,7 @@ class AdvancedFileWriter:
         elements.append(table)
         elements.append(Spacer(1, 24))
 
-        # 添加圖表
+        # Add a chart.
         if include_charts:
             chart_img = AdvancedFileWriter.generate_fake_chart()
             elements.append(RLImage(chart_img, width=5*inch, height=3*inch))
@@ -96,16 +98,16 @@ class AdvancedFileWriter:
             chart_caption = Paragraph("圖1: 測試資料分布圖", styles['Italic'])
             elements.append(chart_caption)
 
-        # 生成PDF
+        # Write PDF.
         doc.build(elements)
         return filepath
 
     @staticmethod
     def generate_fake_chart():
-        """生成虛假資料圖表"""
+        """Generate a fake chart image for reports."""
         plt.figure(figsize=(8, 5))
 
-        # 隨機選擇圖表類型
+        # Randomly choose a chart type.
         chart_type = random.choice(['bar', 'line', 'pie'])
 
         if chart_type == 'bar':
@@ -130,7 +132,7 @@ class AdvancedFileWriter:
 
         plt.tight_layout()
 
-        # 保存到BytesIO
+        # Save to BytesIO.
         img_buffer = io.BytesIO()
         plt.savefig(img_buffer, format='png', dpi=100)
         plt.close()
@@ -139,7 +141,7 @@ class AdvancedFileWriter:
 
     @staticmethod
     def create_word_document(content, output_dir, filename=None):
-        """建立複雜Word文件（含表格、圖片）"""
+        """Create a complex Word document (tables + images)."""
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
@@ -149,34 +151,34 @@ class AdvancedFileWriter:
 
         filepath = os.path.join(output_dir, filename)
 
-        # 建立Word文件
+        # Build the Word document.
         doc = Document()
 
-        # 添加標題
+        # Add title.
         title = doc.add_heading('機密文件 - 個人資料報告', level=0)
         title.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
-        # 添加日期
+        # Add date.
         date_para = doc.add_paragraph()
         date_para.add_run(f"生成日期: {datetime.now().strftime('%Y-%m-%d')}").italic = True
         date_para.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 
-        # 添加敏感資料段落
+        # Add content paragraph.
         doc.add_paragraph("以下為測試用虛構個人資料:")
         pii_para = doc.add_paragraph(content)
 
-        # 添加表格
+        # Add a table.
         table = doc.add_table(rows=5, cols=3)
         table.style = 'LightShading-Accent1'
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
 
-        # 表頭
+        # Header row.
         header_cells = table.rows[0].cells
         header_cells[0].text = '項目'
         header_cells[1].text = '原始資料'
         header_cells[2].text = '備註'
 
-        # 表格內容
+        # Table rows.
         data_rows = [
             ('姓名', PIIGenerator.generate_tw_name(), '測試用虛構姓名'),
             ('身分證字號', PIIGenerator.generate_tw_id(), '測試用虛構ID'),
@@ -190,26 +192,26 @@ class AdvancedFileWriter:
             row_cells[1].text = row_data[1]
             row_cells[2].text = row_data[2]
 
-        # 添加圖表
+        # Add a chart image.
         doc.add_paragraph("\n資料分布圖表:")
         chart_img = AdvancedFileWriter.generate_fake_chart()
         chart_img.seek(0)
         doc.add_picture(chart_img, width=Inches(5.0))
 
-        # 添加頁尾
+        # Add footer.
         section = doc.sections[0]
         footer = section.footer
         footer_para = footer.paragraphs[0]
         footer_para.text = "本文件包含測試用虛構個人資料 - 機密文件"
         footer_para.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
-        # 保存文件
+        # Save document.
         doc.save(filepath)
         return filepath
 
     @staticmethod
     def create_excel_spreadsheet(output_dir, filename=None):
-        """建立包含敏感資料的Excel試算表"""
+        """Create an Excel spreadsheet containing synthetic sensitive data."""
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
@@ -219,7 +221,7 @@ class AdvancedFileWriter:
 
         filepath = os.path.join(output_dir, filename)
 
-        # 建立資料框架
+        # Build a dataframe.
         data = {
             '客戶編號': [f"CUST-{random.randint(1000, 9999)}" for _ in range(20)],
             '客戶姓名': [PIIGenerator.generate_tw_name() for _ in range(20)],
@@ -227,21 +229,23 @@ class AdvancedFileWriter:
             '電話號碼': [PIIGenerator.generate_tw_phone() for _ in range(20)],
             '電子郵件': [PIIGenerator.generate_email() for _ in range(20)],
             '帳戶餘額': [round(random.uniform(1000, 100000), 2) for _ in range(20)],
-            '最近交易日期': [(datetime.now() - timedelta(days=random.randint(1, 365))\
-                             .strftime("%Y-%m-%d") for _ in range(20))]
+            '最近交易日期': [
+                (datetime.now() - timedelta(days=random.randint(1, 365))).strftime("%Y-%m-%d")
+                for _ in range(20)
+            ],
         }
 
         df = pd.DataFrame(data)
 
-        # 建立Excel寫入器
+        # Write via xlsxwriter.
         with pd.ExcelWriter(filepath, engine='xlsxwriter') as writer:
             df.to_excel(writer, sheet_name='客戶資料', index=False)
 
-            # 獲取工作簿和工作表對象
+            # Get workbook and worksheet objects.
             workbook = writer.book
             worksheet = writer.sheets['客戶資料']
 
-            # 設置標題格式
+            # Define a header format.
             header_format = workbook.add_format({
                 'bold': True,
                 'text_wrap': True,
@@ -250,11 +254,11 @@ class AdvancedFileWriter:
                 'border': 1
             })
 
-            # 應用標題格式
+            # Apply header format.
             for col_num, value in enumerate(df.columns.values):
                 worksheet.write(0, col_num, value, header_format)
 
-            # 設置列寬
+            # Set column widths.
             worksheet.set_column('A:A', 12)
             worksheet.set_column('B:B', 15)
             worksheet.set_column('C:C', 15)
@@ -263,7 +267,7 @@ class AdvancedFileWriter:
             worksheet.set_column('F:F', 15)
             worksheet.set_column('G:G', 15)
 
-            # 添加圖表
+            # Add a chart.
             chart = workbook.add_chart({'type': 'column'})
             chart.add_series({
                 'name': '=客戶資料!$F$1',
@@ -279,7 +283,7 @@ class AdvancedFileWriter:
 
     @staticmethod
     def create_powerpoint_presentation(output_dir, filename=None):
-        """建立包含敏感資料的PowerPoint簡報"""
+        """Create a PowerPoint presentation containing synthetic sensitive data."""
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
@@ -289,10 +293,10 @@ class AdvancedFileWriter:
 
         filepath = os.path.join(output_dir, filename)
 
-        # 建立簡報
+        # Build presentation.
         prs = Presentation()
 
-        # 標題投影片
+        # Title slide.
         slide_layout = prs.slide_layouts[0]
         slide = prs.slides.add_slide(slide_layout)
         title = slide.shapes.title
@@ -300,7 +304,7 @@ class AdvancedFileWriter:
         title.text = "業務分析報告"
         subtitle.text = f"報告日期: {datetime.now().strftime('%Y-%m-%d')}\n機密文件"
 
-        # 添加內容投影片 - 文字與表格
+        # Content slide: text + table.
         slide_layout = prs.slide_layouts[1]
         slide = prs.slides.add_slide(slide_layout)
         title = slide.shapes.title
@@ -315,7 +319,7 @@ class AdvancedFileWriter:
             "以下為抽樣資料:"
         )
 
-        # 添加表格
+        # Add a table.
         rows, cols = 4, 3
         left = Inches(1.0)
         top = Inches(2.5)
@@ -324,37 +328,37 @@ class AdvancedFileWriter:
 
         table = slide.shapes.add_table(rows, cols, left, top, width, height).table
 
-        # 設置表頭
+        # Header row.
         table.cell(0, 0).text = '客戶姓名'
         table.cell(0, 1).text = '電話號碼'
         table.cell(0, 2).text = '帳戶餘額'
 
-        # 填充表格資料
+        # Fill table rows.
         for i in range(1, rows):
             table.cell(i, 0).text = PIIGenerator.generate_tw_name()
             table.cell(i, 1).text = PIIGenerator.generate_tw_phone()
             table.cell(i, 2).text = f"NT$ {random.randint(10000, 100000):,}"
 
-        # 添加圖表投影片
+        # Chart slide.
         slide_layout = prs.slide_layouts[1]
         slide = prs.slides.add_slide(slide_layout)
         title = slide.shapes.title
         title.text = "業績分析圖表"
 
-        # 添加圖表
+        # Add a chart image.
         chart_img = AdvancedFileWriter.generate_fake_chart()
         chart_img.seek(0)
         left = Inches(1)
         top = Inches(1.5)
         slide.shapes.add_picture(chart_img, left, top, width=Inches(8))
 
-        # 保存簡報
+        # Save presentation.
         prs.save(filepath)
         return filepath
 
     @staticmethod
     def create_scanned_document(content, output_dir, filename=None):
-        """建立模擬掃描文件（含印章、簽名）"""
+        """Create a scanned-document style image (stamp + signature)."""
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
@@ -364,18 +368,18 @@ class AdvancedFileWriter:
 
         filepath = os.path.join(output_dir, filename)
 
-        # 建立背景 - 模擬紙張
+        # Create background (paper simulation).
         img = Image.new('RGB', (1240, 1754), color=(248, 246, 240))
         draw = ImageDraw.Draw(img)
 
-        # 添加紙張紋理
+        # Add paper texture.
         for _ in range(500):
             x = random.randint(0, 1240)
             y = random.randint(0, 1754)
             r = random.randint(1, 3)
             draw.ellipse([x, y, x+r, y+r], fill=(220, 220, 220))
 
-        # 使用繁體中文字型
+        # Use Traditional Chinese fonts if available.
         try:
             font = ImageFont.truetype("fonts/NotoSansTC-Regular.otf", 24)
             title_font = ImageFont.truetype("fonts/NotoSansTC-Bold.otf", 36)
@@ -383,10 +387,10 @@ class AdvancedFileWriter:
             font = ImageFont.load_default()
             title_font = ImageFont.load_default()
 
-        # 添加標題
+        # Add title.
         draw.text((620, 100), "個人資料表", fill=(0, 0, 0), font=title_font, anchor="mm")
 
-        # 添加內容
+        # Add content.
         y_position = 200
         for line in content.split('\n'):
             draw.text((100, y_position), line, fill=(0, 0, 0), font=font)
@@ -394,24 +398,24 @@ class AdvancedFileWriter:
             if y_position > 1600:
                 break
 
-        # 添加表格
+        # Add a table.
         draw.rectangle([80, 300, 1160, 800], outline=(0, 0, 0), width=2)
 
-        # 橫線
+        # Horizontal lines.
         for y in [380, 460, 540, 620, 700]:
             draw.line([80, y, 1160, y], fill=(0, 0, 0), width=1)
 
-        # 豎線
+        # Vertical lines.
         draw.line([300, 300, 300, 800], fill=(0, 0, 0), width=1)
         draw.line([700, 300, 700, 800], fill=(0, 0, 0), width=1)
 
-        # 表格標題
+        # Table header.
         headers = ["項目", "資料", "備註"]
         draw.text((190, 330), headers[0], fill=(0, 0, 0), font=font, anchor="mm")
         draw.text((500, 330), headers[1], fill=(0, 0, 0), font=font, anchor="mm")
         draw.text((930, 330), headers[2], fill=(0, 0, 0), font=font, anchor="mm")
 
-        # 表格內容
+        # Table rows.
         rows = [
             ("姓名", PIIGenerator.generate_tw_name(), "測試用虛構姓名"),
             ("身分證字號", PIIGenerator.generate_tw_id(), "測試用虛構ID"),
@@ -425,21 +429,21 @@ class AdvancedFileWriter:
             draw.text((500, y_pos), row[1], fill=(0, 0, 0), font=font, anchor="mm")
             draw.text((930, y_pos), row[2], fill=(0, 0, 0), font=font, anchor="mm")
 
-        # 添加印章
+        # Add a stamp.
         stamp_size = 150
         stamp_x = 1000
         stamp_y = 900
         draw.ellipse([stamp_x, stamp_y, stamp_x+stamp_size, stamp_y+stamp_size],
                      outline=(200, 0, 0), width=3)
 
-        # 印章文字
+        # Stamp text.
         stamp_font = ImageFont.truetype("fonts/NotoSansTC-Bold.otf", 20)
         draw.text((stamp_x+stamp_size/2, stamp_y+stamp_size/2-15), "核准章",
                  fill=(200, 0, 0), font=stamp_font, anchor="mm")
         draw.text((stamp_x+stamp_size/2, stamp_y+stamp_size/2+15), "測試專用",
                  fill=(200, 0, 0), font=stamp_font, anchor="mm")
 
-        # 添加簽名
+        # Add a signature.
         signature_x = 200
         signature_y = 900
         draw.line([signature_x, signature_y, signature_x+150, signature_y-50],
@@ -449,6 +453,6 @@ class AdvancedFileWriter:
         draw.text((signature_x+100, signature_y+70), PIIGenerator.generate_tw_name(),
                  fill=(0, 0, 0), font=font)
 
-        # 保存圖像
+        # Save image.
         img.save(filepath)
         return filepath

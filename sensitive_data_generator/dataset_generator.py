@@ -1,5 +1,7 @@
 # sensitive_data_generator/dataset_generator.py
 
+from __future__ import annotations
+
 import os
 import random
 import json
@@ -7,16 +9,17 @@ from datetime import datetime
 from .advanced_file_writers import AdvancedFileWriter
 from .advanced_formatters import AdvancedDataFormatter
 
+
 class MultiFormatDatasetGenerator:
-    """多格式敏感資料集生成器"""
+    """Generate a multi-format synthetic dataset for local testing."""
 
     @staticmethod
     def generate_full_dataset(output_dir, num_items=50):
-        """生成完整多格式測試資料集"""
+        """Generate a full multi-format dataset and write files to disk."""
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        # 創建子目錄
+        # Create sub-directories.
         sub_dirs = {
             "pdf": os.path.join(output_dir, "pdf"),
             "word": os.path.join(output_dir, "word"),
@@ -31,7 +34,7 @@ class MultiFormatDatasetGenerator:
         for path in sub_dirs.values():
             os.makedirs(path, exist_ok=True)
 
-        # 生成資料集
+        # Generate dataset.
         dataset = []
 
         for i in range(num_items):
@@ -41,7 +44,7 @@ class MultiFormatDatasetGenerator:
                 "metadata": {}
             }
 
-            # 隨機選擇文件類型
+            # Randomly select a document type.
             doc_type = random.choice(["contract", "medical", "financial"])
 
             if doc_type == "contract":
@@ -55,9 +58,9 @@ class MultiFormatDatasetGenerator:
                 doc_category = "financial"
 
             item["metadata"]["type"] = doc_type
-            item["metadata"]["content"] = content[:500] + "..."  # 儲存部分內容
+            item["metadata"]["content"] = content[:500] + "..."  # store a short preview
 
-            # 生成PDF版本
+            # PDF
             pdf_path = AdvancedFileWriter.create_complex_pdf(
                 content,
                 sub_dirs["pdf"],
@@ -65,7 +68,7 @@ class MultiFormatDatasetGenerator:
             )
             item["formats"].append({"format": "pdf", "path": pdf_path})
 
-            # 生成Word版本
+            # Word (DOCX)
             word_path = AdvancedFileWriter.create_word_document(
                 content,
                 sub_dirs["word"],
@@ -73,7 +76,7 @@ class MultiFormatDatasetGenerator:
             )
             item["formats"].append({"format": "word", "path": word_path})
 
-            # 生成掃描版本
+            # Scanned image
             scanned_path = AdvancedFileWriter.create_scanned_document(
                 content,
                 sub_dirs["scanned"],
@@ -81,7 +84,7 @@ class MultiFormatDatasetGenerator:
             )
             item["formats"].append({"format": "image", "path": scanned_path})
 
-            # 特定類型額外格式
+            # Additional formats for specific types.
             if doc_type == "financial":
                 excel_path = AdvancedFileWriter.create_excel_spreadsheet(
                     sub_dirs["excel"],
@@ -95,17 +98,17 @@ class MultiFormatDatasetGenerator:
                 )
                 item["formats"].append({"format": "ppt", "path": ppt_path})
 
-            # 保存類別專屬文件
+            # Save a plain-text copy per category.
             category_path = os.path.join(sub_dirs[doc_category], f"{doc_type}_doc_{i+1}.txt")
             with open(category_path, "w", encoding="utf-8") as f:
                 f.write(content)
 
             dataset.append(item)
 
-        # 保存元資料
+        # Save metadata.
         metadata_path = os.path.join(output_dir, "dataset_metadata.json")
         with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(dataset, f, ensure_ascii=False, indent=2)
 
-        print(f"已生成 {num_items} 個多格式測試文件")
+        print(f"Generated {num_items} multi-format test documents")
         return dataset
