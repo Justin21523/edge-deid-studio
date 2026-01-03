@@ -1,161 +1,211 @@
-# src/deid_pipeline/parser/text_extractor.py
+from __future__ import annotations
+
 import os
+import re
 import time
-import fitz  # PyMuPDF
-import numpy as np
+from pathlib import Path
+from typing import Any, List, Tuple
+
 import cv2
-from bs4 import BeautifulSoup
-from docx import Document
+import numpy as np
+
 from .ocr import get_ocr_reader
 from ..config import Config
 from ..pii.utils import logger
-import re
+
+
+BBox = Tuple[int, int, int, int, int]  # (page_index, left, top, right, bottom)
+OffsetMapEntry = Tuple[BBox, int]  # (bbox, char_index)
+
+
+def extract_text(file_path: str, lang: str = "zh", ocr_engine: str = "auto") -> tuple[str, List[OffsetMapEntry]]:
+    """Convenience wrapper used by CLI/tests."""
+
+    return TextExtractor(lang=lang, ocr_engine=ocr_engine).extract_text(file_path)
+
 
 class TextExtractor:
-    """統一的文字提取器，支援多種檔案格式"""
-    def __init__(self, lang="zh", ocr_engine="auto"):
+    """Unified text extraction supporting multiple file formats.
+
+    This module avoids importing optional heavy dependencies (PyMuPDF, python-docx,
+    OCR libraries) at import-time. If a dependency is missing, extraction returns
+    an empty result and logs an error.
+    """
+
+    def __init__(self, lang: str = "zh", ocr_engine: str = "auto"):
         self.lang = lang
         self.ocr_engine = ocr_engine
         self.ocr_processor = None
 
-    def init_ocr(self):
-        if self.ocr_processor is None:
+    def init_ocr(self) -> None:
+        if self.ocr_processor is not None:
+            return
+        try:
             self.ocr_processor = get_ocr_reader(self.ocr_engine, self.lang)
+        except Exception as exc:
+            logger.warning("OCR is unavailable (%s). OCR fallback will be disabled.", exc)
+            self.ocr_processor = None
 
-    def extract_text(self, file_path: str) -> tuple[str, list]:
-        """從檔案中提取文字並返回文字和偏移映射"""
+    def extract_text(self, file_path: str) -> tuple[str, List[OffsetMapEntry]]:
+        """Extract text and return (text, offset_map)."""
+
         start_time = time.perf_counter()
-        ext = os.path.splitext(file_path)[1].lower()
+        ext = Path(file_path).suffix.lower()
 
         try:
             if ext == ".txt":
                 return self._extract_txt(file_path)
-            elif ext == ".docx":
+            if ext == ".docx":
                 return self._extract_docx(file_path)
-            elif ext == ".html":
+            if ext == ".html":
                 return self._extract_html(file_path)
-            elif ext == ".pdf":
+            if ext == ".pdf":
                 return self._extract_pdf(file_path)
-            elif ext in (".jpg", ".jpeg", ".png", ".bmp"):
+            if ext in {".jpg", ".jpeg", ".png", ".bmp"}:
                 return self._extract_image(file_path)
-            else:
-                raise ValueError(f"不支援的檔案格式: {ext}")
-        except Exception as e:
-            logger.error(f"文字提取失敗: {file_path}, 錯誤: {str(e)}")
+
+            raise ValueError(f"Unsupported file extension: {ext}")
+        except Exception as exc:
+            logger.error("Text extraction failed for %s: %s", file_path, str(exc))
             return "", []
         finally:
             elapsed = time.perf_counter() - start_time
-            logger.info(f"文字提取完成: {file_path}, 耗時: {elapsed:.2f}秒")
+            logger.info("Text extraction completed: %s (%.2fs)", file_path, elapsed)
 
-    def _extract_txt(self, file_path):
+    def _unknown_bbox_map(self, text: str) -> List[OffsetMapEntry]:
+        unknown_bbox: BBox = (-1, -1, -1, -1, -1)
+        return [(unknown_bbox, i) for i in range(len(text))]
+
+    def _extract_txt(self, file_path: str) -> tuple[str, List[OffsetMapEntry]]:
         with open(file_path, "r", encoding="utf-8", errors="replace") as f:
             text = f.read()
-        offset_map = [((0, 0, 0, 0), i) for i in range(len(text))]
-        return text, offset_map
+        return text, self._unknown_bbox_map(text)
 
-    def _extract_docx(self, file_path):
+    def _extract_docx(self, file_path: str) -> tuple[str, List[OffsetMapEntry]]:
+        try:
+            from docx import Document  # type: ignore
+        except Exception as exc:
+            raise ImportError("python-docx is required to extract .docx files") from exc
+
         doc = Document(file_path)
-        full_text = []
-        offset_map = []
-        char_index = 0
-
+        parts: List[str] = []
         for para in doc.paragraphs:
-            para_text = para.text + "\n"
-            full_text.append(para_text)
+            parts.append(para.text)
+        text = "\n".join(parts) + ("\n" if parts else "")
+        return text, self._unknown_bbox_map(text)
 
-            # 簡化偏移映射
-            for i in range(len(para_text)):
-                offset_map.append(((-1, -1, -1, -1), char_index + i))
+    def _extract_html(self, file_path: str) -> tuple[str, List[OffsetMapEntry]]:
+        try:
+            from bs4 import BeautifulSoup  # type: ignore
+        except Exception as exc:
+            raise ImportError("beautifulsoup4 is required to extract .html files") from exc
 
-            char_index += len(para_text)
-
-        return "".join(full_text), offset_map
-
-    def _extract_html(self, file_path):
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, "r", encoding="utf-8", errors="replace") as f:
             html = f.read()
         soup = BeautifulSoup(html, "html.parser")
         text = soup.get_text(separator="\n")
+        text = re.sub(r"\s+", " ", text).strip()
+        return text, self._unknown_bbox_map(text)
 
-        # 移除多餘空白
-        text = re.sub(r'\s+', ' ', text).strip()
-        offset_map = [((0, 0, 0, 0), i) for i in range(len(text))]
-        return text, offset_map
+    def _extract_pdf(self, file_path: str) -> tuple[str, List[OffsetMapEntry]]:
+        try:
+            import fitz  # type: ignore
+        except Exception as exc:
+            raise ImportError("PyMuPDF is required to extract .pdf files") from exc
 
-    def _extract_pdf(self, file_path):
         self.init_ocr()
+        cfg = Config()
+
         doc = fitz.open(file_path)
-        full_text = []
-        offset_map = []
+        full_text_parts: List[str] = []
+        offset_map: List[OffsetMapEntry] = []
         char_index = 0
 
         for page_num in range(len(doc)):
             page = doc.load_page(page_num)
-            page_text = ""
+            page_text_parts: List[str] = []
 
-            # 先嘗試提取文字
-            text_blocks = page.get_text("blocks", sort=True)
+            # Extract text blocks first.
+            try:
+                text_blocks = page.get_text("blocks", sort=True)
+            except Exception as exc:
+                logger.warning("Failed to extract PDF blocks on page %d: %s", page_num, exc)
+                text_blocks = []
+
             for block in text_blocks:
-                if block[6] == 0:  # 文字塊
-                    block_text = block[4].strip()
-                    if block_text:
-                        page_text += block_text + "\n"
+                # PyMuPDF block: (x0, y0, x1, y1, "text", block_no, block_type)
+                if len(block) < 7:
+                    continue
+                if block[6] != 0:
+                    continue
+                block_text = str(block[4]).strip()
+                if not block_text:
+                    continue
 
-                        # 創建偏移映射
-                        for i in range(len(block_text)):
-                            offset_map.append((
-                                (page_num, block[0], block[1], block[2], block[3]),
-                                char_index + i
-                            ))
-                        char_index += len(block_text) + 1
+                page_text_parts.append(block_text)
+                left, top, right, bottom = int(block[0]), int(block[1]), int(block[2]), int(block[3])
+                bbox: BBox = (page_num, left, top, right, bottom)
+                for i in range(len(block_text)):
+                    offset_map.append((bbox, char_index + i))
+                char_index += len(block_text) + 1  # + newline
 
-            # OCR回退機制
-            if len(page_text.strip()) < Config.OCR_THRESHOLD:
-                logger.info(f"頁面 {page_num} 觸發OCR回退機制")
+            page_text = "\n".join(page_text_parts).strip()
+
+            # OCR fallback for scanned/empty pages.
+            if cfg.OCR_ENABLED and len(page_text) < cfg.OCR_THRESHOLD and self.ocr_processor is not None:
+                logger.info("OCR fallback triggered for page %d", page_num)
                 pix = page.get_pixmap()
                 img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
 
-                # 轉換為BGR格式
+                # Convert to BGR
                 if pix.n == 4:
                     img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
                 elif pix.n == 1:
                     img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
                 ocr_text, ocr_blocks = self.ocr_processor.recognize(img)
-                page_text = ocr_text + "\n"
-
-                # 創建OCR偏移映射
+                page_text = (ocr_text or "").strip()
                 for block in ocr_blocks:
-                    text_len = len(block['text'])
-                    for i in range(text_len):
-                        offset_map.append((
-                            (page_num, block['left'], block['top'],
-                             block['left'] + block['width'],
-                             block['top'] + block['height']),
-                            char_index + i
-                        ))
-                    char_index += text_len + 1
+                    block_text = str(block.get("text", ""))
+                    if not block_text:
+                        continue
+                    left = int(block["left"])
+                    top = int(block["top"])
+                    right = int(block["left"] + block["width"])
+                    bottom = int(block["top"] + block["height"])
+                    bbox = (page_num, left, top, right, bottom)
+                    for i in range(len(block_text)):
+                        offset_map.append((bbox, char_index + i))
+                    char_index += len(block_text) + 1
 
-            full_text.append(page_text)
+            if page_text:
+                full_text_parts.append(page_text)
 
-        return "\n".join(full_text), offset_map
+        return "\n".join(full_text_parts), offset_map
 
-    def _extract_image(self, file_path):
+    def _extract_image(self, file_path: str) -> tuple[str, List[OffsetMapEntry]]:
         self.init_ocr()
-        text, text_blocks = self.ocr_processor.recognize(file_path)
+        if self.ocr_processor is None:
+            raise ImportError("OCR dependencies are not installed; cannot extract from images.")
 
-        # 創建偏移映射
-        offset_map = []
+        text, blocks = self.ocr_processor.recognize(file_path)
+        offset_map: List[OffsetMapEntry] = []
         char_index = 0
-        for block in text_blocks:
-            for i, char in enumerate(block['text']):
-                offset_map.append((
-                    (0, block['left'], block['top'],
-                     block['left'] + block['width'],
-                     block['top'] + block['height']),
-                    char_index
-                ))
-                char_index += 1
-            char_index += 1  # 空格分隔
 
-        return text, offset_map
+        for block in blocks:
+            block_text = str(block.get("text", ""))
+            if not block_text:
+                continue
+
+            left = int(block["left"])
+            top = int(block["top"])
+            right = int(block["left"] + block["width"])
+            bottom = int(block["top"] + block["height"])
+            bbox: BBox = (0, left, top, right, bottom)
+
+            for i in range(len(block_text)):
+                offset_map.append((bbox, char_index + i))
+            char_index += len(block_text) + 1
+
+        return (text or "").strip(), offset_map
+

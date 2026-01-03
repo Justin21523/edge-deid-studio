@@ -1,47 +1,51 @@
 # src/deid_pipeline/image_deid/processor.py
-import time
+from __future__ import annotations
+
 import os
+import time
 from typing import Dict
+
 import cv2
 import numpy as np
 
 from ..parser.text_extractor import TextExtractor
 from ..pii.detectors import get_detector
 from ..pii.utils.replacer import Replacer
-from ..config import Config
 
 class ImageDeidProcessor:
     def __init__(self, lang: str = "zh", ocr_engine: str = "auto"):
-        # 文字提取器（內含OCR）
         self.extractor = TextExtractor(lang=lang, ocr_engine=ocr_engine)
-        # PII 偵測器
         self.detector = get_detector(lang)
-        # 替換器
         self.replacer = Replacer()
         self.lang = lang
 
-    def process(self, file_path: str) -> Dict:
+    def process(self, file_path: str, mode: str = "replace") -> Dict:
         start = time.perf_counter()
 
-        # 文字提取
+        t0 = time.perf_counter()
         original_text, offset_map = self.extractor.extract_text(file_path)
+        extract_ms = (time.perf_counter() - t0) * 1000.0
 
         if not original_text.strip():
             return {
                 "status": "error",
-                "message": "無法提取文字內容",
+                "message": "Failed to extract any text from the image.",
+                "extract_ms": extract_ms,
                 "processing_time": time.perf_counter() - start
             }
 
-        # PII 偵測
+        t1 = time.perf_counter()
         entities = self.detector.detect(original_text)
+        detect_ms = (time.perf_counter() - t1) * 1000.0
 
-        # 取代或遮蔽
-        clean_text, events = self.replacer.replace(original_text, entities)
+        t2 = time.perf_counter()
+        clean_text, events = self.replacer.replace(original_text, entities, mode=mode)
+        replace_ms = (time.perf_counter() - t2) * 1000.0
 
-        # 準備視覺化結果（僅對圖像檔案）
         visual_result = None
         if os.path.splitext(file_path)[1].lower() in ['.jpg', '.jpeg', '.png']:
+            # Attach a best-effort bbox to each entity for downstream consumers.
+            self._attach_bboxes(entities, offset_map)
             visual_result = self._generate_visual_result(file_path, entities, offset_map)
 
         return {
@@ -51,48 +55,52 @@ class ImageDeidProcessor:
             "entities": entities,
             "events": events,
             "visual_result": visual_result,
+            "extract_ms": extract_ms,
+            "detect_ms": detect_ms,
+            "replace_ms": replace_ms,
             "processing_time": time.perf_counter() - start
         }
 
+    def process_image(self, file_path: str) -> Dict:
+        """Backward-compatible alias for `process()`."""
+
+        return self.process(file_path)
+
     def _generate_visual_result(self, image_path, entities, offset_map):
-        """生成標註PII的視覺化結果"""
+        """Generate a JPEG preview with PII bounding boxes overlaid."""
+
         img = cv2.imread(image_path)
         if img is None:
             return None
 
-        # 建立位置索引
         position_index = {pos[1]: pos[0] for pos in offset_map}
 
         for entity in entities:
             start, end = entity["span"]
 
-            # 收集所有相關位置
             bboxes = []
             for i in range(start, end):
                 if i in position_index:
                     page, left, top, right, bottom = position_index[i]
-                    if page == 0:  # 只處理第一頁（單圖像）
+                    if page == 0:  # single image
                         bboxes.append((left, top, right, bottom))
 
             if not bboxes:
                 continue
 
-            # 計算合併邊界框
             all_left = min(b[0] for b in bboxes)
             all_top = min(b[1] for b in bboxes)
             all_right = max(b[2] for b in bboxes)
             all_bottom = max(b[3] for b in bboxes)
 
-            # 繪製矩形
             cv2.rectangle(
                 img,
                 (all_left, all_top),
                 (all_right, all_bottom),
-                (0, 0, 255),  # 紅色框
+                (0, 0, 255),
                 2
             )
 
-            # 添加標籤
             label = f"{entity['type']} ({entity['score']:.2f})"
             cv2.putText(
                 img, label,
@@ -101,6 +109,36 @@ class ImageDeidProcessor:
                 0.7, (0, 0, 255), 2
             )
 
-        # 轉換為base64用於API返回
         _, buffer = cv2.imencode('.jpg', img)
         return buffer.tobytes()
+
+    @staticmethod
+    def _attach_bboxes(entities, offset_map) -> None:
+        """Attach a merged bbox to each entity in-place when an offset map is available."""
+
+        position_index = {pos[1]: pos[0] for pos in offset_map}
+        for entity in entities:
+            if "span" not in entity:
+                continue
+            start, end = entity["span"]
+
+            bboxes = []
+            for i in range(int(start), int(end)):
+                bbox = position_index.get(i)
+                if not bbox:
+                    continue
+                page, left, top, right, bottom = bbox
+                if page != 0:
+                    continue
+                bboxes.append((left, top, right, bottom))
+
+            if not bboxes:
+                continue
+
+            entity["page_index"] = 0
+            entity["bbox"] = (
+                int(min(b[0] for b in bboxes)),
+                int(min(b[1] for b in bboxes)),
+                int(max(b[2] for b in bboxes)),
+                int(max(b[3] for b in bboxes)),
+            )

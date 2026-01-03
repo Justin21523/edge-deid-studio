@@ -1,15 +1,25 @@
-from typing import List, Dict
-from .fake_provider import GPT2Provider
+from __future__ import annotations
+
 import json
+from typing import Dict, List, Optional, Tuple
+
+from .fake_provider import GPT2Provider
 
 class Replacer:
-    def __init__(self, provider=None):
-        self.provider = provider or GPT2Provider()
-        self.cache = {}
+    """Deprecated legacy replacer.
 
-    def replace(self, text:str, entities:List[Dict], mode='replace'):
+    Prefer using `deid_pipeline.pii.utils.replacer.Replacer` for new code.
+    """
+
+    def __init__(self, provider: Optional[GPT2Provider] = None):
+        self.provider = provider or GPT2Provider()
+        self.cache: Dict[str, str] = {}
+
+    def replace(
+        self, text: str, entities: List[Dict], mode: str = "replace"
+    ) -> Tuple[str, List[Dict]]:
         offset = 0
-        events = []
+        events: List[Dict] = []
         for ent in sorted(entities, key=lambda e: e['span'][0]):
             s, e = ent['span']
             fake = self.get_fake(ent['type'], text[s:e])

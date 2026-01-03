@@ -1,43 +1,76 @@
-# src/deid_pipeline/pii/detectors/__init__.py
+from __future__ import annotations
+
 from pathlib import Path
-import os
-from .bert_detector import BertNERDetector
-from .regex_detector import RegexDetector
-from .bert_onnx_detector import BertONNXNERDetector
-from .composite import CompositeDetector
-from .legacy.spacy_detector import SpacyDetector
+from typing import TYPE_CHECKING
+
 from ...config import Config
 from ..utils import logger
 
-PACKAGE_ROOT = Path(__file__).resolve().parent
-PROJECT_ROOT = PACKAGE_ROOT.parent.parent
-cfg = Config()
-MODEL_ZH = cfg.NER_MODEL_PATH  # use central config
-MODEL_EN = Path(os.getenv("NER_MODEL_PATH_EN", str(PROJECT_ROOT/"models"/"bert-ner-en")))
+from .composite import CompositeDetector
+from .regex_detector import RegexDetector
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..utils.base import PIIDetector
+
+
+def _model_dir_for_lang(cfg: Config, lang: str) -> Path:
+    return cfg.NER_MODEL_PATH_ZH if lang == "zh" else cfg.NER_MODEL_PATH_EN
+
 
 def get_detector(lang: str = "zh") -> CompositeDetector:
+    """Create a composite detector based on configuration and local availability.
+
+    Design goals:
+    - Default to local-only, lightweight detection (regex) when models are unavailable.
+    - Avoid importing heavy optional dependencies at module import time.
+    - Prefer ONNX over PyTorch when explicitly enabled and the model exists locally.
+    """
+
     cfg = Config()
-    # 選擇主偵測器：ONNX > HF-BERT > spaCy
-    use_onnx = cfg.USE_ONNX and cfg.ONNX_MODEL_PATH.exists()
-    use_bert = not cfg.USE_STUB and cfg.NER_MODEL_PATH.exists()
+    detectors: list["PIIDetector"] = []
 
-    bert_cls = BertONNXNERDetector if use_onnx else BertNERDetector
-    bert_path = (str(cfg.ONNX_MODEL_PATH) if use_onnx else str(cfg.NER_MODEL_PATH))
-
-    detectors = []
-    # 先嘗試 BERT／ONNX
-    if use_bert:
-        logger.info(f"使用 {'ONNX' if use_onnx else 'HF-BERT'} NER ({lang})")
-        detectors.append(bert_cls(bert_path))
-
-    # Regex 始終作為補漏
     regex_path = cfg.REGEX_RULES_FILE if lang == "zh" else cfg.REGEX_EN_RULES_FILE
+
+    # Prefer ONNX if enabled and available locally.
+    if cfg.USE_ONNX and cfg.ONNX_MODEL_PATH.exists() and not cfg.USE_STUB:
+        try:
+            from .bert_onnx_detector import BertONNXNERDetector
+
+            model_dir = _model_dir_for_lang(cfg, lang)
+            detectors.append(
+                BertONNXNERDetector(
+                    onnx_model_path=cfg.ONNX_MODEL_PATH,
+                    tokenizer_dir=model_dir,
+                    providers=cfg.ONNX_PROVIDERS,
+                )
+            )
+            logger.info("Using ONNX NER detector (lang=%s)", lang)
+        except Exception as exc:
+            logger.warning("Failed to initialize ONNX NER detector: %s", exc)
+
+    # Fallback to PyTorch/Transformers BERT if enabled.
+    if not detectors and not cfg.USE_STUB:
+        model_dir = _model_dir_for_lang(cfg, lang)
+        if model_dir.exists():
+            try:
+                from .bert_detector import BertNERDetector
+
+                detectors.append(BertNERDetector(model_dir))
+                logger.info("Using HF Transformers NER detector (lang=%s)", lang)
+            except Exception as exc:
+                logger.warning("Failed to initialize HF NER detector: %s", exc)
+
+    # Optional spaCy fallback (must be explicitly enabled).
+    if cfg.USE_SPACY:
+        try:
+            from .legacy.spacy_detector import SpacyDetector
+
+            detectors.append(SpacyDetector(lang=lang))
+            logger.info("Using spaCy fallback detector (lang=%s)", lang)
+        except Exception as exc:
+            logger.warning("Failed to initialize spaCy detector: %s", exc)
+
+    # Regex is always enabled as a recall backstop.
     detectors.append(RegexDetector(regex_path))
 
-    # 如果前面都沒加到主偵測器，就 fallback spaCy + Regex
-    if not detectors or cfg.USE_STUB:
-        logger.info(f"使用 spaCy 偵測 (備用方案 {lang})")
-        detectors = [SpacyDetector(), RegexDetector(regex_path)]
-
     return CompositeDetector(*detectors)
-

@@ -1,52 +1,94 @@
-# main.py
+from __future__ import annotations
+
 import argparse
+import json
 from pathlib import Path
 
-from deid_pipeline.parser.text_extractor import extract_text
-from deid_pipeline.pii import get_detector
-from deid_pipeline.pii.utils.replacer import Replacer
+from deid_pipeline import DeidPipeline
+from deid_pipeline.core.anchors import attach_segment_anchors
+from deid_pipeline.core.contracts import normalize_entity
 
-def parse_args():
-    p = argparse.ArgumentParser(description="De-ID CLI")
-    p.add_argument("-i", "--input", required=True, help="Input file path (txt|docx|pdf|png|jpg)")
-    p.add_argument("-l", "--lang", choices=["zh","en"], default="zh", help="Language for detection")
-    p.add_argument("-m", "--mode", choices=["detect","replace","black"], default="replace",
-                   help="detect: list PII, replace: substitute, black: output mask spans")
-    p.add_argument("--json", action="store_true", help="When replace/black, also print JSON events")
+
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(description="EdgeDeID CLI (offline-first)")
+    p.add_argument(
+        "-i",
+        "--input",
+        required=True,
+        help="Input file path (txt|html|csv|pdf|png|jpg|docx|xlsx|pptx)",
+    )
+    p.add_argument(
+        "-l",
+        "--lang",
+        choices=["zh", "en"],
+        default="zh",
+        help="Language for detection (default: zh)",
+    )
+    p.add_argument(
+        "-m",
+        "--mode",
+        choices=["detect", "replace", "black"],
+        default="replace",
+        help="detect: list entities; replace: substitute; black: mask spans",
+    )
+    p.add_argument(
+        "--output-dir",
+        default=None,
+        help="Optional output directory for rebuilt artifacts (e.g., redacted PDF, rewritten CSV).",
+    )
+    p.add_argument(
+        "--json",
+        action="store_true",
+        help="Print JSON output (entities for detect; events for replace/black).",
+    )
     return p.parse_args()
 
-def main():
+
+def main() -> None:
     args = parse_args()
     fp = Path(args.input)
     if not fp.exists():
         raise FileNotFoundError(f"Input not found: {fp}")
 
-    # 1. Extract text (for PDF/TXT/DOCX) or OCR (for images)
-    text, offsets = extract_text(str(fp))
+    pipeline = DeidPipeline(language=args.lang)
 
-    # 2. Detect PII
-    detector = get_detector(args.lang)
-    entities = detector.detect(text)
-
-    # 3. Replace or mask
-    replacer = Replacer()
     if args.mode == "detect":
-        # just list out
+        registry = pipeline._get_handler_registry()
+        handler = registry.get(fp)
+        document = handler.extract(fp, language=args.lang)
+        text = document.text
+        detector = pipeline._get_detector()
+        raw_entities = detector.detect(text)
+        entities = [normalize_entity(e, language=args.lang, text=text) for e in raw_entities]
+        attach_segment_anchors(entities, document.segments)
+
         for ent in entities:
-            s,e = ent["span"]
+            s, e = ent.get("span", (0, 0))
             snippet = text[s:e]
-            print(f"{ent['type']:10} | {snippet} | {ent['score']:.2f}")
-    else:
-        new_text, events = replacer.replace(
-            text,
-            entities,
-            mode="replace" if args.mode=="replace" else "black"
-        )
-        print("\n===== Result Text =====\n")
-        print(new_text)
+            conf = float(ent.get("confidence", ent.get("score", 0.0)))
+            print(f"{ent.get('type','UNKNOWN'):16} | {snippet} | {conf:.2f}")
+
         if args.json:
-            print("\n===== Events JSON =====\n")
-            print(Replacer.dumps(events))
+            print(json.dumps(entities, ensure_ascii=False, indent=2))
+        return
+
+    output_mode = "replace" if args.mode == "replace" else "blackbox"
+    result = pipeline.process(
+        str(fp),
+        output_mode=output_mode,
+        output_dir=args.output_dir,
+    )
+
+    print("\n===== Result Text =====\n")
+    print(result.text)
+
+    if args.json:
+        print("\n===== Events JSON =====\n")
+        print(json.dumps(result.events, ensure_ascii=False, indent=2))
+        if result.artifacts:
+            print("\n===== Artifacts JSON =====\n")
+            print(json.dumps(result.artifacts, ensure_ascii=False, indent=2))
+
 
 if __name__ == "__main__":
     main()
